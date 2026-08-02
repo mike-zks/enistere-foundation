@@ -175,11 +175,11 @@ async function materializeExpo(application, directory) {
 
 async function rewriteJavaTree(root, fromPackage, toPackage, serviceName) {
   const files = await filesUnder(root, new Set(['.java']));
+  const qualifiedPackage = new RegExp(`\\b${fromPackage.replaceAll('.', '\\.')}(?=[.;])`, 'gu');
   for (const path of files) {
     let value = await readFile(path, 'utf8');
     value = value
-      .replace(new RegExp(`^package ${fromPackage.replaceAll('.', '\\.')}(?=[.;])`, 'mu'), `package ${toPackage}`)
-      .replace(new RegExp(`^import (static )?${fromPackage.replaceAll('.', '\\.')}(?=[.;])`, 'gmu'), (_, prefix = '') => `import ${prefix}${toPackage}`)
+      .replace(qualifiedPackage, toPackage)
       .split('api-spring-core').join(serviceName);
     await writeFile(path, value);
   }

@@ -127,4 +127,13 @@ describe('CSM-derived application identities', () => {
     assert.doesNotMatch(dart, /package:mobile_flutter\//u);
     assert.match(dart, /package:acme_vision_mobile\//u);
   });
+
+  it('rewrites fully-qualified Java references contributed by overlays', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'enistere-identity-java-overlays-'));
+    const output = join(root, 'project');
+    await generateProject(blueprint({ api: 'spring', web: null, mobile: null }, ['files']), output);
+    const java = (await textFiles(join(output, 'apps/api'), ['.java'])).join('\n');
+    assert.doesNotMatch(java, /\bcom\.enistere\.core\b/u);
+    assert.match(java, /\bapp\.acme\.vision\.api\.modules\.users\.User\b/u);
+  });
 });

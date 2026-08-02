@@ -36,6 +36,19 @@ function confined(root, relativePath) {
   return candidate;
 }
 
+function materializedProofPath(target, application, relativePath) {
+  if (target !== 'spring') return relativePath;
+
+  const sourcePrefix = /^(src\/(?:main|test)\/java\/)com\/enistere\/core(?=\/|$)/u;
+  if (!sourcePrefix.test(relativePath)) return relativePath;
+
+  const packageName = application.identity?.maven?.packageName;
+  if (!packageName) {
+    throw new Error('Spring materialized proof requires identity.maven.packageName');
+  }
+  return relativePath.replace(sourcePrefix, `$1${packageName.replaceAll('.', '/')}`);
+}
+
 /**
  * Report path for a product contract: `authentication-product` →
  * `reports/authentication-v1.json`. Derived, never declared, so a capability
@@ -257,9 +270,14 @@ async function validateProofs({
         path: confined(sourceRoot, proof.source ?? ''),
       }];
       if (projectDir && application) {
+        const materialized = materializedProofPath(
+          target,
+          application,
+          proof.materialized ?? '',
+        );
         locations.push({
           label: 'materialized',
-          path: confined(join(projectDir, application.appDir), proof.materialized ?? ''),
+          path: confined(join(projectDir, application.appDir), materialized),
         });
       }
       for (const location of locations) {
