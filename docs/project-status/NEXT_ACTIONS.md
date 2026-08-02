@@ -1180,35 +1180,80 @@ coordonnées dérivées ; Flutter analyze, 26 tests et APK debug.
 - aucun audit exhaustif des avantages propres à chaque framework ni équivalence
   produit/production.
 
+## Mission de formalisation achevée — Parité contractuelle et artefacts partagés
+
+[ADR-088](../adr/ADR-088-contractual-parity-and-shared-artifacts.md) retire à
+l'axe NestJS + Next.js + React Native son statut implicite de référence. La
+parité distingue désormais produit, contrat externe, client et composition. Un
+profil n'est interchangeable qu'après preuve des quatre niveaux.
+
+Les mesures ont démenti l'hypothèse d'un contrat HTTP déjà commun : le snapshot
+partagé est celui de la composition NestJS ; FastAPI change préfixes, routes et
+`operationId` ; Spring Files ne publie actuellement aucun `/v3/api-docs` et son
+catch-all transforme le `NoResourceFoundException` résultant en réponse 500.
+
+Première tranche exécutée : `ApiErrorResponse` possède une source JSON Schema
+neutre et des bindings TypeScript, Java, Python et Dart réellement consommés.
+Un gate de digest/drift lie les cinq représentations générées à cette source.
+Cette tranche ne vaut pas contrat Auth/RBAC/Files complet.
+
+Preuves : suite Factory **536/536** ; golden FastAPI Auth/RBAC/Files sur
+PostgreSQL et MinIO jetables (**52/52 tests**, Ruff, migrations, audit et
+démarrage HTTP) ; golden Spring Auth/RBAC/Files **139/139** ; fitness functions
+sans finding ; liens de **151 documents**. Le premier golden FastAPI a trouvé
+une ligne générée hors limite Ruff ; la correction a été portée dans le
+générateur puis rejouée jusqu'au golden vert.
+
+La politique d'artefacts est clarifiée : le contrat composé est la seule unité
+applicative partagée privilégiée, avec un binding par consommateur. Le client
+Fetch doit devenir une cible du binding ou un transport privé d'adapter. Le UI
+Kit React n'est pas le design commun : chaque frontend reste idiomatique contre
+un éventuel contrat neutre de tokens et règles observables.
+
+### Non revendiqué
+
+- aucune surface complète identique entre NestJS, Spring et FastAPI ;
+- aucun client HTTP complet Java, Python ou Dart ;
+- aucune suppression immédiate de `api-client-fetch` ou `ui-kit` ;
+- aucune équivalence de profil ni garantie de production ;
+- aucune décision sur l'infrastructure, le cloud ou les pipelines dans ADR-088.
+
 ## Prochaine mission unique
 
-> **Neutraliser le contrat partagé historique et générer ses bindings polyglottes.**
+> **Auditer la parité opérationnelle des runtimes et des projets dérivés : infrastructure, cloud et CI/CD.**
 
 ### Pourquoi maintenant
 
-Les applications ne portent plus les identités des starters, mais
-`packages/api-contracts` contient encore un titre, une description et un exemple
-de service issus du contrat NestJS historique. Le package TypeScript est fourni
-et utilisé par ses consommateurs ; Java, Python et Dart restent sans binding
-généré. Corriger seulement les textes masquerait la frontière encore absente
-entre contrat neutre canonique et représentations propres aux langages.
+Un contrat applicatif commun ne rend pas deux profils équivalents si leurs
+images, manifests, pipelines, migrations, secrets, observabilité ou procédures
+de déploiement privilégient encore un runtime historique. Le même principe doit
+séparer contrat opérationnel neutre et implémentation idiomatique de chaque
+framework, sans livrer aux projets dérivés les outils de fabrication de la
+Foundation.
 
 ### Critères de sortie
 
-- exécuter l'inventaire des sources OpenAPI/contrats et de leurs consommateurs,
-  sans créer une deuxième source de vérité ;
-- définir quelle donnée relève du contrat neutre, de l'identité applicative ou
-  d'un exemple, puis retirer les mentions runtime injustifiées ;
-- générer et consommer des bindings minimaux idiomatiques pour TypeScript, Java,
-  Python et Dart, ou caractériser par exécution tout blocage réel ;
-- prouver reproductibilité, absence de drift et utilisation dans des projets
-  dérivés représentatifs des trois familles ;
-- documenter versioning, compatibilité et ce qui reste non revendiqué.
+- inventorier par exécution les Dockerfiles, Compose, manifests cloud,
+  pipelines, scripts de build/release et artefacts réellement livrés pour les
+  sept runtimes et des compositions croisées ;
+- identifier les couplages NestJS/Next.js/React Native et toute asymétrie
+  équivalente dans les gates Spring/FastAPI/Angular/Flutter ;
+- distinguer garanties opérationnelles communes (build, health, configuration,
+  secrets, migrations, observabilité, rollback) et mécanismes propres aux
+  frameworks ou plateformes ;
+- vérifier que les projets dérivés reçoivent seulement leurs fichiers
+  d'exploitation utiles, sans chemins locaux, caches, métadonnées de starter ni
+  configuration cloud non sélectionnée ;
+- mesurer la portabilité des pipelines et images sur des environnements locaux
+  contrôlés, puis publier un rapport de gaps daté ;
+- proposer une décision architecturale seulement après les mesures, avec
+  compatibilité, migration et non-revendications explicites.
 
-### Ce qui reste ouvert après cette mission
+### Ce qui reste ouvert après cet audit
 
-- classification fine des autres documents applicatifs livrés ;
-- audit plus profond des avantages propres à chaque framework au-delà des
-  Runtime Contracts v2 déjà exécutés ;
-- transport cookie HttpOnly, limitation de débit distribuée, reste de §12,
-  interopérabilité Angular↔NestJS/Spring et lifecycle complet.
+- composition contractuelle complète Auth/RBAC/Files et convergence des trois
+  surfaces API ;
+- génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
+- contrat de design neutre et implémentations frontend indépendantes ;
+- déploiement cloud réel, performance, charge, haute disponibilité, disaster
+  recovery, signatures/provenance et le reste de §12.

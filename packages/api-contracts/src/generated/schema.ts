@@ -1,7 +1,7 @@
 /**
  * ENISTERE — Types OpenAPI GÉNÉRÉS. NE PAS MODIFIER À LA MAIN.
  *
- * Source de vérité : packages/api-contracts/contract/openapi.json (contrat canonique complet, ADR-016).
+ * Source HTTP : packages/api-contracts/contract/openapi.json (composition NestJS complète, ADR-016).
  * Régénérer : npm run generate   ·   Vérifier la fraîcheur : npm run generate:check
  *
  * Fichier types-only (aucun runtime). Outil : openapi-typescript.
@@ -237,48 +237,25 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        ApiErrorResponseDto: {
-            /**
-             * @description Détails structurés optionnels (ex. erreurs de validation). Jamais de secret ni de stack.
-             * @example null
-             */
-            details?: Record<string, never> | null;
-            /**
-             * @description Code d’erreur applicatif stable.
-             * @example FILE_NOT_FOUND
-             */
+        "api-error-response.v1.openapi": {
+            /** @description Détails publics optionnels, par exemple des erreurs de validation à plat. */
+            details?: unknown;
             errorCode: string;
-            /**
-             * @description Message générique non sensible.
-             * @example File not found.
-             */
+            /** @description Message générique ne contenant ni secret ni détail interne. */
             message: string;
-            /**
-             * @description Chemin de la requête.
-             * @example /files/123
-             */
             path: string;
-            /**
-             * @description Identifiant de corrélation de la requête (en-tête X-Request-Id). Pas une donnée de sécurité.
-             * @example b3f1c2d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d
-             */
-            requestId?: string;
-            /**
-             * @description Code de statut HTTP.
-             * @example 404
-             */
+            /** @description Identifiant de corrélation X-Request-Id ; ce n'est pas une donnée de sécurité. */
+            requestId?: string | null;
             statusCode: number;
             /**
-             * @description Toujours false pour une réponse d’erreur.
-             * @example false
+             * @description Toujours false pour une réponse d'erreur.
+             * @enum {boolean}
              */
-            success: boolean;
-            /**
-             * Format: date-time
-             * @example 2026-06-09T12:00:00.000Z
-             */
+            success: false;
+            /** Format: date-time */
             timestamp: string;
         };
+        ApiErrorResponseDto: components["schemas"]["api-error-response.v1.openapi"];
         AuthorizationSummaryResponseDto: {
             /**
              * @example [
@@ -314,7 +291,7 @@ export interface components {
             offset: number;
         };
         HealthResponseDto: {
-            /** @example api-nestjs-core */
+            /** @example example-api */
             service: string;
             /**
              * @example ok
@@ -554,7 +531,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Identifiants invalides. */
@@ -563,7 +540,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Trop de tentatives. */
@@ -572,7 +549,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -581,7 +558,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -623,7 +600,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -661,7 +638,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -670,7 +647,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -708,7 +685,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -717,7 +694,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -759,7 +736,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Refresh token invalide. */
@@ -768,7 +745,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Trop de tentatives. */
@@ -777,7 +754,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -786,7 +763,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -829,7 +806,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -838,7 +815,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.read absente. */
@@ -847,7 +824,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -856,7 +833,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -911,7 +888,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -920,7 +897,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.upload absente. */
@@ -929,7 +906,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Quota propriétaire dépassé (nombre/octets). */
@@ -938,7 +915,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier trop volumineux. */
@@ -947,7 +924,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Trop de requêtes d’upload. */
@@ -956,7 +933,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -965,7 +942,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Stockage objet indisponible. */
@@ -974,7 +951,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -1014,7 +991,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -1023,7 +1000,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.read absente. */
@@ -1032,7 +1009,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier absent ou non possédé (anti-énumération). */
@@ -1041,7 +1018,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -1050,7 +1027,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -1079,7 +1056,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -1088,7 +1065,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.delete absente. */
@@ -1097,7 +1074,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier absent ou non possédé (anti-énumération). */
@@ -1106,7 +1083,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Finalisation DB impossible après suppression. */
@@ -1115,7 +1092,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Stockage objet indisponible. */
@@ -1124,7 +1101,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -1164,7 +1141,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -1173,7 +1150,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.download absente. */
@@ -1182,7 +1159,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier absent ou non possédé (anti-énumération). */
@@ -1191,7 +1168,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier non téléchargeable (statut/visibilité). */
@@ -1200,7 +1177,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Trop de demandes d’URL de téléchargement. */
@@ -1209,7 +1186,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Génération d’URL indisponible (objet manquant / signature). */
@@ -1218,7 +1195,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -1261,7 +1238,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -1270,7 +1247,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.quarantine absente. */
@@ -1279,7 +1256,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier introuvable. */
@@ -1288,7 +1265,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Transition de statut invalide. */
@@ -1297,7 +1274,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -1306,7 +1283,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -1345,7 +1322,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Authentification requise. */
@@ -1354,7 +1331,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Permission files.restore absente. */
@@ -1363,7 +1340,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Fichier introuvable. */
@@ -1372,7 +1349,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Transition de statut invalide (objet présent et empreinte d’intégrité requis). */
@@ -1381,7 +1358,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
             /** @description Erreur interne. */
@@ -1390,7 +1367,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };
@@ -1486,7 +1463,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ApiErrorResponseDto"];
+                    "application/json": components["schemas"]["api-error-response.v1.openapi"];
                 };
             };
         };

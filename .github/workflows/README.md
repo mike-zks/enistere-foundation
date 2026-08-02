@@ -41,7 +41,7 @@ job aval **rebuild ses dépendances** avant de se valider (`needs` garantit l'or
 
 | Job | Vérifie | Dépend de |
 |---|---|---|
-| `api-contracts` | `generate:check` (snapshot OpenAPI ↔ types) · `typecheck` · `build` · `test` | — |
+| `api-contracts` | `contracts:check` (schéma neutre ↔ bindings polyglottes) · `generate:check` (transport NestJS ↔ types) · `typecheck` · `build` · `test` | — |
 | `api-client-fetch` | build `api-contracts` (dist) → `typecheck` · `build` · `test` | `api-contracts` |
 | `ui-kit` | `tokens:check` · `typecheck` · `build` · `lint` · `test` · `pack:check` | `api-client-fetch` |
 | `web-nextjs` | build `api-contracts`+`api-client-fetch`+`ui-kit` → `typecheck` · `lint` · `test` · **`build` (sans API)** | `ui-kit` |

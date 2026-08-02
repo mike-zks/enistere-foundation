@@ -25,6 +25,7 @@
 | Source unique des starters | **Implémentée et gardée** (ADR-063/064) | sept racines `starters/<runtime>` ; `base/`, `composition.baseSource` et capabilities Mobile embarquées interdits |
 | Frontière de matérialisation dérivée | **Implémentée et gardée** (ADR-086) | applications et overlays sélectionnés seulement ; caches, métadonnées de starter, chemins machine et racines de capabilities exclus |
 | Identités applicatives dérivées du CSM | **Implémentées et gardées** (ADR-087) | sept runtimes ; namespace neutre `app.*`, aucun cycle de renommage/retrait livré |
+| Parité contractuelle | **Décidée, partielle** (ADR-088) | `ApiErrorResponse` généré TS/Java/Python/Dart ; surface complète et profils croisés non prouvés ; OpenAPI Spring Files absent |
 | Requalification de `base` | **Implémentée** (ADR-058) | baseline implicite ; `base` absent du graphe capability/CSM/plan, toléré uniquement en entrée Blueprint v1 puis effacé |
 | Fitness functions du pipeline (FF6–FF8) | **Implémenté** (ADR-047) | frontière d'ingestion, modèle interne unique, chaîne canonique — gardés contre régression |
 | `profiles` / `profile <name>` | Implémenté (R7/ADR-062) | presets de composition historiques : 35 déclarés, tous générables ; 31 prouvés par un golden exact |
@@ -38,9 +39,9 @@
 | Graphe de capabilities | **Implémenté** (ADR-067) | closure/ordre déterministes, auto-inclusions tracées, cycles et conflits refusés |
 | Conformité produit de capability | **Implémenté** — `auth`, `rbac` et `files` conformes (ADR-068 → ADR-070/074) | évaluateur générique, contrats découverts par convention, invariants par rôle et par responsabilité, `not-applicable` traité comme absence légitime |
 | Gates hermétiques | **Implémenté pour le mobile** (ADR-071) | le verdict d'un golden ne dépend plus d'une valeur distante mutable ; outil de vérification épinglé. Les autres gates ne sont pas audités |
-| Parité par famille de runtimes | **Mesurée sur tous les runtimes** (ADR-070, ADR-074) | un runtime ne s'exonère plus par `unsupported` ; aucun écart déclaré ne reste dans `factory/quality/parity-gaps.json` |
+| Parité produit par famille de runtimes | **Mesurée sur tous les runtimes** (ADR-070, ADR-074) | aucun écart de responsabilités ; ne vaut pas parité HTTP/client/composition (ADR-088) |
 | Composition modulaire (`modular-overlay`) | Implémentée (1A) | active si toutes les targets sont modulaires |
-| Packages partagés par consommateurs + lock racine | Implémenté (ADR-086) | fermeture transitive `@enistere/*`, workspaces explicites, `npm install` → `npm ci` ; bindings polyglottes non livrés |
+| Packages partagés par consommateurs + lock racine | Implémenté (ADR-086/088) | fermeture transitive `@enistere/*` ; contrat composé privilégié ; première tranche polyglotte livrée, migration client Fetch/UI Kit ouverte |
 | CI `Factory Golden Runtime` | Implémentée (1A-R), étendue (1B/1C/R8A/ADR-066) | inclut le golden topologique `distributed-spring-nestjs` |
 | Statuts de support (`not-applicable`) | Implémenté (1B) | permet les compositions mixtes sans surface factice |
 | Composition Prisma structurée | Implémentée (1B-R) | modèle intermédiaire strict, sans parsing de texte |

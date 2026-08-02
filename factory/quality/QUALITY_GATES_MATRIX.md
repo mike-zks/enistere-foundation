@@ -247,15 +247,15 @@ node factory/quality/scripts/quality-gates.mjs run ui-kit
 |---|---|---|
 | `docs` | 2 (`git diff --check` + Documentation link check) | — |
 | `root-audit` | 1 (npm audit) | — |
-| `packages` | 7 (api-contracts + api-client-fetch) | — |
+| `packages` | 8 (bindings polyglottes + api-contracts + api-client-fetch) | — |
 | `ui-kit` | 5 | — |
 | `web` | 4 | E2E Playwright |
 | `web-angular` | 3 (test:ci, build, audit) | — |
 | `mobile-static` | 4 (typecheck, lint, test, doctor) | expo export, smoke:android, smoke:ios |
 | `api-spring` | 1 (`./mvnw verify`) | MinIO TC (déferré), Tika (déferré), smoke staging |
-| `all-safe` | 17 (packages + ui-kit + web + root-audit) | mobile, web-angular (Karma/ChromeHeadless), api-nestjs e2e, api-spring (Docker), E2E, Cloud |
+| `all-safe` | 18 (packages + ui-kit + web + root-audit) | mobile, web-angular (Karma/ChromeHeadless), api-nestjs e2e, api-spring (Docker), E2E, Cloud |
 
-Tests unitaires : `node factory/quality/scripts/quality-gates.test.mjs` — 48/48.
+Tests unitaires : `node factory/quality/scripts/quality-gates.test.mjs` — 49/49.
 
 ## 6. Baseline tests / coverage locale (Factory Quality reporting)
 

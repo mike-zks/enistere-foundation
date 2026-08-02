@@ -1,7 +1,7 @@
 package com.enistere.core.modules.auth;
 
-import com.enistere.core.common.exception.ApiError;
 import com.enistere.core.common.web.CorrelationIdFilter;
+import com.enistere.core.contracts.ApiErrorResponse;
 import com.enistere.core.modules.audit.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.Ordered;
@@ -37,10 +37,10 @@ public class SecurityExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiError> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
         SecurityConfig.auditDenial(auditService, request);
         Object id = request.getAttribute(CorrelationIdFilter.REQUEST_ID_ATTRIBUTE);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiError.of(
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiErrorResponse.create(
             HttpStatus.FORBIDDEN.value(),
             SecurityErrorCodes.AUTH_FORBIDDEN,
             "Access denied",

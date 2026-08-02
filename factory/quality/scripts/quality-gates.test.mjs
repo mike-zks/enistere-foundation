@@ -99,8 +99,13 @@ describe('buildPlan — root-audit', () => {
 // ---------------------------------------------------------------------------
 
 describe('buildPlan — packages', () => {
-  it('a 7 étapes', () => {
-    assert.strictEqual(buildPlan('packages').steps.length, 7);
+  it('a 8 étapes', () => {
+    assert.strictEqual(buildPlan('packages').steps.length, 8);
+  });
+
+  it('inclut le contrôle de drift des bindings polyglottes', () => {
+    const found = buildPlan('packages').steps.find((step) => step.args.includes('contracts:check'));
+    assert.ok(found, 'étape contracts:check manquante');
   });
 
   it('toutes les étapes s\'exécutent à la racine du repo', () => {

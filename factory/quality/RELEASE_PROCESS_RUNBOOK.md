@@ -258,7 +258,7 @@ Selon le scope de la release :
 | UI Kit | `ui-kit` + `root-audit` |
 | Web Core | `web` + `packages` + `ui-kit` + `root-audit` = `all-safe` |
 | Mobile Core (partiel) | `mobile-static` + `root-audit` |
-| Tous cores locaux sûrs | `all-safe` (17 étapes) |
+| Tous cores locaux sûrs | `all-safe` (18 étapes) |
 | Release globale Foundation | `all-safe` + CI L1–L4 verts |
 
 ```bash
@@ -412,7 +412,7 @@ dans les notes de release (`sha-X correspond à release foundation-vY.Z`).
 
 | Type de release | Scope quality-gates | CI requise | Staging requis |
 |---|---|---|---|
-| `foundation-v1-baseline` | `all-safe` (17 étapes) | L1+L2+L3+L4 | Recommandé |
+| `foundation-v1-baseline` | `all-safe` (18 étapes) | L1+L2+L3+L4 | Recommandé |
 | `core-v1-validation` | Selon le core | Selon le core | Non |
 | `quality-v2-increment` | `docs` + `root-audit` | Non (docs-only) | Non |
 | `staging-candidate` | `all-safe` | L1+L2+L3+L4 | Requis (rapport CC11) |

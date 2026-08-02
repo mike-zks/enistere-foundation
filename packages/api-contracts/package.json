@@ -2,7 +2,7 @@
   "name": "@enistere/api-contracts",
   "version": "0.1.0",
   "private": false,
-  "description": "Types OpenAPI canoniques Enistere (générés depuis le contrat du API Core). Runtime-indépendant — aucune logique HTTP/auth, aucun framework UI.",
+  "description": "Types du transport HTTP NestJS composé et bindings neutres Enistere. Aucune logique HTTP/auth ni framework UI.",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": false,

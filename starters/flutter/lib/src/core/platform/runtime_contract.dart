@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../../contracts/api_error_response.dart';
+
 const commonRuntimeContractVersion = 'common/2.0.0';
 const mobileRuntimeContractVersion = 'mobile/2.0.0';
 const telemetryExporterContractVersion = 'telemetry-exporter/2.0.0';
@@ -65,26 +67,17 @@ final class CanonicalMobileError implements Exception {
   });
 
   factory CanonicalMobileError.fromJson(Object? value) {
-    if (value case {
-      'statusCode': final int statusCode,
-      'errorCode': final String errorCode,
-      'message': final String message,
-      'path': final String path,
-      'timestamp': final String timestamp,
-      'requestId': final String requestId,
-    }) {
-      final parsedTimestamp = DateTime.tryParse(timestamp);
-      if (parsedTimestamp != null) {
-        return CanonicalMobileError(
-          statusCode: statusCode,
-          errorCode: errorCode,
-          message: message,
-          details: (value as Map<String, Object?>)['details'],
-          path: path,
-          timestamp: parsedTimestamp.toUtc(),
-          requestId: requestId,
-        );
-      }
+    final response = ApiErrorResponse.tryParse(value);
+    if (response != null) {
+      return CanonicalMobileError(
+        statusCode: response.statusCode,
+        errorCode: response.errorCode,
+        message: response.message,
+        details: response.details,
+        path: response.path,
+        timestamp: response.timestamp,
+        requestId: response.requestId ?? '',
+      );
     }
     return CanonicalMobileError(
       statusCode: 0,

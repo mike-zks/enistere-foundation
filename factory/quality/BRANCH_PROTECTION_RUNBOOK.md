@@ -52,7 +52,7 @@ est la dernière étape documentée de l'ADR-013 pour le scope "checks requis".
 
 | Nom exact du check | Job YAML | Vérifie |
 |---|---|---|
-| `api-contracts` | `jobs.api-contracts` | generate:check, typecheck, build, test (12) |
+| `api-contracts` | `jobs.api-contracts` | contracts:check polyglotte, generate:check OpenAPI, typecheck, build, test (12) |
 | `api-client-fetch` | `jobs.api-client-fetch` | typecheck, build, test (30) |
 | `ui-kit` | `jobs.ui-kit` | tokens:check, typecheck, build, lint, test (181), pack:check |
 | `web-nextjs` | `jobs.web-nextjs` | typecheck, lint, test (450), build sans API |

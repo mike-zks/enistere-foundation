@@ -78,6 +78,7 @@ const SCOPE_GATES = {
   ],
 
   packages: [
+    step('neutral contracts: bindings drift', 'npm', ['run', 'contracts:check']),
     ws('api-contracts', 'typecheck'),
     ws('api-contracts', 'build'),
     ws('api-contracts', 'generate:check'),
@@ -142,7 +143,7 @@ export const SCOPE_DESCRIPTIONS = {
   'root-audit':
     'npm audit à la racine du monorepo (0 vuln requis, CI L1).',
   packages:
-    'Gates sûrs api-contracts + api-client-fetch : typecheck, build, generate:check, test.',
+    'Gates sûrs contrats polyglottes + api-contracts + api-client-fetch : drift, typecheck, build, test.',
   'ui-kit':
     'Gates UI Kit : typecheck, lint, test (181, jest-axe), build, tokens:check.',
   web:

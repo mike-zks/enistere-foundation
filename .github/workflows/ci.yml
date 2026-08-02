@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # 1) Contrats OpenAPI : le snapshot canonique et les types générés doivent rester synchronisés.
+  # 1) Contrats : schéma neutre, bindings polyglottes et transport NestJS restent synchronisés.
   api-contracts:
     name: api-contracts
     runs-on: ubuntu-latest
@@ -32,6 +32,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: contracts:check (schéma neutre ↔ bindings TypeScript/Java/Python/Dart)
+        run: npm run contracts:check
       - name: generate:check (snapshot OpenAPI ↔ types à jour)
         run: npm run generate:check --workspace=@enistere/api-contracts
       - run: npm run typecheck --workspace=@enistere/api-contracts

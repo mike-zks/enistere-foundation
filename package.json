@@ -22,6 +22,8 @@
     "factory:capability-conformance": "node factory/conformance/capability-report.mjs",
     "generate": "npm run generate --workspace=@enistere/api-contracts",
     "generate:check": "npm run generate:check --workspace=@enistere/api-contracts",
+    "contracts:generate": "node contracts/scripts/generate-bindings.mjs",
+    "contracts:check": "node contracts/scripts/generate-bindings.mjs --check",
     "build": "npm run build --workspace=@enistere/api-contracts && npm run build --workspace=@enistere/api-client-fetch",
     "typecheck": "npm run typecheck --workspace=@enistere/api-contracts && npm run typecheck --workspace=@enistere/api-client-fetch",
     "test": "npm run build --workspace=@enistere/api-contracts && npm run test --workspace=@enistere/api-contracts && npm run test --workspace=@enistere/api-client-fetch",
