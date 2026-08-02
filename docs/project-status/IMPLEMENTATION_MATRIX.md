@@ -26,6 +26,7 @@
 | Frontière de matérialisation dérivée | **Implémentée et gardée** (ADR-086) | applications et overlays sélectionnés seulement ; caches, métadonnées de starter, chemins machine et racines de capabilities exclus |
 | Identités applicatives dérivées du CSM | **Implémentées et gardées** (ADR-087) | sept runtimes ; namespace neutre `app.*`, aucun cycle de renommage/retrait livré |
 | Parité contractuelle | **Décidée, partielle** (ADR-088) | `ApiErrorResponse` généré TS/Java/Python/Dart ; surface complète et profils croisés non prouvés ; OpenAPI Spring Files absent |
+| Contrat de livraison opérationnelle | **Décidé, schéma initial exécuté** (ADR-089) | `deploymentUnit/v1` validé sans dépendance runtime et croisé Ajv ; aucune unité encore émise par le plan |
 | Requalification de `base` | **Implémentée** (ADR-058) | baseline implicite ; `base` absent du graphe capability/CSM/plan, toléré uniquement en entrée Blueprint v1 puis effacé |
 | Fitness functions du pipeline (FF6–FF8) | **Implémenté** (ADR-047) | frontière d'ingestion, modèle interne unique, chaîne canonique — gardés contre régression |
 | `profiles` / `profile <name>` | Implémenté (R7/ADR-062) | presets de composition historiques : 35 déclarés, tous générables ; 31 prouvés par un golden exact |
@@ -51,7 +52,7 @@
 | Lock déterministe + digests d'overlays | Implémenté | upgrade non livré |
 | Contrat de domaine neutre | Initial | pas de génération CRUD framework |
 | Agents locaux | Implémenté | exécution volontairement sous approbation |
-| Livraison opérationnelle local/staging | **Auditée, non conforme** | ADR à prendre : Compose fixe sans primitives, staging sans applications, Dockerfiles dérivés NestJS/Next.js rouges, aucune CI dérivée ([audit 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)) |
+| Livraison opérationnelle local/staging | **Auditée, non conforme** | ADR-089 prise ; restent Compose fixe sans primitives, staging sans applications, Dockerfiles dérivés NestJS/Next.js rouges et aucune CI dérivée ([audit 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)) |
 
 ## Capabilities
 

@@ -1239,40 +1239,60 @@ starters NestJS/Next.js sont encore livrées.
   production ;
 - aucun choix de Kubernetes, cloud ou registre.
 
+## Mission achevée — contrat de livraison opérationnelle
+
+[ADR-089](../adr/ADR-089-operational-delivery-units.md) sépare désormais quatre
+plans : contrat opérationnel, adapter runtime, pack provider et pipeline dérivé.
+Le document canonique reste
+[`deployment/DEPLOYMENT_SPECIFICATION.md`](../../deployment/DEPLOYMENT_SPECIFICATION.md) ;
+le schéma exécutable est
+[`deployment-unit.schema.json`](../../factory/schema/deployment-unit.schema.json).
+
+Le premier slice refuse les secrets littéraux, les chemins hors projet, un
+artefact `ready` sans preuve, un artefact `blocked` sans blocker et une image
+serveur présentée comme release mobile. Le verdict de l'évaluateur autonome est
+croisé avec Ajv.
+
+### Non revendiqué
+
+- aucune `deploymentUnit` réelle n'est encore émise par le plan ;
+- aucun Dockerfile, Compose ou pipeline n'est corrigé par cette formalisation ;
+- aucune sélection de provider/cloud ni publication d'artefact ;
+- aucune promotion de statut opérationnel ou production.
+
 ## Prochaine mission unique
 
-> **Formaliser le contrat de livraison opérationnelle par `deploymentUnit` et son modèle d'artefacts.**
+> **Faire émettre au `GenerationPlan` les `deploymentUnit` honnêtes des sept adapters.**
 
 ### Pourquoi maintenant
 
-Corriger séparément les deux Dockerfiles conserverait la cause : le plan ne dit
-pas quel artefact, quel build context, quelles primitives et quelles gates une
-unité livrable possède. Une décision neutre doit précéder les adapters
-idiomatiques et empêcher le retour d'un axe NestJS + Next.js privilégié.
+Le schéma ne ferme aucun défaut tant que le plan ne l'exécute pas sur les sept
+runtimes. L'émission doit d'abord rendre visibles les artefacts réellement prêts
+et ceux qui sont bloqués ; réparer directement NestJS/Next.js masquerait encore
+l'absence de JAR/bundle/release et de configuration résolue ailleurs.
 
 ### Critères de sortie
 
-- ADR unique séparant contrat opérationnel, adapter runtime, pack provider et
-  pipeline dérivé ;
-- schéma versionné d'une `deploymentUnit` : artefact, build context, commande de
-  migration, configuration/secrets par référence, health, dépendances, ordre de
-  déploiement/rollback et preuves ;
-- matrice normative par famille couvrant JAR/image, bundle Web et artefact
-  mobile sans imposer Docker aux clients natifs ;
-- règles de sélection : aucun service, cloud pack, package ou document interne
-  sans consommateur résolu ;
-- stratégie de compatibilité Blueprint v1 et migration vers la sélection des
-  primitives ;
-- premier slice exécutable borné et critères de non-régression pour les sept
-  sorties, sans prétendre livrer tout le cloud dans la même mission.
+- un descripteur opérationnel versionné par adapter, sans switch framework dans
+  le planner et sans duplication avec `starter.manifest.json` ;
+- une unité par application du plan, validée par
+  `deployment-unit.schema.json`, avec chemins dérivés de `appDir` ;
+- statut honnête des artefacts mesurés : FastAPI OCI, JAR Spring et bundle
+  Angular distingués des Dockerfiles rouges et releases mobiles absentes ;
+- configuration/secrets par nom, health, migrations, dépendances de primitives,
+  ordre de rollout/rollback issus uniquement du `ResolvedSystem` ;
+- artefact déterministe `packages/contracts/deployment-units.json` dans le
+  projet dérivé et rapport lisible dans `enistere.lock` ;
+- tests sur les sept runtimes, chemins sûrs, absence de secret littéral et
+  déterminisme ; aucun build rouge ne peut recevoir `ready`.
 
-### Ce qui reste ouvert après cette formalisation
+### Ce qui reste ouvert après cette émission
 
 - composition contractuelle complète Auth/RBAC/Files et convergence des trois
   surfaces API ;
 - génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
 - contrat de design neutre et implémentations frontend indépendantes ;
-- implémentation des adapters opérationnels, CI dérivée et résolution de
-  primitives selon la séquence décidée ;
+- correction des artefacts bloqués, packs providers sélectionnés, CI dérivée et
+  résolution complète des primitives selon la séquence décidée ;
 - déploiement cloud réel, performance, charge, haute disponibilité, disaster
   recovery, signatures/provenance et le reste de §12.

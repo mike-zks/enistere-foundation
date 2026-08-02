@@ -92,6 +92,9 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
   Compose local fixe sans rapport avec les primitives, staging sans application
   et aucune CI dérivée. Mesures :
   [audit opérationnel du 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
+  ADR-089 sépare désormais contrat, adapter, pack provider et pipeline ; le
+  schéma `deploymentUnit/v1` est exécuté, mais aucune unité réelle n'est encore
+  émise par le plan.
 
 ## Statut des chantiers V2
 

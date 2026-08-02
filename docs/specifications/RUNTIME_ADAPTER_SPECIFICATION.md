@@ -41,6 +41,12 @@ Le runtime fournit :
 - exécution locale ;
 - build.
 
+Pour la livraison opérationnelle, il déclare aussi les mécanismes idiomatiques
+consommés par le contrat `deploymentUnit/v1` : kinds d'artefacts, contexte et
+commande de build, sorties, configuration/secrets requis par nom, health,
+migrations et gates. Le pack provider reste séparé : un adapter Spring ne
+choisit pas Kubernetes, et un adapter Flutter ne simule pas une image serveur.
+
 Il ne définit pas seul Authentication, Authorization, User Management, Files, Events, Notifications ou les
 règles métier partagées. Il fournit en revanche obligatoirement l'Observability et le Technical Audit du
 Platform Baseline.
