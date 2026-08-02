@@ -18,6 +18,14 @@ Il est autoritaire pour le constat de cible, notamment :
 - statut de représentation distinct du support réel ;
 - prochaine mission unique.
 
+## Audit opérationnel courant
+
+[`OPERATIONAL_PARITY_AUDIT_2026-08-02.md`](OPERATIONAL_PARITY_AUDIT_2026-08-02.md)
+mesure séparément la livraison infrastructure, images, cloud et CI/CD des sept
+runtimes et des projets dérivés. Il constate notamment que deux Dockerfiles
+livrés ne se construisent pas, que l'infrastructure générée ignore les
+primitives résolues et qu'aucun pipeline CI n'est livré aux dérivés.
+
 ## Analyses closes (historique)
 
 Chacune porte en tête un bandeau **CLOS** daté. Elles restent des preuves de

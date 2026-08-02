@@ -87,6 +87,11 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
   Blueprint. Le manifest Capability v2 sait désormais déclarer des besoins de
   primitives provider-neutral. Observability et Technical Audit relèvent du
   baseline.
+- **P0 opérationnel** — la livraison dérivée n'est pas exploitable de manière
+  paritaire : Dockerfiles NestJS et Next.js rouges dans leur structure livrée,
+  Compose local fixe sans rapport avec les primitives, staging sans application
+  et aucune CI dérivée. Mesures :
+  [audit opérationnel du 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
 
 ## Statut des chantiers V2
 

@@ -51,7 +51,7 @@
 | Lock déterministe + digests d'overlays | Implémenté | upgrade non livré |
 | Contrat de domaine neutre | Initial | pas de génération CRUD framework |
 | Agents locaux | Implémenté | exécution volontairement sous approbation |
-| Deployment local/staging | Initial | staging généré à compléter par images applicatives |
+| Livraison opérationnelle local/staging | **Auditée, non conforme** | ADR à prendre : Compose fixe sans primitives, staging sans applications, Dockerfiles dérivés NestJS/Next.js rouges, aucune CI dérivée ([audit 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)) |
 
 ## Capabilities
 

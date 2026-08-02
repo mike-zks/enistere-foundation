@@ -1218,42 +1218,61 @@ un éventuel contrat neutre de tokens et règles observables.
 - aucune équivalence de profil ni garantie de production ;
 - aucune décision sur l'infrastructure, le cloud ou les pipelines dans ADR-088.
 
+## Mission achevée — audit de parité opérationnelle
+
+L'[audit opérationnel du 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)
+a généré les sept variantes, parsé quatorze Compose et construit les images
+réellement livrées. Verdict : FastAPI construit ; NestJS échoue faute de
+lockfile applicatif ; Next.js cherche encore `starters/nextjs`. Les sorties sans
+capability ni primitive reçoivent pourtant PostgreSQL, Redis et MinIO ; le
+staging ne contient que le proxy ; aucune sortie ne reçoit de CI.
+
+Le nettoyage antérieur reste incomplet : caches, manifests et sources de
+capabilities ont disparu, mais les revues, roadmaps et preuves internes des
+starters NestJS/Next.js sont encore livrées.
+
+### Non revendiqué
+
+- aucun déploiement cloud ou staging externe exécuté ;
+- aucune image Spring/Angular ni release mobile signée ;
+- aucune performance, haute disponibilité, reprise après sinistre ou readiness
+  production ;
+- aucun choix de Kubernetes, cloud ou registre.
+
 ## Prochaine mission unique
 
-> **Auditer la parité opérationnelle des runtimes et des projets dérivés : infrastructure, cloud et CI/CD.**
+> **Formaliser le contrat de livraison opérationnelle par `deploymentUnit` et son modèle d'artefacts.**
 
 ### Pourquoi maintenant
 
-Un contrat applicatif commun ne rend pas deux profils équivalents si leurs
-images, manifests, pipelines, migrations, secrets, observabilité ou procédures
-de déploiement privilégient encore un runtime historique. Le même principe doit
-séparer contrat opérationnel neutre et implémentation idiomatique de chaque
-framework, sans livrer aux projets dérivés les outils de fabrication de la
-Foundation.
+Corriger séparément les deux Dockerfiles conserverait la cause : le plan ne dit
+pas quel artefact, quel build context, quelles primitives et quelles gates une
+unité livrable possède. Une décision neutre doit précéder les adapters
+idiomatiques et empêcher le retour d'un axe NestJS + Next.js privilégié.
 
 ### Critères de sortie
 
-- inventorier par exécution les Dockerfiles, Compose, manifests cloud,
-  pipelines, scripts de build/release et artefacts réellement livrés pour les
-  sept runtimes et des compositions croisées ;
-- identifier les couplages NestJS/Next.js/React Native et toute asymétrie
-  équivalente dans les gates Spring/FastAPI/Angular/Flutter ;
-- distinguer garanties opérationnelles communes (build, health, configuration,
-  secrets, migrations, observabilité, rollback) et mécanismes propres aux
-  frameworks ou plateformes ;
-- vérifier que les projets dérivés reçoivent seulement leurs fichiers
-  d'exploitation utiles, sans chemins locaux, caches, métadonnées de starter ni
-  configuration cloud non sélectionnée ;
-- mesurer la portabilité des pipelines et images sur des environnements locaux
-  contrôlés, puis publier un rapport de gaps daté ;
-- proposer une décision architecturale seulement après les mesures, avec
-  compatibilité, migration et non-revendications explicites.
+- ADR unique séparant contrat opérationnel, adapter runtime, pack provider et
+  pipeline dérivé ;
+- schéma versionné d'une `deploymentUnit` : artefact, build context, commande de
+  migration, configuration/secrets par référence, health, dépendances, ordre de
+  déploiement/rollback et preuves ;
+- matrice normative par famille couvrant JAR/image, bundle Web et artefact
+  mobile sans imposer Docker aux clients natifs ;
+- règles de sélection : aucun service, cloud pack, package ou document interne
+  sans consommateur résolu ;
+- stratégie de compatibilité Blueprint v1 et migration vers la sélection des
+  primitives ;
+- premier slice exécutable borné et critères de non-régression pour les sept
+  sorties, sans prétendre livrer tout le cloud dans la même mission.
 
-### Ce qui reste ouvert après cet audit
+### Ce qui reste ouvert après cette formalisation
 
 - composition contractuelle complète Auth/RBAC/Files et convergence des trois
   surfaces API ;
 - génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
 - contrat de design neutre et implémentations frontend indépendantes ;
+- implémentation des adapters opérationnels, CI dérivée et résolution de
+  primitives selon la séquence décidée ;
 - déploiement cloud réel, performance, charge, haute disponibilité, disaster
   recovery, signatures/provenance et le reste de §12.
