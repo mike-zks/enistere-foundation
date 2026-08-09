@@ -17,10 +17,11 @@ export {
   resolveReferenceGraph,
   flattenColorPrimitives,
   flattenThemeReferences,
-  lightColorReferences,
-  darkColorReferences,
   SEMANTIC_COLOR_KEYS,
   TOKENS_VERSION,
+  designExperience,
+  themePacks,
+  resolveDesignTheme,
 } from './tokens/index.js';
 
 export type {
@@ -41,6 +42,8 @@ export type {
   SemanticColorKey,
   BuiltTheme,
   RefResolution,
+  DesignThemeMode,
+  DesignThemeSelection,
 } from './tokens/index.js';
 
 export {

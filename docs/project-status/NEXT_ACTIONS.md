@@ -1323,49 +1323,70 @@ TypeScript et Dart sont générés avec un digest commun et leur drift bloque la
 
 ### Non revendiqué
 
-- aucun runtime ni projet dérivé ne consomme encore ces bindings ;
-- les tokens historiques du UI Kit et les copies Angular/RN/Flutter coexistent
-  encore avec la nouvelle source ;
 - aucune parité UX ou visuelle, mesure de contraste, conformité réglementaire,
   régression visuelle ou publication de package ;
 - aucun thème distant, catalogue Figma ou distribution institutionnelle.
 
+## Mission achevée — bindings design consommés par les quatre runtimes
+
+Le générateur canonique matérialise désormais chaque projection à sa frontière
+de consommation : CSS et données dans le binding Web React, CSS + resolver
+TypeScript Angular, TypeScript sans DOM React Native et Dart Flutter. Les copies
+de couleurs Angular/RN/Flutter et les anciennes palettes light/dark autoritaires
+du UI Kit sont retirées.
+
+Next.js, Angular, React Native et Flutter résolvent réellement
+institution/contexte/mode. `sunrise/learning` sélectionne `sunrise-institute` et
+une institution inconnue retombe sur `enistere-default`. Les quatre suites sont
+vertes. Quatre projets dérivés générés prouvent qu'ils ne reçoivent ni
+`contracts/design/`, ni le binding d'une autre famille.
+
+Preuves exécutées : UI Kit 26 fichiers de tests, Next.js 22, Angular 111 tests
+Chrome Headless, React Native 47 fichiers, Flutter 11 tests et analyse statique,
+builds production Next.js/Angular, suite Factory 554/554 et fitness functions
+sans finding.
+
+### Non revendiqué
+
+- les sept patterns ne sont pas encore tous disponibles dans chaque runtime ;
+- aucune parité visuelle, pixel-perfect, conformité WCAG/réglementaire ou test de
+  contraste automatisé ;
+- typographie, ombres et motion restent des extensions d'adapter ;
+- aucun thème distant, package publié, catalogue visuel ou Figma.
+
 ## Prochaine mission unique
 
-> **Migrer les quatre runtimes clients vers les bindings design générés et
-> supprimer leurs sources de tokens concurrentes.**
+> **Exécuter la parité comportementale des sept patterns UX sur Next.js,
+> Angular, React Native et Flutter.**
 
 ### Pourquoi maintenant
 
-Le contrat est exécutable mais ne change encore aucun produit. Tant que Next.js,
-Angular, React Native et Flutter lisent les anciennes sources ou leurs copies,
-le digest commun ne protège pas les projets dérivés et la parité reste seulement
-déclarative.
+Les tokens et thèmes sont maintenant communs, mais une palette identique ne
+garantit pas une expérience équivalente. Les runtimes exposent aujourd'hui des
+ensembles différents d'états et leurs annonces, focus, actions et messages ne
+sont pas comparés au manifeste.
 
 ### Critères de sortie
 
-- chaque runtime consomme la projection idiomatique produite depuis
-  `contracts/design/`, sans dépendance DOM imposée à Angular ou au mobile ;
-- `@enistere/ui-kit` est explicitement limité au binding React DOM ; sa source de
-  tokens concurrente est retirée ou générée depuis le contrat canonique ;
-- les copies manuelles Angular, React Native et Flutter sont retirées et un gate
-  de drift couvre chaque matérialisation ;
-- les deux ThemePacks sont sélectionnés dynamiquement par institution/contexte et
-  mode dans chaque runtime, avec fallback mesuré ;
-- les sept patterns ont une fixture de conformité observable par runtime, sans
-  exiger mêmes composants ou mêmes pixels ;
-- les dérivés ne reçoivent que leur binding consommé, jamais les sources ni les
-  bindings des autres runtimes ;
-- suites Next.js, Angular, React Native et Flutter exécutées, plus génération de
-  dérivés représentatifs et contrôle de leur contenu.
+- chaque runtime implémente `loading|empty|error|success|unauthorized|forbidden|offline`
+  avec ses composants idiomatiques ;
+- chaque implémentation référence l'identifiant et la clé de message du contrat,
+  sans branchement sur le framework d'une autre famille ;
+- annonces accessibles, action requise/optionnelle, focus applicable, réduction
+  de motion et absence de détail technique sont testés selon le manifeste ;
+- `unauthorized` reste distinct de `forbidden` et aucun état visuel ne décide de
+  l'autorisation réelle ;
+- une matrice exécutable refuse un pattern absent ou une revendication plus large
+  que sa preuve ;
+- les quatre suites runtime et des dérivés représentatifs sont exécutés.
 
 ### Ce qui reste ouvert après cette migration
 
 - composition contractuelle complète Auth/RBAC/Files et convergence des trois
   surfaces API ;
 - génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
-- migration des quatre runtimes vers les bindings de design générés et matrice
-  de conformité des implémentations frontend indépendantes ;
+- calcul de contraste, régression visuelle, zoom/font scaling et tests
+  clavier/tactile sur appareils réels ;
 - releases mobiles signées, packs providers sélectionnés, CI dérivée et
   résolution complète des primitives selon la séquence décidée ;
 - réparation et preuve des images OCI NestJS/Next.js déjà enregistrées comme

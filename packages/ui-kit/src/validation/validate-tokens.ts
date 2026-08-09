@@ -3,16 +3,14 @@
  * couleurs invalides, nombres non finis / unités invalides, parité des clés light/dark, références non
  * résolues, références circulaires, et conventions de nommage. Renvoie une liste d'erreurs exploitables.
  */
-import type { Primitives, ThemeColorReferences } from '../tokens/contracts.js';
+import type { Primitives, SemanticColors } from '../tokens/contracts.js';
 import { primitives } from '../tokens/primitives/index.js';
 import { SEMANTIC_COLOR_KEYS } from '../tokens/semantic/colors.js';
-import { flattenColorPrimitives, flattenThemeReferences, resolveReferenceGraph } from '../tokens/registry.js';
-import { darkColorReferences } from '../tokens/themes/dark.js';
-import { lightColorReferences } from '../tokens/themes/light.js';
+import { darkTheme, lightTheme } from '../tokens/registry.js';
 
 export interface TokenModel {
   primitives: Primitives;
-  themeReferences: { light: ThemeColorReferences; dark: ThemeColorReferences };
+  themes: { light: SemanticColors; dark: SemanticColors };
 }
 
 export interface ValidationResult {
@@ -102,9 +100,15 @@ function validatePrimitives(p: Primitives, errors: string[]): void {
 }
 
 function validateThemes(model: TokenModel, errors: string[]): void {
-  const terminals = flattenColorPrimitives(model.primitives.color);
-  const lightFlat = flattenThemeReferences(model.themeReferences.light);
-  const darkFlat = flattenThemeReferences(model.themeReferences.dark);
+  const flatten = (colors: SemanticColors): Record<string, unknown> => Object.fromEntries(
+    SEMANTIC_COLOR_KEYS.map((key) => [
+      key,
+      key.split('.').reduce<unknown>((value, segment) =>
+        value && typeof value === 'object' ? (value as Record<string, unknown>)[segment] : undefined, colors),
+    ]),
+  );
+  const lightFlat = flatten(model.themes.light);
+  const darkFlat = flatten(model.themes.dark);
 
   // Parité des clés light/dark vs contrat
   const expected = new Set<string>(SEMANTIC_COLOR_KEYS);
@@ -125,14 +129,15 @@ function validateThemes(model: TokenModel, errors: string[]): void {
     }
   }
 
-  // Références résolues (sur primitives connues) + absence de cycle
+  // Valeurs résolues : le graphe de références historique n'est plus une source.
   for (const [name, flat] of [
     ['light', lightFlat],
     ['dark', darkFlat],
   ] as const) {
-    const { errors: refErrors } = resolveReferenceGraph(flat, terminals);
-    for (const err of refErrors) {
-      errors.push(`theme.${name}: ${err}`);
+    for (const [key, value] of Object.entries(flat)) {
+      if (typeof value !== 'string' || !HEX.test(value)) {
+        errors.push(`theme.${name}.${key}: invalid resolved hex color (${String(value)})`);
+      }
     }
   }
 }
@@ -147,7 +152,7 @@ export function validateTokens(model: TokenModel): ValidationResult {
 /** Modèle de tokens par défaut (source de vérité du package). */
 export const defaultTokenModel: TokenModel = {
   primitives,
-  themeReferences: { light: lightColorReferences, dark: darkColorReferences },
+  themes: { light: lightTheme.colors, dark: darkTheme.colors },
 };
 
 export function validateDefaultTokens(): ValidationResult {

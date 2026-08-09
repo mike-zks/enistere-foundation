@@ -117,18 +117,19 @@ preuve d'une vérité multi-runtime unique.
 
 - **ADR-008** (design tokens) : primitives → sémantique → thèmes, light/dark, export JSON, versionné.
 - **ADR-009** (stack UI Web : Tailwind/Radix/shadcn) : **futur** — aucune de ces dépendances ici.
-- **ADR-010** (stack UI React Native : tokens + ThemeProvider + maison) : **futur** — aucune dépendance RN ici.
+- **ADR-010** (stack UI React Native : tokens + ThemeProvider + maison) : le runtime RN consomme sa
+  projection TypeScript séparée ; aucune dépendance RN n'entre dans ce package Web.
 
 ## 3. Architecture des tokens
 
 ```
-primitives  (valeurs brutes agnostiques)
-   ↓ référencées par
-themes       (light/dark : chaque couleur sémantique → une primitive)
-   ↓ résolus en
-sémantique   (intentions : background/foreground/border/action/status/focus/overlay)
-   ↓ sérialisés en
-generated/   (artefacts JSON · TypeScript · CSS, déterministes)
+contracts/design/ (ThemePacks + intentions sémantiques canoniques)
+   ↓ projection déterministe
+generated/css/design-tokens.css + src/tokens/generated/
+   ↓ complétés par
+extensions Web (typographie, ombres, motion, breakpoints, z-index)
+   ↓ agrégés en
+generated/ (artefacts JSON · TypeScript · CSS du binding Web)
 ```
 
 Les composants futurs utilisent les **tokens sémantiques** (ex. `action.primary`), jamais les
@@ -149,8 +150,8 @@ Couleurs : `background.{default,muted,elevated}`, `foreground.{default,muted,inv
 
 ## 6. Thèmes
 
-`lightTheme` et `darkTheme` partagent **exactement le même contrat de clés** (vérifié par test). Chaque
-couleur est **résolue** depuis une primitive (aucune valeur hex en dur dans les thèmes).
+`lightTheme` et `darkTheme` sont résolus depuis le ThemePack canonique et partagent **exactement le
+même contrat de clés**. Les anciennes palettes light/dark locales ont été retirées.
 
 ## 7. Unités canoniques
 
@@ -203,10 +204,11 @@ Variables préfixées `--enistere-`, kebab-case ; **light par défaut dans `:roo
 Les variables CSS alimenteront Tailwind (theme via `var(--enistere-*)`), Radix/shadcn et les thèmes
 light/dark. Ces dépendances **ne sont pas** ajoutées tant qu'ADR-009 n'est pas implémentée.
 
-## 13. Usage React Native futur (ADR-010)
+## 13. Usage React Native (ADR-010)
 
-Les tokens numériques (nombres) et couleurs (chaînes) alimenteront un `ThemeProvider` + StyleSheet
-maison ; les ombres structurées mappent `shadow*`/`elevation`. NativeWind reste optionnel par projet.
+Le générateur matérialise les données TypeScript sans DOM dans le starter React Native. Son
+`ThemeProvider` les adapte à StyleSheet et résout institution/contexte/mode. NativeWind reste
+optionnel par projet.
 
 ## 14. Règles d'extension
 

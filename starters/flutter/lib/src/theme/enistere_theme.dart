@@ -4,51 +4,35 @@ import 'enistere_theme_extension.dart';
 import 'enistere_tokens.dart';
 
 abstract final class EnistereTheme {
-  static ThemeData light() {
-    final colorScheme = const ColorScheme(
-      brightness: Brightness.light,
-      primary: EnistereTokens.lightPrimary,
-      onPrimary: EnistereTokens.lightPrimaryText,
-      secondary: EnistereTokens.lightPrimary,
-      onSecondary: EnistereTokens.lightPrimaryText,
-      error: EnistereTokens.lightDanger,
-      onError: EnistereTokens.lightPrimaryText,
-      surface: EnistereTokens.lightBackground,
-      onSurface: EnistereTokens.lightText,
-      onSurfaceVariant: EnistereTokens.lightTextMuted,
-      outline: EnistereTokens.lightBorder,
-      outlineVariant: EnistereTokens.lightBorder,
+  static ThemeData light({EnistereThemeSelection selection = const EnistereThemeSelection()}) =>
+      _build(Brightness.light, selection);
+
+  static ThemeData dark({EnistereThemeSelection selection = const EnistereThemeSelection()}) =>
+      _build(Brightness.dark, selection);
+
+  static ThemeData _build(Brightness brightness, EnistereThemeSelection selection) {
+    final resolved = EnistereTokens.resolve(brightness, selection: selection);
+    Color color(String key) => resolved.colors[key]!;
+    final colorScheme = ColorScheme(
+      brightness: brightness,
+      primary: color('action.primary'),
+      onPrimary: color('foreground.inverse'),
+      secondary: color('action.primary'),
+      onSecondary: color('foreground.inverse'),
+      error: color('status.danger'),
+      onError: color('foreground.inverse'),
+      surface: color('background.default'),
+      onSurface: color('foreground.default'),
+      onSurfaceVariant: color('foreground.muted'),
+      outline: color('border.default'),
+      outlineVariant: color('border.strong'),
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      textTheme: _buildTextTheme(EnistereTokens.lightText),
-      extensions: [EnistereThemeExtension.light()],
-    );
-  }
-
-  static ThemeData dark() {
-    final colorScheme = const ColorScheme(
-      brightness: Brightness.dark,
-      primary: EnistereTokens.darkPrimary,
-      onPrimary: EnistereTokens.darkPrimaryText,
-      secondary: EnistereTokens.darkPrimary,
-      onSecondary: EnistereTokens.darkPrimaryText,
-      error: EnistereTokens.darkDanger,
-      onError: EnistereTokens.darkPrimaryText,
-      surface: EnistereTokens.darkBackground,
-      onSurface: EnistereTokens.darkText,
-      onSurfaceVariant: EnistereTokens.darkTextMuted,
-      outline: EnistereTokens.darkBorder,
-      outlineVariant: EnistereTokens.darkBorder,
-    );
-
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: colorScheme,
-      textTheme: _buildTextTheme(EnistereTokens.darkText),
-      extensions: [EnistereThemeExtension.dark()],
+      textTheme: _buildTextTheme(color('foreground.default')),
+      extensions: [EnistereThemeExtension.fromResolved(resolved)],
     );
   }
 

@@ -24,43 +24,25 @@ class EnistereThemeExtension extends ThemeExtension<EnistereThemeExtension> {
     required this.minTouchTarget,
   });
 
-  factory EnistereThemeExtension.light() => const EnistereThemeExtension(
-    spacingXs: EnistereTokens.spacingXs,
-    spacingSm: EnistereTokens.spacingSm,
-    spacingMd: EnistereTokens.spacingMd,
-    spacingLg: EnistereTokens.spacingLg,
-    spacingXl: EnistereTokens.spacingXl,
-    spacingXxl: EnistereTokens.spacingXxl,
-    radiusSm: EnistereTokens.radiusSm,
-    radiusMd: EnistereTokens.radiusMd,
-    radiusLg: EnistereTokens.radiusLg,
-    radiusPill: EnistereTokens.radiusPill,
-    colorSuccess: EnistereTokens.lightSuccess,
-    colorDanger: EnistereTokens.lightDanger,
-    colorTextMuted: EnistereTokens.lightTextMuted,
-    colorBorder: EnistereTokens.lightBorder,
-    colorSurfaceElevated: EnistereTokens.lightSurfaceElevated,
-    minTouchTarget: EnistereTokens.minTouchTarget,
-  );
-
-  factory EnistereThemeExtension.dark() => const EnistereThemeExtension(
-    spacingXs: EnistereTokens.spacingXs,
-    spacingSm: EnistereTokens.spacingSm,
-    spacingMd: EnistereTokens.spacingMd,
-    spacingLg: EnistereTokens.spacingLg,
-    spacingXl: EnistereTokens.spacingXl,
-    spacingXxl: EnistereTokens.spacingXxl,
-    radiusSm: EnistereTokens.radiusSm,
-    radiusMd: EnistereTokens.radiusMd,
-    radiusLg: EnistereTokens.radiusLg,
-    radiusPill: EnistereTokens.radiusPill,
-    colorSuccess: EnistereTokens.darkSuccess,
-    colorDanger: EnistereTokens.darkDanger,
-    colorTextMuted: EnistereTokens.darkTextMuted,
-    colorBorder: EnistereTokens.darkBorder,
-    colorSurfaceElevated: EnistereTokens.darkSurfaceElevated,
-    minTouchTarget: EnistereTokens.minTouchTarget,
-  );
+  factory EnistereThemeExtension.fromResolved(EnistereResolvedTheme theme) =>
+      EnistereThemeExtension(
+        spacingXs: theme.spacing['xs']!,
+        spacingSm: theme.spacing['sm']!,
+        spacingMd: theme.spacing['md']!,
+        spacingLg: theme.spacing['lg']!,
+        spacingXl: theme.spacing['xl']!,
+        spacingXxl: theme.spacing['xxl']!,
+        radiusSm: theme.radius['sm']!,
+        radiusMd: theme.radius['md']!,
+        radiusLg: theme.radius['lg']!,
+        radiusPill: theme.radius['xxl']!,
+        colorSuccess: theme.colors['status.success']!,
+        colorDanger: theme.colors['status.danger']!,
+        colorTextMuted: theme.colors['foreground.muted']!,
+        colorBorder: theme.colors['border.default']!,
+        colorSurfaceElevated: theme.colors['background.elevated']!,
+        minTouchTarget: theme.minimumTouchTarget,
+      );
 
   final double spacingXs;
   final double spacingSm;

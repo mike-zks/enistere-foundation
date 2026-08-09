@@ -100,8 +100,9 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
 - **P1 UI/UX multi-runtime** — `design-experience/v1` et `theme-pack/v1` sont
   exécutables (ADR-090) : sept patterns, deux packs institutionnels, résolution
   institution/contexte/mode et bindings CSS/TypeScript/Dart déterministes.
-  `@enistere/ui-kit` reste toutefois un binding React DOM historique et aucun
-  des quatre runtimes n'a encore migré vers ces projections. Mesure initiale :
+  Les quatre runtimes consomment désormais leur projection idiomatique et les
+  dérivés ne reçoivent que celle de leur famille. `@enistere/ui-kit` reste le
+  binding React DOM Web ; la parité des sept patterns UX reste ouverte. Mesure initiale :
   [étude UI/UX du 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md).
 
 ## Statut des chantiers V2

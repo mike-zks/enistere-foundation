@@ -20,7 +20,8 @@ interne assaini, navigation `replace`/`refresh`). **Sans middleware, sans Server
 
 - Next.js **App Router** + **TypeScript strict** (`strict`, `noUncheckedIndexedAccess`, …).
 - Arborescence `app` / `core` / `shared` / `features` ; **Server Components par défaut**.
-- **Consommation réelle** du UI Kit (`@enistere/ui-kit` + `styles.css`) ; thème clair via `data-theme`.
+- **Consommation réelle** du binding Web UI Kit (`@enistere/ui-kit` + `styles.css`) ; ThemePack
+  résolu par institution/contexte/mode via attributs `data-enistere-theme` et `data-theme`.
 - **Intégration de l'API publique** (Health) : factory serveur **par requête**, client **public**
   navigateur (sans session), transport typé depuis `@enistere/api-contracts`/`@enistere/api-client-fetch`.
 - **TanStack Query** : `QueryClient` (retry borné), `QueryProvider`, query keys, hooks Health.

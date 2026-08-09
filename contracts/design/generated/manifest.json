@@ -17,5 +17,11 @@
     "css",
     "typescript",
     "dart"
-  ]
+  ],
+  "materializations": {
+    "nextjs": "packages/ui-kit/generated/css/design-tokens.css",
+    "angular": "starters/angular/src/design-tokens.generated.css",
+    "react-native": "starters/react-native/src/theme/design-contract.generated.ts",
+    "flutter": "starters/flutter/lib/src/theme/design_contract.generated.dart"
+  }
 }

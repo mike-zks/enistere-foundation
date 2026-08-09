@@ -127,6 +127,18 @@ describe('neutral design and experience contracts', () => {
       assert.ok(first.get(path).includes(manifest.digest), path);
     }
     assert.ok(first.get('contracts/design/generated/design-tokens.css').includes('[data-enistere-theme="sunrise-institute"]'));
+    assert.equal(
+      first.get('packages/ui-kit/generated/css/design-tokens.css'),
+      first.get('contracts/design/generated/design-tokens.css'),
+    );
+    assert.equal(
+      first.get('starters/angular/src/app/core/theme/design-contract.generated.ts'),
+      first.get('starters/react-native/src/theme/design-contract.generated.ts'),
+    );
+    assert.equal(
+      first.get('starters/flutter/lib/src/theme/design_contract.generated.dart'),
+      first.get('contracts/design/generated/design_contract.dart'),
+    );
     assert.ok(!JSON.stringify([...first.values()]).includes('https://'));
   });
 });

@@ -106,9 +106,10 @@ des bindings concernés.
 
 ## 8. Non revendiqué
 
-- aucun runtime ne consomme encore ces nouveaux bindings ;
-- les anciennes sources de tokens du UI Kit et les copies Angular, React Native
-  et Flutter ne sont pas encore retirées ;
+- les quatre runtimes consomment les bindings, mais leurs sept patterns ne sont
+  pas encore tous implémentés ni comparés ;
+- typographie, ombres, motion et échelles supplémentaires restent des extensions
+  propres aux adapters tant qu'elles ne sont pas promues dans le contrat ;
 - aucune parité comportementale ou visuelle n'est encore démontrée ;
 - aucun calcul automatique de contraste, test visuel, catalogue de composants,
   chargement distant ou conformité réglementaire n'est revendiqué ;

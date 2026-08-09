@@ -1,6 +1,6 @@
 # ADR-090 — Le design partagé est un contrat polyglotte, pas une bibliothèque universelle de composants
 
-- Statut : Validé, implémentation initiale
+- Statut : Validé, bindings consommés ; parité UX ouverte
 - Date : 2026-08-09
 - Décideur : Owner Foundation
 - Complète : ADR-008, ADR-009, ADR-010 et ADR-088
@@ -53,6 +53,16 @@ défaut et fallback global. Un générateur déterministe émet CSS, données
 TypeScript et Dart avec un digest commun. Le contrôle de dérive est intégré aux
 quality gates et à la CI.
 
+## Tranche de migration exécutée
+
+Le générateur matérialise directement la projection utile dans chaque frontière :
+CSS et données Web dans le UI Kit/Next.js, CSS + resolver TypeScript dans Angular,
+données TypeScript sans DOM dans React Native et données Dart dans Flutter.
+Chaque runtime résout réellement les deux packs par institution, contexte et
+mode ; les trois copies de couleurs ont été retirées. La génération de quatre
+projets dérivés prouve qu'aucun ne reçoit `contracts/design/` ni le binding d'une
+autre famille.
+
 ## Conséquences
 
 ### Acquis
@@ -65,18 +75,16 @@ quality gates et à la CI.
 
 ### Coûts et migration
 
-- les quatre runtimes doivent remplacer leurs copies par les projections
-  générées et prouver leurs implémentations ;
-- la source historique de tokens du UI Kit coexiste temporairement avec le
-  contrat et constitue une dette de migration explicite ;
+- chaque nouvelle projection ou extension locale doit rester compatible avec le
+  contrat et son contrôle de drift ;
 - accessibilité réelle, traduction, contraste et comportement doivent être
   vérifiés sur chaque plateforme, pas déduits du schéma.
 
 ### Non revendiqué
 
-- aucun runtime ni projet dérivé ne consomme encore le nouveau contrat ;
-- aucune source historique de tokens n'est retirée et aucun package n'est
-  renommé, séparé ou publié ;
+- aucun package n'est renommé, séparé ou publié ;
+- typographie, ombres, motion et échelles propres aux plateformes ne sont pas
+  encore élevées au rang de contrat commun ;
 - aucune parité UX/visuelle, conformité WCAG/réglementaire, régression visuelle
   ou qualité de marque n'est prouvée ;
 - aucun thème distant, signature de pack, catalogue Figma ou infrastructure de

@@ -52,18 +52,18 @@ test('détecte une unité invalide (string là où un nombre est attendu)', () =
 
 test('détecte un token de thème dark manquant', () => {
   const m = clone();
-  delete (m.themeReferences.dark.background as Record<string, unknown>)['default'];
+  delete (m.themes.dark.background as Record<string, unknown>)['default'];
   const { valid, errors } = validateTokens(m);
   assert.equal(valid, false);
   assert.ok(errors.some((e) => e.includes('dark') && e.includes('background.default')));
 });
 
-test('détecte une référence inconnue', () => {
+test('détecte une couleur de thème résolue invalide', () => {
   const m = clone();
-  m.themeReferences.light.action.primary = 'brand.999';
+  m.themes.light.action.primary = 'brand.999';
   const { valid, errors } = validateTokens(m);
   assert.equal(valid, false);
-  assert.ok(errors.some((e) => e.includes('unknown reference') && e.includes('brand.999')));
+  assert.ok(errors.some((e) => e.includes('action.primary') && e.includes('invalid resolved hex')));
 });
 
 test('détecte une référence circulaire (resolver)', () => {

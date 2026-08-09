@@ -14,8 +14,7 @@ import type {
 import { primitives } from './primitives/index.js';
 import { SEMANTIC_COLOR_KEYS } from './semantic/colors.js';
 import { semanticTypography } from './semantic/typography.js';
-import { darkColorReferences } from './themes/dark.js';
-import { lightColorReferences } from './themes/light.js';
+import { resolveDesignTheme } from './generated/design-contract.js';
 
 function getByPath(source: unknown, path: string): unknown {
   return path.split('.').reduce<unknown>((acc, key) => {
@@ -123,8 +122,13 @@ export function buildTheme(
   return { theme: { name, colors: nestSemanticColors(resolved) }, errors };
 }
 
-export const lightTheme: ThemeTokens = buildTheme('light', lightColorReferences, primitives.color).theme;
-export const darkTheme: ThemeTokens = buildTheme('dark', darkColorReferences, primitives.color).theme;
+function canonicalTheme(name: ThemeName): ThemeTokens {
+  const resolved = resolveDesignTheme({ requestedId: 'enistere-default', requestedMode: name });
+  return { name, colors: nestSemanticColors(resolved.colors as unknown as Record<string, string>) };
+}
+
+export const lightTheme: ThemeTokens = canonicalTheme('light');
+export const darkTheme: ThemeTokens = canonicalTheme('dark');
 
 export const sharedTokens: SharedTokens = {
   spacing: primitives.spacing,

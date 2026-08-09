@@ -1,7 +1,6 @@
 /**
- * RN35 — Token alignment proof: the mobile theme tokens are verbatim from the
- * UI Kit generated tokens (packages/ui-kit/generated/typescript/tokens.ts,
- * tokensVersion 0.1.0). Any drift here is a regression.
+ * The mobile adapter consumes the generated neutral TypeScript binding. Any
+ * manual color/spacing copy here would be a regression.
  *
  * Run via `node --test` (pure Node, no React/RN needed).
  */
@@ -104,7 +103,7 @@ test('dark theme colors match UI Kit darkTheme semantics', () => {
   assert.equal(c.text, '#F8FAFC');          // foreground.default
   assert.equal(c.textMuted, '#94A3B8');     // foreground.muted
   assert.equal(c.primary, '#3B82F6');       // action.primary
-  assert.equal(c.primaryText, '#FFFFFF');   // white on blue primary — high-contrast choice
+  assert.equal(c.primaryText, '#0F172A');   // canonical dark foreground.inverse
   assert.equal(c.danger, '#EF4444');        // status.danger
   assert.equal(c.success, '#22C55E');       // status.success
 });
@@ -124,6 +123,14 @@ test('resolveTheme("dark") returns the dark theme', () => {
   assert.equal(t.scheme, 'dark');
   assert.equal(t.colors.primary, '#3B82F6');
   assert.equal(t, darkTheme);
+});
+
+test('resolveTheme selects an institutional context from the generated binding', () => {
+  const theme = resolveTheme('dark', { institutionId: 'sunrise', contextId: 'learning' });
+  assert.equal(theme.packId, 'sunrise-institute');
+  assert.equal(theme.institutionId, 'sunrise');
+  assert.equal(theme.colors.primary, '#F59E0B');
+  assert.equal(theme.a11y.minTouchTarget, 48);
 });
 
 test('both themes carry spacing, radius, typography and a11y', () => {

@@ -1,9 +1,10 @@
 # Étude UI/UX multi-runtime — 2026-08-09
 
-> **MISE À JOUR 2026-08-09.** La formalisation recommandée aux étapes 1, 2 et 5
-> est exécutée par [ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md).
-> Les constats runtime ci-dessous restent vrais : aucun consommateur n'a encore
-> migré et aucune parité comportementale ou visuelle n'est prouvée.
+> **MISE À JOUR 2026-08-09.** La formalisation et la migration des bindings
+> recommandées aux étapes 1, 2, 3 et 5 sont exécutées par
+> [ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md). Le tableau
+> ci-dessous reste la mesure initiale, désormais supersédée pour les sources de
+> tokens et les thèmes. La parité comportementale et visuelle reste non prouvée.
 
 ## Statut et portée
 

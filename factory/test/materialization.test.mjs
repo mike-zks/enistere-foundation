@@ -125,4 +125,64 @@ describe('derived project materialization boundary', () => {
       assert.deepEqual(lock.sharedPackages.map((entry) => entry.directory).sort(), directories);
     }
   });
+
+  it('delivers only the idiomatic design binding consumed by each client runtime', async () => {
+    const cases = [
+      {
+        runtime: 'nextjs',
+        stack: { api: 'nestjs', web: 'nextjs', mobile: null },
+        expected: [
+          'packages/ui-kit/generated/css/design-tokens.css',
+          'packages/ui-kit/src/tokens/generated/design-contract.ts',
+        ],
+        forbidden: [
+          'apps/web/src/design-tokens.generated.css',
+          'apps/mobile/src/theme/design-contract.generated.ts',
+          'apps/mobile/lib/src/theme/design_contract.generated.dart',
+        ],
+      },
+      {
+        runtime: 'angular',
+        stack: { api: 'nestjs', web: 'angular', mobile: null },
+        expected: [
+          'apps/web/src/design-tokens.generated.css',
+          'apps/web/src/app/core/theme/design-contract.generated.ts',
+        ],
+        forbidden: [
+          'packages/ui-kit',
+          'apps/mobile/src/theme/design-contract.generated.ts',
+          'apps/mobile/lib/src/theme/design_contract.generated.dart',
+        ],
+      },
+      {
+        runtime: 'react-native',
+        stack: { api: 'nestjs', web: null, mobile: 'react-native' },
+        expected: ['apps/mobile/src/theme/design-contract.generated.ts'],
+        forbidden: [
+          'packages/ui-kit',
+          'apps/web/src/design-tokens.generated.css',
+          'apps/mobile/lib/src/theme/design_contract.generated.dart',
+        ],
+      },
+      {
+        runtime: 'flutter',
+        stack: { api: 'nestjs', web: null, mobile: 'flutter' },
+        expected: ['apps/mobile/lib/src/theme/design_contract.generated.dart'],
+        forbidden: [
+          'packages/ui-kit',
+          'apps/web/src/design-tokens.generated.css',
+          'apps/mobile/src/theme/design-contract.generated.ts',
+        ],
+      },
+    ];
+
+    for (const item of cases) {
+      const root = await mkdtemp(join(tmpdir(), `enistere-design-${item.runtime}-`));
+      const output = join(root, 'project');
+      await generateProject(baseBlueprint(`design-${item.runtime}`, item.stack), output);
+      for (const path of item.expected) assert.equal(await exists(join(output, path)), true, `${item.runtime}: ${path}`);
+      for (const path of item.forbidden) assert.equal(await exists(join(output, path)), false, `${item.runtime}: ${path}`);
+      assert.equal(await exists(join(output, 'contracts/design')), false, item.runtime);
+    }
+  });
 });
