@@ -1285,36 +1285,66 @@ bloqués. Un build rouge ne peut donc pas être promu par la conformité source.
 - aucun pack provider, cloud, staging applicatif ou CI dérivée ;
 - la classification fine secret/non-secret des variables d'overlay reste ouverte.
 
+## Étude achevée — contrat UI/UX et thèmes multi-runtime
+
+L'[étude du 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)
+confirme que le package actuel mélange source neutre de tokens et composants
+React DOM. Next.js le consomme directement ; Angular, React Native et Flutter
+recopient ou adaptent ses valeurs. Leurs tests locaux sont verts, mais aucun
+contrat commun n'établit la parité de leurs comportements.
+
+La cible conserve les composants idiomatiques indépendants. Une source
+`contracts/design/` doit générer les seuls bindings consommés — CSS Web,
+TypeScript data RN et Dart — et un manifeste de patterns doit mesurer les
+résultats UX observables. Les thèmes institutionnels sont des `ThemePack`
+versionnés, sélectionnés par identifiant et validés ; jamais du CSS/code distant
+arbitraire.
+
+### Non revendiqué
+
+- aucune parité UX ou visuelle complète ;
+- aucun thème institutionnel ni chargement distant ;
+- aucun calcul de contraste, visual regression ou conformité réglementaire ;
+- aucun renommage/split/publication de package ;
+- aucun composant ou runtime modifié par l'étude.
+
 ## Prochaine mission unique
 
-> **Réparer et prouver les images OCI NestJS et Next.js dans la structure dérivée.**
+> **Formaliser et exécuter `design-experience/v1` et `theme-pack/v1`.**
 
 ### Pourquoi maintenant
 
-Ce sont les deux premiers blockers exécutables portés par les unités. Les
-corriger dans les starters seuls serait insuffisant : la preuve doit construire
-les projets réellement générés avec leur lock racine, leurs seuls packages
-partagés consommés et leurs identités dérivées.
+Générer directement quatre bindings sans schéma recréerait quatre vérités. Le
+contrat doit d'abord fixer les tokens sémantiques, les patterns observables, la
+résolution institution/contexte/préférence et les règles de sécurité avant de
+migrer un seul runtime.
 
 ### Critères de sortie
 
-- aucun Dockerfile dérivé ne référence `starters/` ni un lock applicatif retiré ;
-- les contextes et commandes déclarés par les adapters construisent réellement
-  les images NestJS et Next.js depuis deux projets dérivés distincts ;
-- images non-root, démarrage et health prouvés sur environnements locaux
-  contrôlés, avec base réinitialisée entre familles si nécessaire ;
-- statuts des deux artefacts passés à `ready` uniquement après ces mesures et
-  preuves datées mises à jour ;
-- tests empêchant le retour d'un chemin Foundation ou d'un contexte mensonger ;
-- aucune image temporaire ou container d'audit laissé après validation.
+- sources neutres sous `contracts/design/`, sans React, DOM, Angular, RN ou Flutter ;
+- schémas fermés et validateurs autonomes pour contrat d'expérience et ThemePack ;
+- modes, institution, contexte, préférence, fallback et digest modélisés sans
+  donnée métier, credential, URL de font ou code/CSS arbitraire ;
+- patterns initiaux `loading|empty|error|success|unauthorized|forbidden|offline`
+  avec annonces, actions, focus, motion, contenu sûr et applicabilité ;
+- deux packs de fixture démontrent des identités distinctes avec mêmes clés et
+  invariants d'accessibilité ;
+- génération déterministe CSS, TypeScript data et Dart depuis la même source ;
+- tests de drift, chemins sûrs, clés light/dark/institution identiques et
+  absence de valeur sensible ;
+- `@enistere/ui-kit` n'est pas encore renommé, mais sa partie React est
+  explicitement classée comme binding Web, jamais comme contrat universel.
 
-### Ce qui reste ouvert après cette réparation
+### Ce qui reste ouvert après cette formalisation
 
 - composition contractuelle complète Auth/RBAC/Files et convergence des trois
   surfaces API ;
 - génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
-- contrat de design neutre et implémentations frontend indépendantes ;
+- migration des quatre runtimes vers les bindings de design générés et matrice
+  de conformité des implémentations frontend indépendantes ;
 - releases mobiles signées, packs providers sélectionnés, CI dérivée et
   résolution complète des primitives selon la séquence décidée ;
+- réparation et preuve des images OCI NestJS/Next.js déjà enregistrées comme
+  blockers opérationnels ;
 - déploiement cloud réel, performance, charge, haute disponibilité, disaster
   recovery, signatures/provenance et le reste de §12.

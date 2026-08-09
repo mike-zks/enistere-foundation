@@ -97,6 +97,11 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
   application. FastAPI OCI, Spring JAR, Angular bundle et Expo export sont
   distingués des images NestJS/Next.js et releases mobiles bloquées. Cela ne
   corrige encore aucun artefact rouge, pack provider ou pipeline dérivé.
+- **P1 UI/UX multi-runtime** — `@enistere/ui-kit` fournit une source de tokens
+  et 19 composants React DOM. Next.js le consomme ; Angular, React Native et
+  Flutter maintiennent des copies/adaptations locales. Aucun contrat exécutable
+  de patterns UX ni thème institutionnel n'existe encore. Mesure :
+  [étude UI/UX du 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md).
 
 ## Statut des chantiers V2
 

@@ -26,6 +26,13 @@ runtimes et des projets dérivés. Il constate notamment que deux Dockerfiles
 livrés ne se construisent pas, que l'infrastructure générée ignore les
 primitives résolues et qu'aucun pipeline CI n'est livré aux dérivés.
 
+## Étude UI/UX multi-runtime courante
+
+[`UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md`](UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)
+mesure la consommation réelle des tokens, composants et thèmes dans Next.js,
+Angular, React Native et Flutter. Elle distingue le contrat de design polyglotte
+des composants idiomatiques et cadre les thèmes dynamiques institutionnels.
+
 ## Analyses closes (historique)
 
 Chacune porte en tête un bandeau **CLOS** daté. Elles restent des preuves de
