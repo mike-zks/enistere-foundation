@@ -36,6 +36,7 @@ GenerationPlan
 │                                byApplication{} } }
 ├── communications[]
 ├── deploymentPlan { units[], order[], rollbackOrder[] }
+├── deploymentUnits[]              (`deployment-unit/v1`, une par application)
 ├── domain { entities[] }
 ├── designSystem
 ├── environments[] { id, kind }
@@ -61,6 +62,11 @@ Les overlays sont appliqués exclusivement dans `capabilityGraph.order`. Le
 générateur ne possède ni liste d’arêtes ni ordre de registre secondaire.
 `packages/contracts/capabilities.json` matérialise le graphe et les résolutions
 par application.
+
+`packages/contracts/deployment-units.json` matérialise les artefacts réellement
+prêts ou bloqués, leurs contextes de build, configuration par nom, health,
+migrations et dépendances résolues. Les mécanismes proviennent des adapters ;
+le planner ne contient aucun switch de framework.
 
 Les racines `starters/` et `capabilities/` sont des sources de fabrication. La
 sortie reçoit les applications sélectionnées puis les seuls overlays résolus ;

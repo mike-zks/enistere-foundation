@@ -102,7 +102,7 @@ pas les primitives et packs providers :
 La séquence d'implémentation est : modèle exécutable → registre d'adapters →
 unités dans le plan → artefacts dérivés → packs providers → CI dérivée.
 
-## Première tranche exécutée
+## Tranches exécutées
 
 Le schéma `deployment-unit/v1`, son chargeur autonome et cinq scénarios de test
 sont présents. Ils prouvent :
@@ -112,6 +112,18 @@ sont présents. Ils prouvent :
 - refus d'un secret littéral et d'un chemin remontant hors projet ;
 - preuve obligatoire pour `ready`, blocker obligatoire pour `blocked` ;
 - impossibilité de faire passer une image OCI pour une release mobile.
+
+Le `GenerationPlan` émet ensuite une unité validée par application depuis les
+descripteurs versionnés des sept adapters, sans switch de framework. La sortie
+matérialise `packages/contracts/deployment-units.json` et le lock porte le même
+rapport. Les champs historiques `starter.manifest.json.deployment` ont été
+retirés.
+
+Les variables apportées par les overlays remontent dans le `ResolvedSystem`
+par nom seulement. Overlay v1 ne déclarant pas encore leur sensibilité, elles
+sont toutes classées comme références sensibles par défaut. Cette
+sur-classification est explicite et évite de publier un credential comme simple
+configuration.
 
 ## Conséquences
 
@@ -125,7 +137,7 @@ sont présents. Ils prouvent :
 
 ### Coûts
 
-- les sept adapters doivent déclarer leurs artefacts et leurs statuts honnêtes ;
+- chaque nouvel adapter doit déclarer ses artefacts et leurs statuts honnêtes ;
 - le Blueprint/CSM doit porter les primitives et providers ;
 - le générateur fixe doit être remplacé par une matérialisation sélectionnée ;
 - Dockerfiles, bundles et releases mobiles devront être prouvés dans la
@@ -133,10 +145,11 @@ sont présents. Ils prouvent :
 
 ### Non revendiqué
 
-- le schéma n'est pas encore émis dans `GenerationPlan` ;
 - les Dockerfiles NestJS/Next.js restent rouges ;
 - aucun pipeline dérivé, pack provider sélectionné ou cloud réel n'est livré ;
 - aucun artefact Spring/Angular/mobile n'est publié ;
+- les variables de capabilities restent sur-classées sensibles tant que le
+  contrat d'overlay ne porte pas leur classification ;
 - aucune signature, SBOM, provenance, performance, HA, DR ou
   `PRODUCTION_READY` n'est revendiquée.
 

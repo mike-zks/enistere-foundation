@@ -93,8 +93,10 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
   et aucune CI dérivée. Mesures :
   [audit opérationnel du 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
   ADR-089 sépare désormais contrat, adapter, pack provider et pipeline ; le
-  schéma `deploymentUnit/v1` est exécuté, mais aucune unité réelle n'est encore
-  émise par le plan.
+  schéma `deploymentUnit/v1` est exécuté et le plan émet une unité validée par
+  application. FastAPI OCI, Spring JAR, Angular bundle et Expo export sont
+  distingués des images NestJS/Next.js et releases mobiles bloquées. Cela ne
+  corrige encore aucun artefact rouge, pack provider ou pipeline dérivé.
 
 ## Statut des chantiers V2
 

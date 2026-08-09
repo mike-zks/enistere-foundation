@@ -1260,39 +1260,61 @@ croisé avec Ajv.
 - aucune sélection de provider/cloud ni publication d'artefact ;
 - aucune promotion de statut opérationnel ou production.
 
+## Mission achevée — unités de livraison dans le plan
+
+Les sept adapters portent leur descripteur opérationnel versionné. Le planner
+résout une `deploymentUnit/v1` par application depuis `appDir`, les dépendances
+d'applications et primitives et l'ordre du `ResolvedSystem`, sans switch de
+framework. Chaque unité est validée avant d'entrer dans le plan.
+
+Le projet dérivé reçoit le contrat déterministe
+`packages/contracts/deployment-units.json` ; `enistere.lock` porte exactement
+les mêmes unités. Les anciennes clés `starter.manifest.json.deployment` sont
+interdites. Les variables de capabilities sont remontées par nom et traitées
+comme sensibles par défaut, car Overlay v1 ne les classifie pas encore.
+
+Les statuts restent attachés aux preuves exécutées : OCI FastAPI, JAR Spring,
+bundle Angular et export Expo prêts ; OCI NestJS/Next.js et releases Android/iOS
+bloqués. Un build rouge ne peut donc pas être promu par la conformité source.
+
+### Non revendiqué
+
+- aucune image NestJS/Next.js n'est réparée par le modèle ;
+- l'export Expo n'est ni un package natif signé ni une publication OTA gouvernée ;
+- aucune publication, signature, SBOM, provenance ou promotion ;
+- aucun pack provider, cloud, staging applicatif ou CI dérivée ;
+- la classification fine secret/non-secret des variables d'overlay reste ouverte.
+
 ## Prochaine mission unique
 
-> **Faire émettre au `GenerationPlan` les `deploymentUnit` honnêtes des sept adapters.**
+> **Réparer et prouver les images OCI NestJS et Next.js dans la structure dérivée.**
 
 ### Pourquoi maintenant
 
-Le schéma ne ferme aucun défaut tant que le plan ne l'exécute pas sur les sept
-runtimes. L'émission doit d'abord rendre visibles les artefacts réellement prêts
-et ceux qui sont bloqués ; réparer directement NestJS/Next.js masquerait encore
-l'absence de JAR/bundle/release et de configuration résolue ailleurs.
+Ce sont les deux premiers blockers exécutables portés par les unités. Les
+corriger dans les starters seuls serait insuffisant : la preuve doit construire
+les projets réellement générés avec leur lock racine, leurs seuls packages
+partagés consommés et leurs identités dérivées.
 
 ### Critères de sortie
 
-- un descripteur opérationnel versionné par adapter, sans switch framework dans
-  le planner et sans duplication avec `starter.manifest.json` ;
-- une unité par application du plan, validée par
-  `deployment-unit.schema.json`, avec chemins dérivés de `appDir` ;
-- statut honnête des artefacts mesurés : FastAPI OCI, JAR Spring et bundle
-  Angular distingués des Dockerfiles rouges et releases mobiles absentes ;
-- configuration/secrets par nom, health, migrations, dépendances de primitives,
-  ordre de rollout/rollback issus uniquement du `ResolvedSystem` ;
-- artefact déterministe `packages/contracts/deployment-units.json` dans le
-  projet dérivé et rapport lisible dans `enistere.lock` ;
-- tests sur les sept runtimes, chemins sûrs, absence de secret littéral et
-  déterminisme ; aucun build rouge ne peut recevoir `ready`.
+- aucun Dockerfile dérivé ne référence `starters/` ni un lock applicatif retiré ;
+- les contextes et commandes déclarés par les adapters construisent réellement
+  les images NestJS et Next.js depuis deux projets dérivés distincts ;
+- images non-root, démarrage et health prouvés sur environnements locaux
+  contrôlés, avec base réinitialisée entre familles si nécessaire ;
+- statuts des deux artefacts passés à `ready` uniquement après ces mesures et
+  preuves datées mises à jour ;
+- tests empêchant le retour d'un chemin Foundation ou d'un contexte mensonger ;
+- aucune image temporaire ou container d'audit laissé après validation.
 
-### Ce qui reste ouvert après cette émission
+### Ce qui reste ouvert après cette réparation
 
 - composition contractuelle complète Auth/RBAC/Files et convergence des trois
   surfaces API ;
 - génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
 - contrat de design neutre et implémentations frontend indépendantes ;
-- correction des artefacts bloqués, packs providers sélectionnés, CI dérivée et
+- releases mobiles signées, packs providers sélectionnés, CI dérivée et
   résolution complète des primitives selon la séquence décidée ;
 - déploiement cloud réel, performance, charge, haute disponibilité, disaster
   recovery, signatures/provenance et le reste de §12.

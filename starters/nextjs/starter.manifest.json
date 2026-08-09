@@ -40,9 +40,5 @@
       "files"
     ],
     "plannedCapabilities": []
-  },
-  "deployment": {
-    "dockerfile": "Dockerfile",
-    "healthPath": "/status"
   }
 }

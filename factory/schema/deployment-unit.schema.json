@@ -215,7 +215,7 @@
       "additionalProperties": false,
       "required": ["kind", "command", "reversible"],
       "properties": {
-        "kind": { "enum": ["command", "none"] },
+        "kind": { "enum": ["command", "startup", "none"] },
         "command": { "type": ["array", "null"], "items": { "type": "string", "minLength": 1 } },
         "reversible": { "type": "boolean" }
       },

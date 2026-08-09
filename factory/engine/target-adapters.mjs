@@ -48,6 +48,42 @@ function freezeComposition(composition) {
   })));
 }
 
+/** Deep-freezes the declarative operational descriptor owned by an adapter. */
+function freezeDelivery(delivery) {
+  if (!delivery) return null;
+  return Object.freeze({
+    ...delivery,
+    artifacts: Object.freeze(delivery.artifacts.map((artifact) => Object.freeze({
+      ...artifact,
+      build: Object.freeze({
+        ...artifact.build,
+        command: Object.freeze([...artifact.build.command]),
+        outputs: Object.freeze([...artifact.build.outputs]),
+      }),
+      distribution: Object.freeze({ ...artifact.distribution }),
+      evidence: Object.freeze([...artifact.evidence]),
+      blockers: Object.freeze([...artifact.blockers]),
+    }))),
+    configuration: Object.freeze({
+      nonSecret: Object.freeze([...delivery.configuration.nonSecret]),
+      secrets: Object.freeze([...delivery.configuration.secrets]),
+    }),
+    health: Object.freeze({ ...delivery.health }),
+    migrations: Object.freeze({
+      ...delivery.migrations,
+      command: delivery.migrations.command ? Object.freeze([...delivery.migrations.command]) : null,
+    }),
+  });
+}
+
+const secretNames = (...names) => names;
+const build = (context, command, outputs, definition) => ({
+  context,
+  ...(definition ? { definition } : {}),
+  command,
+  outputs,
+});
+
 const BUILT_IN = [
   {
     id: 'nestjs', version: '1.0.0', migrations: 'prisma/migrations/', integrationKinds: {
@@ -65,6 +101,22 @@ const BUILT_IN = [
     ],
     // Domain compiler (R9): entities -> Prisma model + CRUD service + module.
     renderDomain: renderNestjsDomain,
+    delivery: {
+      schemaVersion: '1',
+      artifacts: [{
+        id: 'server-image', kind: 'oci-image', status: 'blocked',
+        build: build('application', ['docker', 'build', '--file', '{definition}', '{context}'], ['oci:{project}-{application}'], 'Dockerfile'),
+        distribution: { channel: 'oci-registry', immutable: true }, evidence: [],
+        blockers: ['DERIVED_BUILD_LOCKFILE_MISSING'],
+      }],
+      configuration: {
+        nonSecret: ['NODE_ENV', 'PORT', 'CORS_ORIGINS', 'JSON_BODY_LIMIT', 'URL_ENCODED_BODY_LIMIT', 'TRUST_PROXY_HOPS', 'SERVICE_NAME', 'LOG_LEVEL', 'LOG_PRETTY', 'LOG_HTTP_ENABLED', 'LOG_HEALTH_SUCCESS_ENABLED'],
+        secrets: secretNames('DATABASE_URL'),
+      },
+      health: { kind: 'http', path: '/health' },
+      migrations: { kind: 'command', command: ['npm', 'run', 'prisma:migrate:deploy'], reversible: false },
+      rollbackStrategy: 'restore-and-redeploy',
+    },
   },
   {
     id: 'nextjs', version: '1.0.0', integrationKinds: {
@@ -79,6 +131,22 @@ const BUILT_IN = [
       { kinds: ['nextjs.dashboard-nav-link'], destination: 'src/core/composition/dashboard-nav.ts', render: renderNextjsDashboardNav },
       { kinds: ['nextjs.status-section'], destination: 'src/core/composition/status-sections.tsx', render: renderNextjsStatusSections },
     ],
+    delivery: {
+      schemaVersion: '1',
+      artifacts: [{
+        id: 'server-image', kind: 'oci-image', status: 'blocked',
+        build: build('project', ['docker', 'build', '--file', '{definition}', '{context}'], ['oci:{project}-{application}'], 'Dockerfile'),
+        distribution: { channel: 'oci-registry', immutable: true }, evidence: [],
+        blockers: ['DERIVED_BUILD_STARTER_PATH_LEAK'],
+      }],
+      configuration: {
+        nonSecret: ['APP_ENV', 'NEXT_PUBLIC_APP_NAME', 'NEXT_PUBLIC_APP_URL', 'NEXT_PUBLIC_API_URL', 'API_INTERNAL_URL'],
+        secrets: [],
+      },
+      health: { kind: 'http', path: '/status' },
+      migrations: { kind: 'none', command: null, reversible: false },
+      rollbackStrategy: 'redeploy-previous-artifact',
+    },
   },
   {
     id: 'react-native', version: '1.0.0', integrationKinds: {
@@ -91,13 +159,58 @@ const BUILT_IN = [
       { kinds: ['expo.home-action'], destination: 'src/composition/home-actions.ts', render: renderExpoHomeActions },
       { kinds: ['expo.query-retry-guard'], destination: 'src/composition/capability-query-retry.ts', render: renderExpoQueryRetryGuards },
     ],
+    delivery: {
+      schemaVersion: '1',
+      artifacts: [
+        {
+          id: 'update-bundle', kind: 'mobile-update-bundle', status: 'ready',
+          build: build('application', ['npx', 'expo', 'export', '-p', 'ios'], ['{appDir}/dist']),
+          distribution: { channel: 'local-file', immutable: false },
+          evidence: ['factory:golden-runtime:react-native:expo-export'], blockers: [],
+        },
+        {
+          id: 'android-release', kind: 'android-package', status: 'blocked',
+          build: build('application', ['npx', 'expo', 'run:android', '--variant', 'release'], ['{appDir}/android/app/build/outputs']),
+          distribution: { channel: 'app-store', immutable: true }, evidence: [],
+          blockers: ['SIGNED_RELEASE_PIPELINE_MISSING'],
+        },
+        {
+          id: 'ios-release', kind: 'ios-package', status: 'blocked',
+          build: build('application', ['npx', 'expo', 'run:ios', '--configuration', 'Release'], ['{appDir}/ios/build']),
+          distribution: { channel: 'app-store', immutable: true }, evidence: [],
+          blockers: ['SIGNED_RELEASE_PIPELINE_MISSING'],
+        },
+      ],
+      configuration: {
+        nonSecret: ['EXPO_PUBLIC_APP_ENV', 'EXPO_PUBLIC_API_BASE_URL', 'EXPO_PUBLIC_API_TIMEOUT_MS'],
+        secrets: [],
+      },
+      health: { kind: 'none', path: null },
+      migrations: { kind: 'none', command: null, reversible: false },
+      rollbackStrategy: 'store-rollback',
+    },
   },
   { id: 'spring', version: '1.0.0', dependencyManager: 'maven',
     migrations: 'src/main/resources/db/migration/', integrationKinds: {
     'spring.module': { importPath: STRING, symbol: STRING },
   }, composition: [
     { kinds: ['spring.module'], destination: 'src/main/java/com/enistere/core/composition/CapabilityConfiguration.java', render: renderSpringComposition },
-  ] },
+  ], delivery: {
+    schemaVersion: '1',
+    artifacts: [{
+      id: 'application-jar', kind: 'jvm-jar', status: 'ready',
+      build: build('application', ['./mvnw', 'package', '--no-transfer-progress'], ['{appDir}/target/*.jar']),
+      distribution: { channel: 'artifact-registry', immutable: true },
+      evidence: ['golden-runtime:spring-files:mvn-verify:2026-08-02'], blockers: [],
+    }],
+    configuration: {
+      nonSecret: ['SERVICE_NAME', 'SHUTDOWN_TIMEOUT_SECONDS', 'CORS_ALLOWED_ORIGINS'],
+      secrets: secretNames('DATABASE_URL', 'DATABASE_USERNAME', 'DATABASE_PASSWORD', 'SPRING_DATASOURCE_URL', 'SPRING_DATASOURCE_USERNAME', 'SPRING_DATASOURCE_PASSWORD'),
+    },
+    health: { kind: 'http', path: '/actuator/health' },
+    migrations: { kind: 'startup', command: null, reversible: false },
+    rollbackStrategy: 'restore-and-redeploy',
+  } },
   {
     id: 'fastapi', version: '1.0.0', dependencyManager: 'python',
     migrations: 'migrations/versions/', integrationKinds: {
@@ -112,6 +225,22 @@ const BUILT_IN = [
       { kinds: ['fastapi.exception-handler'], destination: 'app/composition/capability_exception_handlers.py', render: renderFastapiCapabilityExceptionHandlers },
       { kinds: ['fastapi.model-module'], destination: 'app/composition/capability_models.py', render: renderFastapiCapabilityModels },
     ],
+    delivery: {
+      schemaVersion: '1',
+      artifacts: [{
+        id: 'server-image', kind: 'oci-image', status: 'ready',
+        build: build('application', ['docker', 'build', '--file', '{definition}', '{context}'], ['oci:{project}-{application}'], 'Dockerfile'),
+        distribution: { channel: 'oci-registry', immutable: true },
+        evidence: ['golden-runtime:fastapi-files:oci-build:2026-08-02'], blockers: [],
+      }],
+      configuration: {
+        nonSecret: ['ENISTERE_SERVICE_NAME', 'ENISTERE_CORS_ALLOWED_ORIGINS', 'ENISTERE_RATE_LIMIT_PER_MINUTE', 'ENISTERE_DATABASE_POOL_SIZE', 'ENISTERE_DATABASE_POOL_MAX_OVERFLOW', 'ENISTERE_DATABASE_STATEMENT_TIMEOUT_MS'],
+        secrets: secretNames('ENISTERE_DATABASE_URL'),
+      },
+      health: { kind: 'http', path: '/health' },
+      migrations: { kind: 'command', command: ['python', '-m', 'alembic', 'upgrade', 'head'], reversible: false },
+      rollbackStrategy: 'restore-and-redeploy',
+    },
   },
   {
     id: 'angular', version: '1.0.0', integrationKinds: {
@@ -124,6 +253,19 @@ const BUILT_IN = [
       { kinds: ['angular.route'], destination: 'src/app/core/composition/capability-routes.ts', render: renderAngularCapabilityRoutes },
       { kinds: ['angular.http-interceptor'], destination: 'src/app/core/composition/capability-interceptors.ts', render: renderAngularCapabilityInterceptors },
     ],
+    delivery: {
+      schemaVersion: '1',
+      artifacts: [{
+        id: 'static-bundle', kind: 'web-static-bundle', status: 'ready',
+        build: build('application', ['npm', 'run', 'build'], ['{appDir}/dist/web-angular']),
+        distribution: { channel: 'artifact-registry', immutable: true },
+        evidence: ['factory:golden-runtime:angular:build'], blockers: [],
+      }],
+      configuration: { nonSecret: [], secrets: [] },
+      health: { kind: 'http', path: '/' },
+      migrations: { kind: 'none', command: null, reversible: false },
+      rollbackStrategy: 'redeploy-previous-artifact',
+    },
   },
   {
     id: 'flutter', version: '1.0.0', dependencyManager: 'pub', integrationKinds: {
@@ -136,6 +278,27 @@ const BUILT_IN = [
       { kinds: ['flutter.route'], destination: 'lib/src/core/composition/capability_routes.dart', render: renderFlutterCapabilityRoutes },
       { kinds: ['flutter.interceptor'], destination: 'lib/src/core/composition/capability_interceptors.dart', render: renderFlutterCapabilityInterceptors },
     ],
+    delivery: {
+      schemaVersion: '1',
+      artifacts: [
+        {
+          id: 'android-release', kind: 'android-package', status: 'blocked',
+          build: build('application', ['flutter', 'build', 'apk', '--release'], ['{appDir}/build/app/outputs/flutter-apk/app-release.apk']),
+          distribution: { channel: 'app-store', immutable: true }, evidence: [],
+          blockers: ['SIGNED_RELEASE_PIPELINE_MISSING'],
+        },
+        {
+          id: 'ios-release', kind: 'ios-package', status: 'blocked',
+          build: build('application', ['flutter', 'build', 'ipa', '--release'], ['{appDir}/build/ios/ipa']),
+          distribution: { channel: 'app-store', immutable: true }, evidence: [],
+          blockers: ['SIGNED_RELEASE_PIPELINE_MISSING'],
+        },
+      ],
+      configuration: { nonSecret: ['APP_ENV', 'API_BASE_URL', 'API_TIMEOUT_MS'], secrets: [] },
+      health: { kind: 'none', path: null },
+      migrations: { kind: 'none', command: null, reversible: false },
+      rollbackStrategy: 'store-rollback',
+    },
   },
 ].map((adapter) => Object.freeze({
   ...adapter,
@@ -144,6 +307,7 @@ const BUILT_IN = [
     Object.entries(adapter.integrationKinds).map(([kind, fields]) => [kind, Object.freeze({ ...fields })]),
   )),
   composition: freezeComposition(adapter.composition),
+  delivery: freezeDelivery(adapter.delivery),
 }));
 
 const adapters = new Map(BUILT_IN.map((adapter) => [adapter.id, adapter]));
@@ -152,6 +316,7 @@ function assertAdapter(adapter) {
   if (!adapter || !/^[a-z][a-z0-9-]*$/.test(adapter.id ?? '')) throw new Error('target adapter id is invalid');
   if (!/^\d+\.\d+\.\d+$/.test(adapter.version ?? '')) throw new Error(`${adapter.id}: adapter version must be SemVer`);
   if (!adapter.integrationKinds || typeof adapter.integrationKinds !== 'object') throw new Error(`${adapter.id}: integrationKinds must be an object`);
+  if (adapter.delivery !== undefined && adapter.delivery?.schemaVersion !== '1') throw new Error(`${adapter.id}: delivery schemaVersion must be 1`);
   if (adapter.operations !== undefined && (!Array.isArray(adapter.operations) || adapter.operations.some((operation) => typeof operation !== 'string' || operation === ''))) {
     throw new Error(`${adapter.id}: operations must be non-empty strings`);
   }
@@ -168,6 +333,7 @@ export function registerTargetAdapter(adapter) {
     operations: Object.freeze([...(adapter.operations ?? COMMON_OPERATIONS)]),
     composition: freezeComposition(adapter.composition),
     renderDomain: adapter.renderDomain ?? null,
+    delivery: freezeDelivery(adapter.delivery),
   });
   adapters.set(frozen.id, frozen);
   return frozen;

@@ -151,6 +151,9 @@ Blueprint v1 sait sélectionner des environnements mais pas les primitives et
 providers complets. Jusqu'à sa migration, l'infrastructure générée reste
 explicitement partielle et ne peut pas être présentée comme un pack résolu.
 
-Le premier slice exécutable couvre uniquement le schéma et son validateur. Les
-unités du Generation Plan, adapters, packs providers et pipelines dérivés restent
-à implémenter selon ADR-089.
+Le `GenerationPlan` émet désormais une unité validée par application depuis les
+sept adapters et la matérialise dans `packages/contracts/deployment-units.json`.
+Les variables de capabilities sont transportées par nom et, faute de
+classification dans Overlay v1, traitées par défaut comme sensibles. Les packs
+providers, pipelines dérivés et corrections des artefacts bloqués restent à
+implémenter selon ADR-089.

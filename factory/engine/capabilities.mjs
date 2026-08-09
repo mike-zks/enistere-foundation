@@ -8,6 +8,7 @@ import { validateManifestSchema } from './capability-schema.mjs';
 
 const FOUNDATION_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const CAPABILITIES_ROOT = join(FOUNDATION_ROOT, 'capabilities');
+const operationalConfigurationByManifest = new WeakMap();
 
 /**
  * The local registry is directory-driven: adding a capability never requires an
@@ -296,6 +297,27 @@ async function validateCapabilityRepository(repoRoot, manifests) {
   return issues;
 }
 
+async function loadOperationalConfiguration(repoRoot, manifest) {
+  const byTarget = {};
+  for (const [runtimeId, target] of Object.entries(manifest.targets)) {
+    if (target.status !== 'ready' || target.mode !== 'overlay') continue;
+    const overlay = JSON.parse(await readFile(join(
+      repoRoot, 'capabilities', manifest.id, 'targets', runtimeId, 'overlay.json',
+    ), 'utf8'));
+    // Overlay v1 does not yet classify sensitivity. Treat every contributed
+    // variable as sensitive by default: over-classification costs operator
+    // configuration; under-classification could place a credential in the
+    // non-secret contract.
+    byTarget[runtimeId] = [...new Set(overlay.environment.map((entry) => entry.name))].sort();
+  }
+  operationalConfigurationByManifest.set(manifest, byTarget);
+}
+
+/** Environment names contributed by a validated target overlay (values are never loaded). */
+export function targetOperationalConfiguration(manifest, runtimeId) {
+  return [...(operationalConfigurationByManifest.get(manifest)?.[runtimeId] ?? [])];
+}
+
 export async function discoverCapabilityIds(repoRoot = FOUNDATION_ROOT) {
   const entries = await readdir(join(repoRoot, 'capabilities'), { withFileTypes: true });
   return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
@@ -315,6 +337,7 @@ export async function loadCapabilityManifests(repoRoot, selected) {
   const repositoryIssues = await validateCapabilityRepository(repoRoot, manifests);
   const issues = [...registryIssues, ...repositoryIssues];
   if (issues.length) throw new Error(`Capability registry invalid:\n- ${issues.join('\n- ')}`);
+  await Promise.all(manifests.map((manifest) => loadOperationalConfiguration(repoRoot, manifest)));
   if (selected === undefined) return manifests;
   const requested = [...new Set(selected.filter((candidate) => candidate !== 'base'))].sort();
   const graph = resolveCapabilityGraph(requested, manifests);

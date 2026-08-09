@@ -538,6 +538,10 @@ export async function materializeProject(plan, output, options = {}) {
   await writeFile(join(output, 'packages/contracts/openapi.json'), stable(generateOpenApi({ name: plan.displayName, entities: plan.domain.entities })));
   await writeFile(join(output, 'packages/contracts/communications.json'), stable({ edges: plan.communications }));
   await writeFile(join(output, 'packages/contracts/ownership.json'), stable(ownershipContract(plan)));
+  await writeFile(join(output, 'packages/contracts/deployment-units.json'), stable({
+    schemaVersion: '1',
+    units: plan.deploymentUnits,
+  }));
   await writeFile(join(output, 'packages/contracts/capabilities.json'), stable({
     graph: plan.capabilityGraph,
     targets: plan.capabilityTargets,

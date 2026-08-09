@@ -43,9 +43,5 @@
     "plannedCapabilities": [
       "notifications"
     ]
-  },
-  "deployment": {
-    "dockerfile": null,
-    "healthPath": null
   }
 }

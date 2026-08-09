@@ -16,6 +16,7 @@ import { stableDigest, stableStringify } from './canonical-system.mjs';
 import { deepFreeze } from './immutable.mjs';
 import { PLAN_DIAGNOSTIC_CODES as PC, diagnostic } from './diagnostics.mjs';
 import { withApplicationIdentities } from './application-identity.mjs';
+import { copyDeliveryDescriptor, resolveDeploymentUnits } from '../engine/operational-delivery.mjs';
 
 function deploymentPlan(applications) {
   const byId = new Map(applications.map((application) => [application.id, application]));
@@ -55,6 +56,7 @@ function copyTargetResolution(resolution) {
     })),
     migrations: resolution.migrations.map((migration) => ({ ...migration })),
     conformance: resolution.conformance.map((suite) => ({ ...suite })),
+    configuration: [...(resolution.configuration ?? [])],
   };
 }
 
@@ -69,6 +71,7 @@ export function buildPlan(resolved) {
       kind: app.kind,
       runtime: app.runtime,
       baseline: { ...app.baseline },
+      delivery: copyDeliveryDescriptor(app.delivery),
       source: app.source,
       appDir: app.appDir,
       consumes: [...app.consumes],
@@ -100,6 +103,12 @@ export function buildPlan(resolved) {
   // The plan carries the resolution diagnostics too, so the generator refuses a
   // non-generatable composition from the plan alone (no blueprint, no re-resolution).
   const diagnostics = [...resolved.diagnostics, ...planDiagnostics];
+  const resolvedDeploymentPlan = deploymentPlan(applications);
+  const deploymentUnits = resolveDeploymentUnits({
+    project: resolved.metadata.name,
+    applications,
+    deploymentPlan: resolvedDeploymentPlan,
+  });
 
   const base = {
     project: resolved.metadata.name,
@@ -142,7 +151,8 @@ export function buildPlan(resolved) {
       },
     ])),
     communications: resolved.communications.map((communication) => ({ ...communication })),
-    deploymentPlan: deploymentPlan(applications),
+    deploymentPlan: resolvedDeploymentPlan,
+    deploymentUnits,
     domain: { entities: [...resolved.domain.entities] },
     designSystem: Boolean(resolved.policies.designSystem),
     environments: resolved.environments.map((environment) => ({ ...environment })),
