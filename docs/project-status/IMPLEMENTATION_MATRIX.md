@@ -43,7 +43,7 @@
 | Parité produit par famille de runtimes | **Mesurée sur tous les runtimes** (ADR-070, ADR-074) | aucun écart de responsabilités ; ne vaut pas parité HTTP/client/composition (ADR-088) |
 | Composition modulaire (`modular-overlay`) | Implémentée (1A) | active si toutes les targets sont modulaires |
 | Packages partagés par consommateurs + lock racine | Implémenté (ADR-086/088) | fermeture transitive `@enistere/*` ; contrat composé privilégié ; première tranche polyglotte livrée, migration client Fetch/UI Kit ouverte |
-| Contrat design/expérience multi-runtime | **Audité, non implémenté** (ADR-008) | tokens neutres existants mais copies Angular/RN/Flutter ; composants React DOM mélangés au contrat ; aucune matrice de patterns ni ThemePack institutionnel ([étude 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)) |
+| Contrat design/expérience multi-runtime | **Contrat initial implémenté, consommateurs non migrés** (ADR-090) | schémas fermés, 7 patterns, 2 ThemePacks, résolution institution/contexte/mode et bindings CSS/TS/Dart ; copies historiques et conformité runtime restent ouvertes ([étude 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)) |
 | CI `Factory Golden Runtime` | Implémentée (1A-R), étendue (1B/1C/R8A/ADR-066) | inclut le golden topologique `distributed-spring-nestjs` |
 | Statuts de support (`not-applicable`) | Implémenté (1B) | permet les compositions mixtes sans surface factice |
 | Composition Prisma structurée | Implémentée (1B-R) | modèle intermédiaire strict, sans parsing de texte |

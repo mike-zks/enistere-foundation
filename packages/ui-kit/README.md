@@ -1,7 +1,9 @@
 # @enistere/ui-kit
 
-> **Statut : IMPLEMENTATION_PARTIELLE.** Design tokens Enistere (ADR-008, source de vérité) **+
-> 19 primitives Web accessibles** (React) — UI Kit V2/4/5/6. **Privé / non publié** (`0.1.1`). **Pas de
+> **Statut : IMPLEMENTATION_PARTIELLE, BINDING WEB HISTORIQUE.** Tokens Enistere en cours de migration
+> vers le contrat neutre [`contracts/design/`](../../contracts/design/) **+ 19 primitives Web
+> accessibles React DOM** — UI Kit V2/4/5/6. Ce package n'est pas le contrat universel de Next.js,
+> Angular, React Native et Flutter. **Privé / non publié** (`0.1.1`). **Pas de
 > bibliothèque complète**, **pas de Tailwind/Radix/shadcn/NativeWind dans le package** (ADR-009/010 :
 > ces stacks vivent dans les cores clients ; le UI Kit reste piloté par les tokens).
 
@@ -103,9 +105,13 @@ intentions**, **pas** les composants : il aura ses propres primitives (ThemeProv
 
 ## 1. Rôle
 
-Fournir des design tokens **communs, agnostiques, centralisés, versionnés et exportables**, consommés à
-terme par le Web Core Next.js, le Mobile Core React Native et les futurs cores Flutter/Angular — chacun
-adaptant l'implémentation à sa plateforme, **sans redéfinir une source de vérité indépendante**.
+Fournir le binding React DOM et l'implémentation historique des tokens pour le
+Web Next.js. La source neutre cible est définie par la
+[`DESIGN_EXPERIENCE_SPECIFICATION`](../../docs/specifications/DESIGN_EXPERIENCE_SPECIFICATION.md).
+Angular, React Native et Flutter conservent leurs composants idiomatiques et
+consommeront leurs propres projections générées. Tant que cette migration n'est
+pas exécutée, les tokens ci-dessous restent une source de compatibilité, pas la
+preuve d'une vérité multi-runtime unique.
 
 ## 2. ADR appliqués
 

@@ -31,7 +31,10 @@ primitives résolues et qu'aucun pipeline CI n'est livré aux dérivés.
 [`UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md`](UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)
 mesure la consommation réelle des tokens, composants et thèmes dans Next.js,
 Angular, React Native et Flutter. Elle distingue le contrat de design polyglotte
-des composants idiomatiques et cadre les thèmes dynamiques institutionnels.
+des composants idiomatiques et cadre les thèmes dynamiques institutionnels. Sa
+première recommandation est désormais exécutée par
+[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md) ; les migrations
+et preuves runtime qu'elle identifie restent ouvertes.
 
 ## Analyses closes (historique)
 

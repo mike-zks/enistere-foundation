@@ -11,12 +11,17 @@ selon [`CONTRACT_ARCHITECTURE.md`](../docs/architecture/CONTRACT_ARCHITECTURE.md
   En particulier, `packages/api-contracts/contract/openapi.json` décrit aujourd'hui
   la composition NestJS complète et ne prétend pas décrire les routes FastAPI ou
   Spring.
+- `design/` porte le contrat neutre de design/expérience, les ThemePacks validés
+  et leurs projections CSS, TypeScript et Dart. Il ne contient aucun composant
+  de framework.
 
 Commandes :
 
 ```bash
 npm run contracts:generate
 npm run contracts:check
+npm run design:generate
+npm run design:check
 ```
 
 Les fichiers générés portent un en-tête et ne doivent pas être modifiés à la main.

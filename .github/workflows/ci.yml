@@ -34,6 +34,8 @@ jobs:
       - run: npm ci
       - name: contracts:check (schéma neutre ↔ bindings TypeScript/Java/Python/Dart)
         run: npm run contracts:check
+      - name: design:check (contrat design/expérience ↔ bindings CSS/TypeScript/Dart)
+        run: npm run design:check
       - name: generate:check (snapshot OpenAPI ↔ types à jour)
         run: npm run generate:check --workspace=@enistere/api-contracts
       - run: npm run typecheck --workspace=@enistere/api-contracts

@@ -1,5 +1,10 @@
 # Étude UI/UX multi-runtime — 2026-08-09
 
+> **MISE À JOUR 2026-08-09.** La formalisation recommandée aux étapes 1, 2 et 5
+> est exécutée par [ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md).
+> Les constats runtime ci-dessous restent vrais : aucun consommateur n'a encore
+> migré et aucune parité comportementale ou visuelle n'est prouvée.
+
 ## Statut et portée
 
 Cette étude mesure l'état réel de `@enistere/ui-kit`, Next.js, Angular, React

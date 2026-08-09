@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1",
+  "id": "design-experience",
+  "semanticColorKeys": [
+    "background.default",
+    "background.muted",
+    "background.elevated",
+    "foreground.default",
+    "foreground.muted",
+    "foreground.inverse",
+    "border.default",
+    "border.strong",
+    "border.focus",
+    "action.primary",
+    "action.primaryHover",
+    "action.primaryPressed",
+    "action.disabled",
+    "status.success",
+    "status.warning",
+    "status.danger",
+    "status.info",
+    "focus.ring",
+    "overlay"
+  ],
+  "patterns": [
+    { "id": "loading", "applicability": ["web", "mobile"], "announcement": "polite", "action": "none", "focus": "preserve", "motion": "reduced-safe", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.loading" },
+    { "id": "empty", "applicability": ["web", "mobile"], "announcement": "none", "action": "optional", "focus": "preserve", "motion": "none", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.empty" },
+    { "id": "error", "applicability": ["web", "mobile"], "announcement": "assertive", "action": "optional", "focus": "move-to-state", "motion": "none", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.error" },
+    { "id": "success", "applicability": ["web", "mobile"], "announcement": "polite", "action": "optional", "focus": "preserve", "motion": "none", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.success" },
+    { "id": "unauthorized", "applicability": ["web", "mobile"], "announcement": "polite", "action": "required", "focus": "move-to-state", "motion": "none", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.unauthorized" },
+    { "id": "forbidden", "applicability": ["web", "mobile"], "announcement": "polite", "action": "optional", "focus": "move-to-state", "motion": "none", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.forbidden" },
+    { "id": "offline", "applicability": ["mobile", "web"], "announcement": "polite", "action": "optional", "focus": "preserve", "motion": "none", "safeContent": true, "revealTechnicalDetails": false, "messageKey": "experience.offline" }
+  ]
+}

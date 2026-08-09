@@ -236,6 +236,7 @@ docs/specifications/PRIMITIVE_SPECIFICATION.md
 docs/specifications/COMPOSITION_MODEL.md
 docs/specifications/CONFORMANCE_MODEL.md
 docs/specifications/LIFECYCLE_AND_UPGRADE_SPECIFICATION.md
+docs/specifications/DESIGN_EXPERIENCE_SPECIFICATION.md
 
 docs/architecture/functional/ENISTERE_FUNCTIONAL_ARCHITECTURE.md
 docs/architecture/technical/ENISTERE_TECHNICAL_ARCHITECTURE.md

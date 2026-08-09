@@ -1308,34 +1308,58 @@ arbitraire.
 - aucun renommage/split/publication de package ;
 - aucun composant ou runtime modifié par l'étude.
 
+## Mission achevée — contrat UI/UX polyglotte et ThemePacks
+
+[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md) formalise
+`design-experience/v1` et `theme-pack/v1` sous `contracts/design/`. Deux schémas
+fermés, validés par l'évaluateur autonome et Ajv, portent 19 couleurs sémantiques,
+sept patterns UX et deux identités institutionnelles light/dark.
+
+La résolution est déterministe : pack enregistré explicite, couple
+institution/contexte, contexte institutionnel par défaut, fallback global, puis
+préférence de mode autorisée. Les collisions et cycles sont refusés. Aucun ThemePack
+n'accepte credential, URL distante, CSS, code ou chemin remontant. CSS, données
+TypeScript et Dart sont générés avec un digest commun et leur drift bloque la CI.
+
+### Non revendiqué
+
+- aucun runtime ni projet dérivé ne consomme encore ces bindings ;
+- les tokens historiques du UI Kit et les copies Angular/RN/Flutter coexistent
+  encore avec la nouvelle source ;
+- aucune parité UX ou visuelle, mesure de contraste, conformité réglementaire,
+  régression visuelle ou publication de package ;
+- aucun thème distant, catalogue Figma ou distribution institutionnelle.
+
 ## Prochaine mission unique
 
-> **Formaliser et exécuter `design-experience/v1` et `theme-pack/v1`.**
+> **Migrer les quatre runtimes clients vers les bindings design générés et
+> supprimer leurs sources de tokens concurrentes.**
 
 ### Pourquoi maintenant
 
-Générer directement quatre bindings sans schéma recréerait quatre vérités. Le
-contrat doit d'abord fixer les tokens sémantiques, les patterns observables, la
-résolution institution/contexte/préférence et les règles de sécurité avant de
-migrer un seul runtime.
+Le contrat est exécutable mais ne change encore aucun produit. Tant que Next.js,
+Angular, React Native et Flutter lisent les anciennes sources ou leurs copies,
+le digest commun ne protège pas les projets dérivés et la parité reste seulement
+déclarative.
 
 ### Critères de sortie
 
-- sources neutres sous `contracts/design/`, sans React, DOM, Angular, RN ou Flutter ;
-- schémas fermés et validateurs autonomes pour contrat d'expérience et ThemePack ;
-- modes, institution, contexte, préférence, fallback et digest modélisés sans
-  donnée métier, credential, URL de font ou code/CSS arbitraire ;
-- patterns initiaux `loading|empty|error|success|unauthorized|forbidden|offline`
-  avec annonces, actions, focus, motion, contenu sûr et applicabilité ;
-- deux packs de fixture démontrent des identités distinctes avec mêmes clés et
-  invariants d'accessibilité ;
-- génération déterministe CSS, TypeScript data et Dart depuis la même source ;
-- tests de drift, chemins sûrs, clés light/dark/institution identiques et
-  absence de valeur sensible ;
-- `@enistere/ui-kit` n'est pas encore renommé, mais sa partie React est
-  explicitement classée comme binding Web, jamais comme contrat universel.
+- chaque runtime consomme la projection idiomatique produite depuis
+  `contracts/design/`, sans dépendance DOM imposée à Angular ou au mobile ;
+- `@enistere/ui-kit` est explicitement limité au binding React DOM ; sa source de
+  tokens concurrente est retirée ou générée depuis le contrat canonique ;
+- les copies manuelles Angular, React Native et Flutter sont retirées et un gate
+  de drift couvre chaque matérialisation ;
+- les deux ThemePacks sont sélectionnés dynamiquement par institution/contexte et
+  mode dans chaque runtime, avec fallback mesuré ;
+- les sept patterns ont une fixture de conformité observable par runtime, sans
+  exiger mêmes composants ou mêmes pixels ;
+- les dérivés ne reçoivent que leur binding consommé, jamais les sources ni les
+  bindings des autres runtimes ;
+- suites Next.js, Angular, React Native et Flutter exécutées, plus génération de
+  dérivés représentatifs et contrôle de leur contenu.
 
-### Ce qui reste ouvert après cette formalisation
+### Ce qui reste ouvert après cette migration
 
 - composition contractuelle complète Auth/RBAC/Files et convergence des trois
   surfaces API ;

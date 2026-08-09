@@ -4,6 +4,7 @@
 
 ```text
 contracts/
+├── design/
 ├── http/
 ├── schemas/
 ├── events/
@@ -50,11 +51,14 @@ preuve de responsabilité produit ne suffit pas à établir cette compatibilité
 ## Frontends et design
 
 Les applications Next.js, Angular, React Native et Flutter restent indépendantes
-et idiomatiques. Un contrat de design peut partager des tokens et des règles
-observables, mais un package de composants propre à un framework n'est jamais la
-source universelle du design.
+et idiomatiques. Le contrat polyglotte `design-experience/v1` partage des tokens,
+des ThemePacks et des règles observables ; un package de composants propre à un
+framework n'est jamais la source universelle du design.
 
-Voir [ADR-088](../adr/ADR-088-contractual-parity-and-shared-artifacts.md).
+Voir la
+[spécification design/expérience](../specifications/DESIGN_EXPERIENCE_SPECIFICATION.md),
+[ADR-088](../adr/ADR-088-contractual-parity-and-shared-artifacts.md) et
+[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md).
 
 ## Versionnement
 

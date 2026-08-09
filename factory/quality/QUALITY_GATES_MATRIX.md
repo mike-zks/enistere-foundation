@@ -1,7 +1,7 @@
 # QUALITY_GATES_MATRIX.md — Matrice des gates qualité
 
 > Gates qualité réels du monorepo Enistere OS Foundation.
-> Dernière mise à jour : 2026-08-02 (frontière de matérialisation — ADR-086).
+> Dernière mise à jour : 2026-08-09 (contrat design/expérience — ADR-090).
 >
 > **Script de sélection locale** : `node factory/quality/scripts/quality-gates.mjs plan <scope>`
 > Scopes : `docs` | `packages` | `ui-kit` | `web` | `web-angular` | `root-audit` | `mobile-static` | `api-spring` | `all-safe`
@@ -44,6 +44,8 @@
 | garde Axios absent | `npm ls axios --workspaces` | local | **L1** | chaque PR |
 | garde Zustand racine absent | `npm ls zustand --workspaces` | local | **L1** | chaque PR |
 | frontière de livraison dérivée | `node factory/test/materialization.test.mjs` | Node 24, sans service | suite Factory | chaque PR Factory |
+| drift contrat design | `npm run design:check` | Node 24, sans service | **L1** | chaque PR |
+| validation contrat design | `node --test factory/test/design-contract.test.mjs` | Node 24, sans service | suite Factory | chaque PR Factory |
 
 ### 2.2 @enistere/api-contracts
 

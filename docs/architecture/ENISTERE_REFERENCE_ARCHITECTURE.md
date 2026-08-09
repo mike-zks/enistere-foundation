@@ -300,6 +300,7 @@ provider de déploiement possible, jamais un invariant.
 - [Spécification des profils](../specifications/ARCHITECTURE_PROFILE_SPECIFICATION.md)
 - [Spécification du baseline](../specifications/PLATFORM_BASELINE_SPECIFICATION.md)
 - [Spécification des primitives](../specifications/INFRASTRUCTURE_PRIMITIVE_SPECIFICATION.md)
+- [Spécification design et expérience](../specifications/DESIGN_EXPERIENCE_SPECIFICATION.md)
 - [Exemples de référence](../examples/reference-systems/README.md)
 - [Roadmap maître](../roadmap/ENISTERE_IMPLEMENTATION_MASTER_ROADMAP.md)
 - [Audit cible/existant](../audits/TARGET_VS_CURRENT_IMPLEMENTATION.md)
