@@ -5,11 +5,17 @@
  * validation on the contract set as it stood at a given (injected) instant and
  * records the outcome as EvidenceRecords (VERIFY by a CHECKER, never by an AI).
  *
+ * The accepted system definition is then compiled end to end by the Kernel
+ * Façade (closure → IR → resolution → plan) against the synthetic catalog
+ * `sources/catalog.json` (no real adapter exists before E2).
+ *
  * `buildAsteriaGolden()` is pure and deterministic: same sources, same kernel,
  * same bytes. `goldens/asteria/update.ts` writes its output; the kernel test
  * suite rebuilds it and compares byte for byte.
  */
 
+import { readFileSync } from 'node:fs';
+import { createKernelFacade, type PlanResult } from '../../kernel/compiler/src/index.ts';
 import {
   CURRENT_API_VERSION,
   CONTRACT_REGISTRY,
@@ -166,7 +172,15 @@ export function fileName(document: AnyContract): string {
   return `${folder}/${KEBAB[document.kind]}--${document.metadata.id}--r${document.metadata.revision}.json`;
 }
 
-function report(documents: AnyContract[], validation: ContractSetValidation, current: SystemDefinition): Record<string, unknown> {
+export const CATALOG_URL = new URL('./sources/catalog.json', import.meta.url);
+
+/** Compiles the golden set with the Kernel Façade against the synthetic catalog. */
+export function compileAsteria(documents: readonly AnyContract[]): PlanResult {
+  const catalog: unknown = JSON.parse(readFileSync(CATALOG_URL, 'utf8'));
+  return createKernelFacade().plan(documents, { catalog });
+}
+
+function report(documents: AnyContract[], validation: ContractSetValidation, current: SystemDefinition, compilation: PlanResult): Record<string, unknown> {
   const byRef = (a: AnyContract, b: AnyContract) => (documentRef(a) < documentRef(b) ? -1 : 1);
   const baseline = documents.find((document) => document.kind === 'RequirementBaseline');
   const decisions = documents.find((document) => document.kind === 'DecisionSet');
@@ -218,6 +232,15 @@ function report(documents: AnyContract[], validation: ContractSetValidation, cur
       result: record.spec.result,
       status: record.metadata.status,
     })),
+    compilation: {
+      status: compilation.status,
+      definition: compilation.definition,
+      closure: compilation.closure?.digest ?? null,
+      ir: compilation.ir?.digest ?? null,
+      resolved: compilation.resolved?.digest ?? null,
+      plan: compilation.plan?.digest ?? null,
+      unsupported: compilation.plan?.unsupported ?? [],
+    },
     diagnostics: validation.diagnostics,
   };
 }
@@ -249,6 +272,8 @@ export function buildAsteriaGolden(): AsteriaGolden {
   const validation = validateContractSet(documents);
   const files: Record<string, string> = {};
   for (const document of documents) files[fileName(document)] = json(document);
-  files['expected/report.json'] = json(report(documents, validation, sd2));
+  const compilation = compileAsteria(documents);
+  files['expected/compilation.json'] = json(compilation);
+  files['expected/report.json'] = json(report(documents, validation, sd2, compilation));
   return { documents, validation, files };
 }

@@ -5,11 +5,12 @@
   "description": "Enistere Foundation — Software System Engineering Platform (Governed System Compiler, Evidence-Driven System Evolution Engine). Kernel contracts A1–A7 and the Asteria golden; the previous iteration was removed (ADR-094; last state at commit f2590a8).",
   "license": "UNLICENSED",
   "workspaces": [
-    "kernel/*"
+    "kernel/*",
+    "surfaces/*"
   ],
   "scripts": {
-    "foundation:test": "npm run test --workspace=@enistere/foundation-kernel-contracts",
-    "foundation:typecheck": "npm run typecheck --workspace=@enistere/foundation-kernel-contracts",
+    "foundation:test": "npm run test --workspaces --if-present",
+    "foundation:typecheck": "npm run typecheck --workspaces --if-present",
     "golden:asteria:update": "node goldens/asteria/update.ts",
     "tools:test": "node --test tools/quality/*.test.mjs",
     "docs:links": "node tools/quality/docs-link-check.mjs",

@@ -4,7 +4,7 @@
 > options (méthode KEEP / ADAPT / EXTRACT / REPLACE / RETIRE, document 05 §7.3), la recommandation et
 > ce qu'elle débloque. Une décision prise est reportée dans un ADR et dans [`DECISIONS.md`](../../DECISIONS.md),
 > puis la ligne passe en « Tranché ». Ouvert le 2026-09-25, après E0 ; ARB-01 à ARB-06 tranchés le même
-> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). ARB-07 et ARB-10 tranchés par la mission R0-D ([ADR-094](../adr/ADR-094-clean-slate.md)). **Restent ouverts : ARB-08, ARB-09, ARB-11 et ARB-12.**
+> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). ARB-07 et ARB-10 tranchés par la mission R0-D ([ADR-094](../adr/ADR-094-clean-slate.md)). ARB-11 tranché le même jour (ruleset mis à jour, PR #254 mergée). **Restent ouverts : ARB-08, ARB-09 et ARB-12.**
 
 ## Synthèse
 
@@ -20,7 +20,7 @@
 | ARB-08 | Corrections du document 05 (Ubuntu, RabbitMQ) | Document 05 renvoie à Server Prod pour les faits d'infrastructure | Gouvernance | Ouvert |
 | ARB-09 | Livrables manquants du document 04 (`design-tokens.json`, maquettes) | Les fournir avant toute mission Workbench/design (E6, V1) | Design UX UI | Ouvert |
 | ARB-10 | Réécriture d'`AGENTS.md` et archivage de `MANDAT.md` | Valider par la revue de la PR de la mission E0 | Gouvernance | Tranché — PR #252 mergée ; règle du laboratoire remplacée par ADR-094 |
-| ARB-11 | Checks requis du ruleset `protect-main` | Remplacer les huit checks de l'ancienne CI par `kernel`, `secret-scan`, `docs`, `audit` | Responsable (GitHub) | Ouvert — bloque tout merge |
+| ARB-11 | Checks requis du ruleset `protect-main` | Remplacer les huit checks de l'ancienne CI par `kernel`, `secret-scan`, `docs`, `audit` | Responsable (GitHub) | Tranché — ruleset mis à jour (PR #254 mergée avec les quatre checks) |
 | ARB-12 | Passages du dossier contredits par ADR-094 | Réviser 03 §6.11 et 06 §4.6, §4.7, §6.8 (E1, E10), gate R0 | Gouvernance | Ouvert |
 
 ---

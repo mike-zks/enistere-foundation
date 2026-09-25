@@ -1,0 +1,979 @@
+{
+  "stage": "plan",
+  "facade": "0.1.0",
+  "compiler": {
+    "id": "foundation-kernel-compiler",
+    "version": "0.1.0"
+  },
+  "status": "PARTIAL",
+  "system": "asteria",
+  "definition": {
+    "ref": "SystemDefinition/asteria@2",
+    "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+  },
+  "closure": {
+    "system": "asteria",
+    "definition": {
+      "ref": "SystemDefinition/asteria@2",
+      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+    },
+    "entries": [
+      {
+        "ref": "DecisionSet/asteria-decisions@1",
+        "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+      },
+      {
+        "ref": "DomainContract/asteria-service-requests@1",
+        "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+      },
+      {
+        "ref": "EffectiveOrganizationContext/asteria-context@1",
+        "digest": "sha256:736c950ebaa7a3aa2ee016628203ea8364cb8b10606f2edc24c6053829b840da"
+      },
+      {
+        "ref": "RequirementBaseline/asteria-requirements@1",
+        "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+      }
+    ],
+    "compiler": {
+      "id": "foundation-kernel-compiler",
+      "version": "0.1.0"
+    },
+    "catalog": {
+      "digest": "sha256:29bd60e689985c51188db61f6c7d030d198635087b23e027af5c8a6e63f8c503"
+    },
+    "digest": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad"
+  },
+  "ir": {
+    "system": "asteria",
+    "definition": "SystemDefinition/asteria@2",
+    "environments": [
+      {
+        "id": "local",
+        "kind": "LOCAL",
+        "deploymentMode": "LOCAL"
+      },
+      {
+        "id": "ci",
+        "kind": "CI",
+        "deploymentMode": "LOCAL"
+      },
+      {
+        "id": "staging",
+        "kind": "STAGING",
+        "deploymentMode": "SELF_HOSTED"
+      },
+      {
+        "id": "production",
+        "kind": "PRODUCTION",
+        "deploymentMode": "SELF_HOSTED"
+      }
+    ],
+    "integrations": [
+      {
+        "id": "enistere-oidc",
+        "kind": "oidc-provider",
+        "direction": "OUTBOUND"
+      },
+      {
+        "id": "malware-scanner",
+        "kind": "malware-analysis",
+        "direction": "OUTBOUND"
+      },
+      {
+        "id": "smtp-relay",
+        "kind": "email-delivery",
+        "direction": "OUTBOUND"
+      }
+    ],
+    "components": [
+      {
+        "id": "asteria-db",
+        "name": "Asteria transactional store",
+        "kind": "datastore",
+        "audience": null,
+        "runtime": {
+          "preferences": [
+            "postgresql"
+          ],
+          "constraints": []
+        },
+        "platformCapabilities": [],
+        "interactions": [],
+        "publishes": [],
+        "subscribes": [],
+        "implements": [],
+        "data": [],
+        "integrations": [],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "EXTERNAL",
+          "team": "enistere-platform"
+        },
+        "requirements": [],
+        "decisions": []
+      },
+      {
+        "id": "asteria-objects",
+        "name": "Asteria attachment store",
+        "kind": "object-store",
+        "audience": null,
+        "runtime": {
+          "preferences": [
+            "s3-compatible"
+          ],
+          "constraints": []
+        },
+        "platformCapabilities": [],
+        "interactions": [],
+        "publishes": [],
+        "subscribes": [],
+        "implements": [],
+        "data": [],
+        "integrations": [],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "EXTERNAL",
+          "team": "enistere-platform"
+        },
+        "requirements": [],
+        "decisions": []
+      },
+      {
+        "id": "async-worker",
+        "name": "Async Worker",
+        "kind": "async-worker",
+        "audience": "SYSTEM",
+        "runtime": {
+          "preferences": [
+            "nestjs"
+          ],
+          "constraints": [
+            "Horizontal scaling independent from the API."
+          ]
+        },
+        "platformCapabilities": [
+          {
+            "id": "notifications",
+            "version": null
+          }
+        ],
+        "interactions": [
+          {
+            "target": "authority-api",
+            "interaction": "EVENT_STREAM",
+            "operations": []
+          },
+          {
+            "target": "authority-api",
+            "interaction": "SYNC_REQUEST",
+            "operations": [
+              "DomainContract/asteria-service-requests@1#escalate-request",
+              "DomainContract/asteria-service-requests@1#record-scan-result"
+            ]
+          }
+        ],
+        "publishes": [],
+        "subscribes": [
+          "DomainContract/asteria-service-requests@1#AttachmentUploaded",
+          "DomainContract/asteria-service-requests@1#RequestStatusChanged"
+        ],
+        "implements": [],
+        "data": [
+          {
+            "store": "asteria-objects",
+            "access": "READ"
+          }
+        ],
+        "integrations": [
+          "malware-scanner",
+          "smtp-relay"
+        ],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "OWNER_MANAGED",
+          "team": "asteria-backend"
+        },
+        "requirements": [
+          "FR-005",
+          "FR-006",
+          "NFR-001",
+          "SEC-002"
+        ],
+        "decisions": [
+          "AD-002"
+        ]
+      },
+      {
+        "id": "authority-api",
+        "name": "Authority API",
+        "kind": "api-service",
+        "audience": "SYSTEM",
+        "runtime": {
+          "preferences": [
+            "nestjs"
+          ],
+          "constraints": []
+        },
+        "platformCapabilities": [
+          {
+            "id": "authentication",
+            "version": null
+          },
+          {
+            "id": "authorization",
+            "version": null
+          },
+          {
+            "id": "files",
+            "version": null
+          }
+        ],
+        "interactions": [],
+        "publishes": [],
+        "subscribes": [],
+        "implements": [
+          "DomainContract/asteria-service-requests@1#assign-request",
+          "DomainContract/asteria-service-requests@1#escalate-request",
+          "DomainContract/asteria-service-requests@1#list-assignments",
+          "DomainContract/asteria-service-requests@1#list-my-requests",
+          "DomainContract/asteria-service-requests@1#list-requests",
+          "DomainContract/asteria-service-requests@1#record-intervention",
+          "DomainContract/asteria-service-requests@1#record-scan-result",
+          "DomainContract/asteria-service-requests@1#submit-request",
+          "DomainContract/asteria-service-requests@1#triage-request",
+          "DomainContract/asteria-service-requests@1#upload-attachment"
+        ],
+        "data": [
+          {
+            "store": "asteria-db",
+            "access": "OWNER"
+          },
+          {
+            "store": "asteria-objects",
+            "access": "OWNER"
+          }
+        ],
+        "integrations": [
+          "enistere-oidc"
+        ],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "SHARED_CONTROLLED",
+          "team": "asteria-backend"
+        },
+        "requirements": [
+          "CON-001",
+          "FR-001",
+          "FR-002",
+          "FR-003",
+          "FR-004",
+          "SEC-001",
+          "SEC-002"
+        ],
+        "decisions": [
+          "AD-001",
+          "AD-005"
+        ]
+      },
+      {
+        "id": "field-mobile",
+        "name": "Field Mobile",
+        "kind": "mobile-application",
+        "audience": "FIELD",
+        "runtime": {
+          "preferences": [
+            "flutter"
+          ],
+          "constraints": []
+        },
+        "platformCapabilities": [
+          {
+            "id": "authentication",
+            "version": null
+          },
+          {
+            "id": "files",
+            "version": null
+          }
+        ],
+        "interactions": [
+          {
+            "target": "authority-api",
+            "interaction": "SYNC_REQUEST",
+            "operations": [
+              "DomainContract/asteria-service-requests@1#list-assignments",
+              "DomainContract/asteria-service-requests@1#record-intervention",
+              "DomainContract/asteria-service-requests@1#upload-attachment"
+            ]
+          }
+        ],
+        "publishes": [],
+        "subscribes": [],
+        "implements": [],
+        "data": [],
+        "integrations": [],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "SHARED_CONTROLLED",
+          "team": "asteria-mobile"
+        },
+        "requirements": [
+          "FR-004"
+        ],
+        "decisions": [
+          "AD-004"
+        ]
+      },
+      {
+        "id": "ops-web",
+        "name": "Internal Ops Web",
+        "kind": "web-application",
+        "audience": "INTERNAL",
+        "runtime": {
+          "preferences": [
+            "angular"
+          ],
+          "constraints": []
+        },
+        "platformCapabilities": [
+          {
+            "id": "authentication",
+            "version": null
+          },
+          {
+            "id": "authorization",
+            "version": null
+          }
+        ],
+        "interactions": [
+          {
+            "target": "authority-api",
+            "interaction": "SYNC_REQUEST",
+            "operations": [
+              "DomainContract/asteria-service-requests@1#assign-request",
+              "DomainContract/asteria-service-requests@1#list-requests",
+              "DomainContract/asteria-service-requests@1#triage-request"
+            ]
+          }
+        ],
+        "publishes": [],
+        "subscribes": [],
+        "implements": [],
+        "data": [],
+        "integrations": [],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "SHARED_CONTROLLED",
+          "team": "asteria-web"
+        },
+        "requirements": [
+          "FR-003"
+        ],
+        "decisions": [
+          "AD-003"
+        ]
+      },
+      {
+        "id": "requester-web",
+        "name": "Requester Web",
+        "kind": "web-application",
+        "audience": "PUBLIC",
+        "runtime": {
+          "preferences": [
+            "nextjs"
+          ],
+          "constraints": []
+        },
+        "platformCapabilities": [
+          {
+            "id": "authentication",
+            "version": null
+          },
+          {
+            "id": "files",
+            "version": null
+          }
+        ],
+        "interactions": [
+          {
+            "target": "authority-api",
+            "interaction": "SYNC_REQUEST",
+            "operations": [
+              "DomainContract/asteria-service-requests@1#list-my-requests",
+              "DomainContract/asteria-service-requests@1#submit-request",
+              "DomainContract/asteria-service-requests@1#upload-attachment"
+            ]
+          }
+        ],
+        "publishes": [],
+        "subscribes": [],
+        "implements": [],
+        "data": [],
+        "integrations": [],
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ],
+        "ownership": {
+          "class": "SHARED_CONTROLLED",
+          "team": "asteria-web"
+        },
+        "requirements": [
+          "FR-001",
+          "FR-002",
+          "UX-001"
+        ],
+        "decisions": [
+          "AD-003"
+        ]
+      }
+    ],
+    "digest": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0"
+  },
+  "resolved": {
+    "system": "asteria",
+    "ir": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0",
+    "catalog": "sha256:29bd60e689985c51188db61f6c7d030d198635087b23e027af5c8a6e63f8c503",
+    "components": [
+      {
+        "id": "asteria-db",
+        "kind": "datastore",
+        "status": "RESOLVED",
+        "runtime": "postgresql",
+        "adapter": {
+          "id": "synthetic-postgresql",
+          "version": "0.0.1"
+        },
+        "capabilities": []
+      },
+      {
+        "id": "asteria-objects",
+        "kind": "object-store",
+        "status": "UNSUPPORTED",
+        "runtime": null,
+        "adapter": null,
+        "capabilities": []
+      },
+      {
+        "id": "async-worker",
+        "kind": "async-worker",
+        "status": "RESOLVED",
+        "runtime": "nestjs",
+        "adapter": {
+          "id": "synthetic-nestjs",
+          "version": "0.0.1"
+        },
+        "capabilities": [
+          {
+            "id": "notifications",
+            "status": "UNSUPPORTED",
+            "provider": null
+          }
+        ]
+      },
+      {
+        "id": "authority-api",
+        "kind": "api-service",
+        "status": "RESOLVED",
+        "runtime": "nestjs",
+        "adapter": {
+          "id": "synthetic-nestjs",
+          "version": "0.0.1"
+        },
+        "capabilities": [
+          {
+            "id": "authentication",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-authentication",
+              "version": "0.0.1"
+            }
+          },
+          {
+            "id": "authorization",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-authorization",
+              "version": "0.0.1"
+            }
+          },
+          {
+            "id": "files",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-files",
+              "version": "0.0.1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "field-mobile",
+        "kind": "mobile-application",
+        "status": "RESOLVED",
+        "runtime": "flutter",
+        "adapter": {
+          "id": "synthetic-flutter",
+          "version": "0.0.1"
+        },
+        "capabilities": [
+          {
+            "id": "authentication",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-authentication",
+              "version": "0.0.1"
+            }
+          },
+          {
+            "id": "files",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-files",
+              "version": "0.0.1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "ops-web",
+        "kind": "web-application",
+        "status": "RESOLVED",
+        "runtime": "angular",
+        "adapter": {
+          "id": "synthetic-angular",
+          "version": "0.0.1"
+        },
+        "capabilities": [
+          {
+            "id": "authentication",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-authentication",
+              "version": "0.0.1"
+            }
+          },
+          {
+            "id": "authorization",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-authorization",
+              "version": "0.0.1"
+            }
+          }
+        ]
+      },
+      {
+        "id": "requester-web",
+        "kind": "web-application",
+        "status": "RESOLVED",
+        "runtime": "nextjs",
+        "adapter": {
+          "id": "synthetic-nextjs",
+          "version": "0.0.1"
+        },
+        "capabilities": [
+          {
+            "id": "authentication",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-authentication",
+              "version": "0.0.1"
+            }
+          },
+          {
+            "id": "files",
+            "status": "BOUND",
+            "provider": {
+              "id": "synthetic-files",
+              "version": "0.0.1"
+            }
+          }
+        ]
+      }
+    ],
+    "unsupported": [
+      {
+        "component": "asteria-objects",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "async-worker",
+        "capability": "notifications",
+        "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      }
+    ],
+    "digest": "sha256:20d68f3ab8d1aa788c41af8478a43b6d4d21f349fb67c5eef3e31cf4761f15df"
+  },
+  "diagnostics": [
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'asteria-objects' (kind object-store) has no adapter for 's3-compatible'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "asteria-objects",
+        "kind": "object-store",
+        "preferences": [
+          "s3-compatible"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_CAPABILITY_PROVIDER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "capability 'notifications' of component 'async-worker' has no provider for runtime 'nestjs'",
+      "remediation": "Add a provider of this platform capability for the selected runtime; the capability is not bound.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "async-worker",
+        "capability": "notifications",
+        "runtime": "nestjs"
+      }
+    }
+  ],
+  "plan": {
+    "system": "asteria",
+    "inputs": {
+      "closure": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad",
+      "ir": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0",
+      "resolved": "sha256:20d68f3ab8d1aa788c41af8478a43b6d4d21f349fb67c5eef3e31cf4761f15df"
+    },
+    "steps": [
+      {
+        "action": "CONNECT_EXTERNAL",
+        "component": "asteria-db",
+        "adapter": {
+          "id": "synthetic-postgresql",
+          "version": "0.0.1"
+        },
+        "runtime": "postgresql",
+        "ownership": "EXTERNAL",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      },
+      {
+        "action": "MATERIALIZE",
+        "component": "async-worker",
+        "adapter": {
+          "id": "synthetic-nestjs",
+          "version": "0.0.1"
+        },
+        "runtime": "nestjs",
+        "ownership": "OWNER_MANAGED",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      },
+      {
+        "action": "MATERIALIZE",
+        "component": "authority-api",
+        "adapter": {
+          "id": "synthetic-nestjs",
+          "version": "0.0.1"
+        },
+        "runtime": "nestjs",
+        "ownership": "SHARED_CONTROLLED",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "authority-api",
+        "capability": "authentication",
+        "provider": {
+          "id": "synthetic-authentication",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "authority-api",
+        "capability": "authorization",
+        "provider": {
+          "id": "synthetic-authorization",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "authority-api",
+        "capability": "files",
+        "provider": {
+          "id": "synthetic-files",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "MATERIALIZE",
+        "component": "field-mobile",
+        "adapter": {
+          "id": "synthetic-flutter",
+          "version": "0.0.1"
+        },
+        "runtime": "flutter",
+        "ownership": "SHARED_CONTROLLED",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "field-mobile",
+        "capability": "authentication",
+        "provider": {
+          "id": "synthetic-authentication",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "field-mobile",
+        "capability": "files",
+        "provider": {
+          "id": "synthetic-files",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "MATERIALIZE",
+        "component": "ops-web",
+        "adapter": {
+          "id": "synthetic-angular",
+          "version": "0.0.1"
+        },
+        "runtime": "angular",
+        "ownership": "SHARED_CONTROLLED",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "ops-web",
+        "capability": "authentication",
+        "provider": {
+          "id": "synthetic-authentication",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "ops-web",
+        "capability": "authorization",
+        "provider": {
+          "id": "synthetic-authorization",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "MATERIALIZE",
+        "component": "requester-web",
+        "adapter": {
+          "id": "synthetic-nextjs",
+          "version": "0.0.1"
+        },
+        "runtime": "nextjs",
+        "ownership": "SHARED_CONTROLLED",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "requester-web",
+        "capability": "authentication",
+        "provider": {
+          "id": "synthetic-authentication",
+          "version": "0.0.1"
+        }
+      },
+      {
+        "action": "BIND_CAPABILITY",
+        "component": "requester-web",
+        "capability": "files",
+        "provider": {
+          "id": "synthetic-files",
+          "version": "0.0.1"
+        }
+      }
+    ],
+    "unsupported": [
+      {
+        "component": "asteria-objects",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "async-worker",
+        "capability": "notifications",
+        "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      }
+    ],
+    "ownerWork": [
+      {
+        "component": "asteria-db",
+        "ownership": "EXTERNAL",
+        "team": "enistere-platform"
+      },
+      {
+        "component": "asteria-objects",
+        "ownership": "EXTERNAL",
+        "team": "enistere-platform"
+      },
+      {
+        "component": "async-worker",
+        "ownership": "OWNER_MANAGED",
+        "team": "asteria-backend"
+      },
+      {
+        "component": "authority-api",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-backend"
+      },
+      {
+        "component": "field-mobile",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-mobile"
+      },
+      {
+        "component": "ops-web",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-web"
+      },
+      {
+        "component": "requester-web",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-web"
+      }
+    ],
+    "proofObligations": [
+      {
+        "component": "async-worker",
+        "requirement": "FR-005"
+      },
+      {
+        "component": "async-worker",
+        "requirement": "FR-006"
+      },
+      {
+        "component": "async-worker",
+        "requirement": "NFR-001"
+      },
+      {
+        "component": "async-worker",
+        "requirement": "SEC-002"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "CON-001"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-001"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-002"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-003"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-004"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "SEC-001"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "SEC-002"
+      },
+      {
+        "component": "field-mobile",
+        "requirement": "FR-004"
+      },
+      {
+        "component": "ops-web",
+        "requirement": "FR-003"
+      },
+      {
+        "component": "requester-web",
+        "requirement": "FR-001"
+      },
+      {
+        "component": "requester-web",
+        "requirement": "FR-002"
+      },
+      {
+        "component": "requester-web",
+        "requirement": "UX-001"
+      }
+    ],
+    "digest": "sha256:ad0c721c0753a742fd53b6ba00ac3af3a0969332a26e2bde1955efe6541764f7"
+  }
+}

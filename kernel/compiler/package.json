@@ -1,0 +1,26 @@
+{
+  "name": "@enistere/foundation-kernel-compiler",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Enistere Foundation — E1 Kernel Façade and native compilation chain: System Closure → System IR → ResolvedSystem → ExecutionPlan, resolved against an extension catalog declared as data.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@enistere/foundation-kernel-contracts": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}

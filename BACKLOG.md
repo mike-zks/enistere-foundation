@@ -4,35 +4,32 @@
 
 ## Mission active
 
-**Aucune.** E0 — Contract Foundation (PASS), R0-C — Repository Realignment (ADR-093) et R0-D — repartir
-propre (ADR-094) sont terminées ; rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
+**Aucune.** E0 (PASS), R0-C (ADR-093), R0-D (ADR-094) et E1 — Kernel Façade (ADR-095) sont terminées ;
+rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## Prochaine mission unique
 
-### E1 — Kernel Façade (horizon R0), à redéfinir
+### E2 — Adapter Protocol v0 et premier adapter (horizon R0)
 
-La définition du document 06 (« legacy déterministe identique ») est caduque : il n'y a plus de pipeline
-historique à envelopper (ADR-094). Proposition à valider avant de lancer la mission :
-
-- **Objectif** : une façade headless unique `validate → resolve → plan`, utilisable par CLI et tests, qui
-  ne connaît que les contrats du Kernel.
-- **In scope** : `validate` sur un ensemble fermé (`validateContractSet`) ; sélection de la System
-  Definition en vigueur ; `resolve` natif et déterministe vers un modèle résolu (premier pas de l'IR
-  d'E3) : composants, interactions, capacités de plateforme demandées, environnements, avec
-  UNSUPPORTED explicite ; `plan` agnostique du framework (intentions de matérialisation, sans génération
-  de code) avec digest ; CLI minimale ; golden Asteria compilé de bout en bout, sans aucune limitation
-  cachée.
-- **Out of scope** : génération de code et adapters (E2), Control Plane, Workbench.
-- **Critères de PASS proposés** : même entrée → mêmes octets (resolve et plan) ; ensemble invalide jamais
-  résolu ; toute partie non résolue listée ; aucun nom de framework dans le Kernel (TA-04).
+- **Objectif** : un protocole d'adapter versionné (manifest + phases DESCRIBE → VALIDATE INTENT → RESOLVE
+  → PLAN → MATERIALIZE → VERIFY, document 03 §6.11) et **un** premier adapter écrit de zéro sur ce
+  protocole, sans rien hériter de l'itération supprimée (ADR-094).
+- **In scope** : schéma de manifest ; chargement des manifests → descripteurs du catalogue d'E1
+  (`validateCatalog` reste l'unique validation) ; phase MATERIALIZE produisant des artefacts dans un
+  espace de travail isolé, bornée par l'ownership du plan ; VERIFY produisant des EvidenceRecords ;
+  golden Asteria : au moins le composant `authority-api` matérialisé et vérifié.
+- **Out of scope** : second adapter et substitution (E8), Domain IR (E3), Control Plane, Workbench.
+- **Critères de PASS (document 06)** : discovery/resolve/plan/materialize/verify par manifest ; aucune
+  capability perdue ; aucun `if framework` dans le Kernel.
+- **À trancher avant de lancer** : le runtime du premier adapter (le golden Asteria prévoit `nestjs`
+  pour l'Authority API et l'Async Worker).
 
 ## En attente de validation humaine
 
-- **ARB-11 (bloquant)** : mettre à jour les checks requis du ruleset `protect-main` (`kernel`,
-  `secret-scan`, `docs`, `audit`).
 - ARB-08, ARB-09, ARB-12 : propositions dans
   [`docs/governance/ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
-- Pousser le tag `laboratory-final` (commit `f2590a8`) : le proxy de session refuse les tags.
+- Pousser le tag `laboratory-final` (commit `f2590a8`) : absent du dépôt distant au 2026-09-25 ; le proxy
+  de session refuse les tags.
 
 ## Dettes identifiées (non planifiées)
 

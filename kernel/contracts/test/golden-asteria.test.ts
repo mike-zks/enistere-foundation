@@ -19,7 +19,7 @@ const REPO_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
 test('the committed golden is byte-identical to a fresh build (no drift, no hand edit)', () => {
   const { files } = buildAsteriaGolden();
   const committed = ['contracts', 'evidence'].flatMap((folder) => readdirSync(`${GOLDEN_ROOT}${folder}`).map((name) => `${folder}/${name}`));
-  assert.deepEqual([...committed, 'expected/report.json'].sort(), Object.keys(files).sort());
+  assert.deepEqual([...committed, 'expected/compilation.json', 'expected/report.json'].sort(), Object.keys(files).sort());
   for (const [path, content] of Object.entries(files)) assert.equal(readGoldenFile(path), content, path);
 });
 
@@ -90,7 +90,7 @@ test('the Day-2 change is governed: pinned base, consistent changes, invalidated
   assert.equal(proposal.metadata.acceptance, undefined, 'an AI proposal is never self-accepted');
 });
 
-test('the kernel and the goldens import nothing outside kernel/ and goldens/', () => {
+test('kernel/, goldens/ and surfaces/ import nothing outside these trees', () => {
   const IMPORT = /(?:\bfrom\s+|\bimport\s*\(\s*|\bimport\s+|new URL\(\s*)['"]([^'"]+)['"]/g;
   const offenders: string[] = [];
   const walk = (dir: string): void => {
@@ -102,12 +102,13 @@ test('the kernel and the goldens import nothing outside kernel/ and goldens/', (
         for (const [, target] of readFileSync(path, 'utf8').matchAll(IMPORT)) {
           if (!target || !target.startsWith('.') || target.endsWith('/')) continue;
           const resolved = fileURLToPath(new URL(target, `file://${path}`));
-          if (!resolved.startsWith(`${REPO_ROOT}kernel/`) && !resolved.startsWith(`${REPO_ROOT}goldens/`)) offenders.push(`${path} -> ${target}`);
+          if (!['kernel/', 'goldens/', 'surfaces/'].some((root) => resolved.startsWith(`${REPO_ROOT}${root}`))) offenders.push(`${path} -> ${target}`);
         }
       }
     }
   };
   walk(`${REPO_ROOT}kernel`);
   walk(`${REPO_ROOT}goldens`);
+  walk(`${REPO_ROOT}surfaces`);
   assert.deepEqual(offenders, []);
 });

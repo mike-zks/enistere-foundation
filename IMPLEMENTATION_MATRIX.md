@@ -2,7 +2,7 @@
 
 > Couverture **prouvée** (document 05 §2E). Un contrat ou une capacité n'est VERIFIED que si une preuve
 > adaptée existe (test automatisé, golden, conformance, audit) — jamais sur déclaration. Mise à jour :
-> 2026-09-25, fin de R0-D (ADR-094 : itération précédente supprimée, statuts « Lab » retirés). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
+> 2026-09-25, fin de E1 (ADR-095 : Kernel Façade et chaîne de compilation native). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
 > CONFORMANT · VERIFIED (document 02 annexe B).
 
 ## Contrats E0 (A1–A7)
@@ -19,6 +19,18 @@
 | A7 EvidenceRecord | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `contracts.test.ts` (A7), `contract-set.test.ts` (péremption, historique) ; 9 fichiers `goldens/asteria/evidence/` | E0 | Produits par le checker du golden ; export de proof chain en E4 |
 | Golden Asteria (5 surfaces dont Async Worker) | Goldens | Oui | Oui | N/A | VERIFIED (golden byte-identique) | `golden-asteria.test.ts` ; `goldens/asteria/expected/report.json` ; job CI `kernel` | E0 | Ne dépend que du Kernel (test d'imports) ; aucune matérialisation avant E2 |
 
+## Compilation E1 (Kernel Façade)
+
+| Élément | Zone | Implemented | Tested | Production-ready | Niveau | Evidence | Mission | Notes |
+|---|---|---|---|---|---|---|---|---|
+| System Closure | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `kernel/compiler/test/compiler.test.ts` (fermeture exacte, digest sensible à chaque entrée) | E1 | Pas encore de record d'exécution persistant (E4) |
+| System IR | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (normalisation, indépendance à l'ordre) ; `goldens/asteria/expected/compilation.json` | E1 | Pas de Domain IR (E3) |
+| Catalogue d'extensions (données) | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `compiler.test.ts` (invalides, doublons, chevauchements refusés) | E1 | Descripteurs seulement ; manifests d'adapter en E2 |
+| Résolution (ResolvedSystem) | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (catalogue vide → UNSUPPORTED, repli tracé, capability sans fournisseur) ; golden PARTIAL | E1 | Politiques d'organisation non appliquées (E6) ; compatibilité de versions (E2) |
+| ExecutionPlan | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` ; `expected/compilation.json` | E1 | Aucun artefact de fichier ni écriture (E2) |
+| Kernel Façade `validate / resolve / plan` | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (ensemble/catalogue invalide jamais résolu, sélection, ambiguïté, déterminisme, TA-04) | E1 | — |
+| CLI `enistere-foundation` | Surfaces | Oui | Oui | N/A | VERIFIED (tests) | `surfaces/cli/test/cli.test.ts` (codes 0/1/2/64, sortie identique au golden) | E1 | Pas de distribution publiée |
+
 ## Product Capabilities (document 07)
 
 L'itération précédente (générateur, 7 starters, capabilities auth/rbac/files, CLI) a été supprimée
@@ -30,17 +42,17 @@ L'itération précédente (générateur, 7 starters, capabilities auth/rbac/file
 | CAP-02 Requirements Engineering | Knowledge & Decision / Control Plane | Partiel (contrat A1) | Oui (contrat) | Non | A1 | E0 → V1 | Pas de surface ni de workflow |
 | CAP-03 Architecture Intelligence & Decision Support | Knowledge & Decision / Control Plane | Partiel (contrat A2) | Oui (contrat) | Non | A2 | E0 → V1 | Pas d'évaluation de patterns |
 | CAP-04 Organization / Entity Governance | Knowledge & Decision / Control Plane, Kernel policy | Partiel (A3 dérivé) | Oui (contrat) | Non | A3 | E6, V2 | Entity Profiles/Policy Packs non modélisés |
-| CAP-05 System Definition | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A4) | Oui | Non | A4, golden | E0 → E3 | Pas encore d'IR ni de résolution |
+| CAP-05 System Definition | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A4 + closure + IR) | Oui | Non | A4, golden, `compiler.test.ts` | E0 → E3 | Pas de Domain IR |
 | CAP-06 Domain Contract & Business Semantics | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A5) | Oui | Non | A5, golden | E5 | Pas de projection vers un runtime |
-| CAP-07 Runtime & Technology Ecosystem | System Compilation / Registry, Adapters | Non | Non | Non | — | E2, E8 | Runtimes à réécrire comme adapters du protocole E2 |
+| CAP-07 Runtime & Technology Ecosystem | System Compilation / Registry, Adapters | Partiel (catalogue de descripteurs en données) | Oui (catalogue) | Non | `compiler.test.ts` (catalogue) | E2, E8 | Aucun adapter réel ; runtimes à écrire comme adapters du protocole E2 |
 | CAP-08 Platform Capabilities | System Compilation / Capability Adapters | Non | Non | Non | — | E2+ | À exprimer via manifests d'extension |
 | CAP-09 Design System & Experience Governance | Knowledge & Decision / Compilation | Non | Non | Non | — | E6 | `design-tokens.json` du doc 04 absent (CONTEXT D-5) |
-| CAP-10 System Compiler | System Compilation / Kernel, Engine | Non | Non | Non | — | E1, E3 | Aucune résolution ni plan ; E1 à redéfinir (BACKLOG) |
+| CAP-10 System Compiler | System Compilation / Kernel, Engine | Partiel (closure → IR → résolution → plan ; pas de matérialisation) | Oui | Non | `compiler.test.ts`, `expected/compilation.json` | E1 → E3 | MATERIALIZE/VERIFY en E2 |
 | CAP-11 AI Engineering Assistant | Transversal / AI Gateway | Non (invariants d'autorité IA seulement) | Oui (invariants) | Non | Invariants d'autorité IA dans A1–A7 (`authority.test.ts`) | V1+ | Pas d'AI Gateway ni d'AgentActionRecord |
 | CAP-12 Conformance, Evidence & Assurance | Assurance & Evolution / Kernel Evidence, Checkers | Partiel (contrat A7 + checker du golden) | Oui | Non | A7, `golden-asteria.test.ts` | E4 | Pas d'Evidence Graph ni de proof profiles |
 | CAP-13 Lifecycle & System Evolution | Assurance & Evolution / Engine, Workers | Partiel (contrat A6) | Oui (contrat) | Non | A6, cohérence et péremption | E7 | Pas de calcul d'impact |
 | CAP-14 Brownfield / Existing System Adoption | Assurance & Evolution / Workers, Observers | Non | Non | Non | — | V3 | Hors périmètre R0 |
-| CAP-15 Surfaces & Collaboration | Transversal / Surfaces | Non | Non | Non | — | E1, V1 | Pas de CLI, Workbench, API ni SDK Foundation |
+| CAP-15 Surfaces & Collaboration | Transversal / Surfaces | Partiel (CLI headless) | Oui | Non | `surfaces/cli/test/cli.test.ts` | E1, V1 | Pas de Workbench, API ni SDK |
 | CAP-16 Ecosystem, Registry & Distribution | Transversal / Registry | Non | Non | Non | — | V2–V4 | — |
 
 Aucune capacité n'est PRODUCTION_READY ; aucun service Foundation n'est déployé

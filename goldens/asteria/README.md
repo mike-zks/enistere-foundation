@@ -24,22 +24,29 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
 2. A2 `asteria-decisions@1` (5 décisions avec alternatives), A3 `asteria-context@1` (dérivé par le Kernel :
    précédence, verrou refusant l'IdP du client, dérogation W-001 datée), A5
    `asteria-service-requests@1` (types, opérations, invariants, événements, acceptance, facets).
-3. A4 `asteria@1` accepté, vérifié par le checker `asteria-golden-contract-check@0.1.0` (4 preuves).
+3. A4 `asteria@1` accepté, vérifié par le checker `asteria-golden-contract-check@0.1.0` (3 preuves).
 4. Day-2 : A6 `asteria-cr-001` (REVIEW_REQUIRED, APPLIED) déplace l'analyse des pièces jointes de l'API
-   vers le Worker → A4 `asteria@2` ; les 4 preuves de la révision 1 sont **invalidées** par une nouvelle
-   révision (append-only) ; 4 nouvelles preuves vérifient la révision 2.
+   vers le Worker → A4 `asteria@2` ; les 3 preuves de la révision 1 sont **invalidées** par une nouvelle
+   révision (append-only) ; 3 nouvelles preuves vérifient la révision 2.
 5. A6 `asteria-cr-002` : proposition IA de synchronisation pair-à-pair, classée **UNSUPPORTED**, restée
    PROPOSED — jamais acceptée par fallback.
+6. Compilation (E1) : la Kernel Façade compile `asteria@2` de bout en bout (closure → IR → résolution →
+   plan) contre le catalogue **synthétique** `sources/catalog.json`. Résultat **PARTIAL** : 5 composants
+   planifiés (dont l'Async Worker), la base de données connectée comme composant EXTERNAL, et deux
+   éléments **UNSUPPORTED** listés (object store sans adapter, capability `notifications` sans
+   fournisseur). Aucun adapter réel n'existe avant E2 : rien n'est matérialisé.
 
 ## Fichiers
 
 | Chemin | Nature |
 |---|---|
 | `source.ts` | Source d'autorat des contrats A1–A6 (aucun digest saisi à la main) |
-| `harness.ts` | Checker, sonde de compatibilité historique (lecture seule), construction du golden |
+| `harness.ts` | Checker, compilation par la Kernel Façade, construction du golden |
+| `sources/brief.md`, `sources/catalog.json` | Entrées écrites à la main : brief client synthétique, catalogue d'extensions synthétique |
 | `update.ts` | Régénération (`npm run golden:asteria:update`) ; refuse un ensemble invalide |
 | `contracts/*.json`, `evidence/*.json` | **Générés** — 8 contrats et 9 EvidenceRecords |
-| `expected/report.json` | **Généré** — digests, surfaces, traçabilité, changements, preuves, diagnostics |
+| `expected/compilation.json` | **Généré** — résultat de `plan` : closure, IR, ResolvedSystem, ExecutionPlan et digests (identique à la sortie de la CLI) |
+| `expected/report.json` | **Généré** — digests, surfaces, traçabilité, changements, preuves, compilation, diagnostics |
 
 Les tests du Kernel reconstruisent le golden et exigent une égalité **octet pour octet** avec les fichiers
 commités ; l'ensemble doit être valide sans erreur ni avertissement.

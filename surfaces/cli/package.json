@@ -1,0 +1,25 @@
+{
+  "name": "@enistere/foundation-cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Enistere Foundation — headless CLI over the Kernel Façade (validate, resolve, plan).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "bin": {
+    "enistere-foundation": "./src/cli.ts"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@enistere/foundation-kernel-compiler": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}

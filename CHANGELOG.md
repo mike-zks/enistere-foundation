@@ -4,6 +4,16 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E1 — Kernel Façade — 2026-09-25
+
+- Package `kernel/compiler` ([ADR-095](docs/adr/ADR-095-e1-kernel-facade.md)) : System Closure, System IR,
+  résolution contre un catalogue d'extensions en données, ExecutionPlan agnostique et façade
+  `validate` / `resolve` / `plan`.
+- CLI `surfaces/cli` (`enistere-foundation`) : codes de sortie 0 / 1 / 2 (PARTIAL) / 64.
+- Golden Asteria compilé de bout en bout contre un catalogue synthétique (`expected/compilation.json`,
+  PARTIAL, deux éléments UNSUPPORTED listés).
+- Registre de diagnostics : codes `CATALOG_*`, `RESOLVE_*`, `FACADE_*`. Tests : 74 (56 + 13 + 5).
+
 ### R0-D — Repartir propre — 2026-09-25
 
 - Suppression de l'itération précédente, jamais mise en production ni utilisée
