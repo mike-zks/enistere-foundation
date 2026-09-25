@@ -29,8 +29,8 @@ EvidenceRecord.
 1. **Suppression complète** de l'itération précédente, starters compris : `factory/`, `starters/`,
    `capabilities/`, `packages/`, `contracts/`, `deployment/`, `examples/`, `.dockerignore` et les
    workflows `api-runtime-ci`, `web-e2e-ci`, `registry-ci`, `factory-golden-runtime`, `web-angular-ci`.
-   Le dernier état reste consultable dans l'historique Git au commit `f2590a8` (tag local
-   `laboratory-final`, à pousser par le responsable : le proxy de session refuse les tags).
+   Le dernier état reste consultable dans l'historique Git au commit `f2590a8`, ancêtre de `main` : aucun
+   tag n'est nécessaire tant que l'historique de `main` n'est pas réécrit (protégé par le ruleset).
 2. **Une implémentation par concept, dans le Kernel.** Tout concept du produit (identité, digest,
    diagnostic, schéma, versionnement, modèle de système, preuve) a une seule implémentation, dans
    `kernel/`. Le golden Asteria ne dépend plus que du Kernel : la sonde `probeLegacy` et l'obligation
@@ -60,7 +60,8 @@ EvidenceRecord.
 - **Action humaine requise** : dans le ruleset `protect-main`, remplacer les huit checks requis
   (`api-contracts`, `api-client-fetch`, `ui-kit`, `web-nextjs`, `audit`, `api-runtime`, `web-e2e`,
   `api-smoke`) par `kernel`, `secret-scan`, `docs`, `audit`. Sans cela, aucune PR ne peut être mergée.
-- **Mise à jour humaine du dossier** (documents non modifiés par un agent) : document 03 §6.11 (les
+- **Mise à jour du dossier** (document 06 révisé en v1.1 par modifications suivies, à accepter par le
+  responsable ; document 03 restant) : document 03 §6.11 (les
   starters ne deviennent plus des reference extensions) ; document 06 §4.6 (plus de couche de
   compatibilité), §4.7 (les sept runtimes seront réintégrés comme nouveaux adapters), §6.8 E1 (gate
   « legacy déterministe identique ») et E10 (plus de legacy à basculer), gate R0 (« goldens legacy

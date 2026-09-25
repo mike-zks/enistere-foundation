@@ -21,7 +21,7 @@
 | ARB-09 | Livrables manquants du document 04 (`design-tokens.json`, maquettes) | Les fournir avant toute mission Workbench/design (E6, V1) | Design UX UI | Ouvert |
 | ARB-10 | Réécriture d'`AGENTS.md` et archivage de `MANDAT.md` | Valider par la revue de la PR de la mission E0 | Gouvernance | Tranché — PR #252 mergée ; règle du laboratoire remplacée par ADR-094 |
 | ARB-11 | Checks requis du ruleset `protect-main` | Remplacer les huit checks de l'ancienne CI par `kernel`, `secret-scan`, `docs`, `audit` | Responsable (GitHub) | Tranché — ruleset mis à jour (PR #254 mergée avec les quatre checks) |
-| ARB-12 | Passages du dossier contredits par ADR-094 | Réviser 03 §6.11 et 06 §4.6, §4.7, §6.8 (E1, E10), gate R0 | Gouvernance | Ouvert |
+| ARB-12 | Passages du dossier contredits par ADR-094 | Réviser 03 §6.11 et 06 §4.6, §4.7, §6.8 (E1, E10), gate R0 | Gouvernance | Partiel — 06 révisé en v1.1 (à accepter) ; 03 §6.11 restant |
 
 ---
 
@@ -136,3 +136,8 @@ docs du laboratoire ≈ 45 · 58 fichiers portant encore « Enistere OS ».
   « legacy → compatibility/import ») et la gate R0 (« goldens legacy préservés »).
 - **Recommandation** : réviser ces passages dans les `.docx` ; d'ici là, ADR-094 prévaut par décision
   explicite du responsable.
+- **Avancement** (2026-09-25, demande du responsable) : document 06 révisé en **v1.1** par modifications
+  suivies (auteur « Claude ») : fiche de contrôle, §2 (financement, repository expérimental, plan de
+  transition, règle de transition), §4.6 (« Pas de couche de compatibilité »), §4.7, définition du
+  cutover, scénario A, horizon R0, tableau 2 (E1, E2, E3, E10) et tableau 4 (gate R0). À relire et
+  accepter dans Word. Reste : document 03 §6.11.

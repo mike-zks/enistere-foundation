@@ -45,4 +45,4 @@ Aucun adapter n'existe avant l'Adapter Protocol (E2).
   `expected/compilation.json` (résultat de `plan`, identique à la sortie de la CLI).
 - Limites connues : pas de politique d'organisation appliquée à la résolution (runtimes autorisés par le
   contexte effectif : E6), pas de compatibilité de versions entre extensions (E2), pas de Domain IR (E3).
-- Mise à jour du document 06 §6.8 (gate E1, périmètre E3) à faire par le responsable (ARB-12).
+- Document 06 §6.8 (gate E1, périmètre E3) révisé en v1.1, modifications suivies à accepter (ARB-12).
