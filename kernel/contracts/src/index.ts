@@ -17,7 +17,7 @@ export * from './types.ts';
 export * from './identity.ts';
 export { authorityDiagnostics, type StateClass } from './authority.ts';
 export { CONTRACT_REGISTRY, type KindDefinition } from './registry.ts';
-export { COMMON_SCHEMA_FILE, SCHEMA_DIRECTORY, SCHEMA_FILES, readSchema, schemaDiagnostics } from './schema-validation.ts';
+export { COMMON_SCHEMA_FILE, SCHEMA_DIRECTORY, SCHEMA_FILES, jsonSchemaDiagnostics, readSchema, schemaDiagnostics } from './schema-validation.ts';
 export { validateContract, type ContractValidation, type ValidateOptions } from './validate.ts';
 export {
   collectRefs,

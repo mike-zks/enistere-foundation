@@ -1,0 +1,19 @@
+{
+  "protocol": "foundation.enistere.com/adapter-protocol/v0",
+  "id": "fixture-liar",
+  "extensionType": "RUNTIME_ADAPTER",
+  "version": "1.0.0",
+  "maintainer": "tests",
+  "supports": { "componentKinds": ["mobile-application"], "runtime": "flutter" },
+  "capabilities": [],
+  "execution": { "mode": "TRUSTED_IN_PROCESS" },
+  "permissions": { "filesystem": "WORKSPACE_WRITE", "network": "NONE", "secrets": "NONE" },
+  "tools": [{ "name": "node", "version": ">=22" }],
+  "determinism": "DETERMINISTIC",
+  "verification": [
+    { "id": "structure", "level": "STRUCTURAL", "statement": "Files match the inventory." },
+    { "id": "run", "level": "TOOLCHAIN", "statement": "A command succeeds." },
+    { "id": "probe", "level": "TOOLCHAIN", "statement": "The service answers GET /health with HTTP 200." }
+  ],
+  "entry": "./adapter.ts"
+}

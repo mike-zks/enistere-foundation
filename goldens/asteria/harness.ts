@@ -7,7 +7,9 @@
  *
  * The accepted system definition is then compiled end to end by the Kernel
  * Façade (closure → IR → resolution → plan) against the synthetic catalog
- * `sources/catalog.json` (no real adapter exists before E2).
+ * `sources/catalog.json` (the E1 proof), and against the real extensions of
+ * `extensions/` (E2): the artifacts each adapter plans are recorded, without
+ * any file being written.
  *
  * `buildAsteriaGolden()` is pure and deterministic: same sources, same kernel,
  * same bytes. `goldens/asteria/update.ts` writes its output; the kernel test
@@ -15,7 +17,9 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createKernelFacade, type PlanResult } from '../../kernel/compiler/src/index.ts';
+import { loadExtensions, planMaterialization } from '../../engine/materializer/src/index.ts';
 import {
   CURRENT_API_VERSION,
   CONTRACT_REGISTRY,
@@ -174,6 +178,23 @@ export function fileName(document: AnyContract): string {
 
 export const CATALOG_URL = new URL('./sources/catalog.json', import.meta.url);
 
+const EXTENSIONS = fileURLToPath(new URL('../../extensions/', import.meta.url));
+const host = await loadExtensions(EXTENSIONS);
+
+/** Compiles the golden set with the real extensions and records the adapters' artifact plans. */
+export function materializationOf(documents: readonly AnyContract[]): Record<string, unknown> {
+  const compilation = createKernelFacade().plan(documents, { catalog: host.catalog });
+  const { components, diagnostics } = planMaterialization(compilation, host);
+  return {
+    extensions: host.extensions.map((extension) => ({ id: extension.manifest.id, version: extension.manifest.version, source: extension.source })),
+    catalog: host.catalogDigest,
+    status: compilation.status,
+    plan: compilation.plan,
+    artifactPlans: components.map((component) => component.plan),
+    diagnostics: [...host.diagnostics, ...compilation.diagnostics, ...diagnostics],
+  };
+}
+
 /** Compiles the golden set with the Kernel Façade against the synthetic catalog. */
 export function compileAsteria(documents: readonly AnyContract[]): PlanResult {
   const catalog: unknown = JSON.parse(readFileSync(CATALOG_URL, 'utf8'));
@@ -274,6 +295,7 @@ export function buildAsteriaGolden(): AsteriaGolden {
   for (const document of documents) files[fileName(document)] = json(document);
   const compilation = compileAsteria(documents);
   files['expected/compilation.json'] = json(compilation);
+  files['expected/materialization.json'] = json(materializationOf(documents));
   files['expected/report.json'] = json(report(documents, validation, sd2, compilation));
   return { documents, validation, files };
 }

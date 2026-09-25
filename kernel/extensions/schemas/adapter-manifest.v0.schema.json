@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/adapter-protocol/v0/adapter-manifest.schema.json",
+  "title": "Enistere Foundation — Runtime Adapter manifest (Adapter Protocol v0)",
+  "description": "Declares what a runtime adapter realizes, how it runs, what it may touch and how its output is verified (document 03 §6.10–6.11, ADR-096).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["protocol", "id", "extensionType", "version", "maintainer", "supports", "capabilities", "execution", "permissions", "tools", "determinism", "verification", "entry"],
+  "properties": {
+    "$comment": { "type": "string" },
+    "protocol": { "const": "foundation.enistere.com/adapter-protocol/v0" },
+    "id": { "$ref": "#/$defs/name" },
+    "extensionType": { "const": "RUNTIME_ADAPTER" },
+    "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-[0-9A-Za-z.-]+)?$" },
+    "maintainer": { "type": "string", "minLength": 1, "maxLength": 200 },
+    "supports": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["componentKinds", "runtime"],
+      "properties": {
+        "componentKinds": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/name" } },
+        "runtime": { "$ref": "#/$defs/name" }
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/name" }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": { "mode": { "enum": ["TRUSTED_IN_PROCESS", "ISOLATED_PROCESS", "CONTAINER", "REMOTE_WORKER", "EXTERNAL_SERVICE"] } }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filesystem", "network", "secrets"],
+      "properties": {
+        "filesystem": { "const": "WORKSPACE_WRITE" },
+        "network": { "enum": ["NONE", "TOOLCHAIN_ONLY"] },
+        "secrets": { "const": "NONE" }
+      }
+    },
+    "tools": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "version"],
+        "properties": { "name": { "$ref": "#/$defs/name" }, "version": { "type": "string", "minLength": 1, "maxLength": 64 } }
+      }
+    },
+    "determinism": { "const": "DETERMINISTIC" },
+    "verification": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "level", "statement"],
+        "properties": {
+          "id": { "$ref": "#/$defs/name" },
+          "level": { "enum": ["STRUCTURAL", "TOOLCHAIN"] },
+          "statement": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    },
+    "entry": { "type": "string", "pattern": "^\\./[A-Za-z0-9_./-]+\\.(ts|js|mjs)$" }
+  },
+  "$defs": {
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*$" }
+  }
+}

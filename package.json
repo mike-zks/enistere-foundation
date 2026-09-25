@@ -6,7 +6,10 @@
   "license": "UNLICENSED",
   "workspaces": [
     "kernel/*",
-    "surfaces/*"
+    "engine/*",
+    "extensions/runtimes/*",
+    "surfaces/*",
+    "goldens"
   ],
   "scripts": {
     "foundation:test": "npm run test --workspaces --if-present",

@@ -10,16 +10,16 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { buildAsteriaGolden, SURFACES } from '../../../goldens/asteria/harness.ts';
-import { fileDigest, validateContractSet, type EvidenceRecord, type SystemDefinition } from '../src/index.ts';
-import { GOLDEN_ROOT, golden, loadGolden, readGoldenFile } from './fixtures.ts';
+import { buildAsteriaGolden, SURFACES } from '../asteria/harness.ts';
+import { fileDigest, validateContractSet, type EvidenceRecord, type SystemDefinition } from '../../kernel/contracts/src/index.ts';
+import { GOLDEN_ROOT, golden, loadGolden, readGoldenFile } from '../../kernel/contracts/test/fixtures.ts';
 
-const REPO_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
+const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 
 test('the committed golden is byte-identical to a fresh build (no drift, no hand edit)', () => {
   const { files } = buildAsteriaGolden();
   const committed = ['contracts', 'evidence'].flatMap((folder) => readdirSync(`${GOLDEN_ROOT}${folder}`).map((name) => `${folder}/${name}`));
-  assert.deepEqual([...committed, 'expected/compilation.json', 'expected/report.json'].sort(), Object.keys(files).sort());
+  assert.deepEqual([...committed, 'expected/compilation.json', 'expected/materialization.json', 'expected/report.json'].sort(), Object.keys(files).sort());
   for (const [path, content] of Object.entries(files)) assert.equal(readGoldenFile(path), content, path);
 });
 
@@ -90,25 +90,56 @@ test('the Day-2 change is governed: pinned base, consistent changes, invalidated
   assert.equal(proposal.metadata.acceptance, undefined, 'an AI proposal is never self-accepted');
 });
 
-test('kernel/, goldens/ and surfaces/ import nothing outside these trees', () => {
+/**
+ * Dependency direction between zones (document 03 §6.19): the Kernel depends
+ * on nothing else; the Engine on the Kernel; extensions on the Kernel only
+ * (the Engine reaches them through their manifests, never by import); surfaces
+ * and goldens compose the rest.
+ */
+const ALLOWED: Readonly<Record<string, readonly string[]>> = Object.freeze({
+  kernel: ['kernel'],
+  engine: ['kernel', 'engine'],
+  extensions: ['kernel', 'extensions'],
+  surfaces: ['kernel', 'engine', 'surfaces'],
+  goldens: ['kernel', 'engine', 'goldens'],
+});
+const PACKAGE_ZONE: Readonly<Record<string, string>> = Object.freeze({
+  '@enistere/foundation-kernel-': 'kernel',
+  '@enistere/foundation-engine-': 'engine',
+  '@enistere/foundation-adapter-': 'extensions',
+  '@enistere/foundation-cli': 'surfaces',
+});
+const zoneOfPackage = (name: string): string | undefined => Object.entries(PACKAGE_ZONE).find(([prefix]) => name.startsWith(prefix))?.[1];
+
+test('each zone imports only the zones it may depend on (relative paths and packages)', () => {
   const IMPORT = /(?:\bfrom\s+|\bimport\s*\(\s*|\bimport\s+|new URL\(\s*)['"]([^'"]+)['"]/g;
   const offenders: string[] = [];
-  const walk = (dir: string): void => {
+  const walk = (zone: string, dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       if (entry.name === 'node_modules') continue;
       const path = `${dir}/${entry.name}`;
-      if (entry.isDirectory()) walk(path);
-      else if (/\.(mjs|js|ts)$/.test(entry.name)) {
+      if (entry.isDirectory()) walk(zone, path);
+      else if (entry.name === 'package.json') {
+        const manifest = JSON.parse(readFileSync(path, 'utf8')) as { dependencies?: Record<string, string> };
+        for (const name of Object.keys(manifest.dependencies ?? {})) {
+          const target = zoneOfPackage(name);
+          if (target !== undefined && !ALLOWED[zone]!.includes(target)) offenders.push(`${path} depends on ${name}`);
+        }
+      } else if (/\.(mjs|js|ts)$/.test(entry.name)) {
         for (const [, target] of readFileSync(path, 'utf8').matchAll(IMPORT)) {
-          if (!target || !target.startsWith('.') || target.endsWith('/')) continue;
+          if (!target) continue;
+          if (target.startsWith('@enistere/')) {
+            const packageZone = zoneOfPackage(target);
+            if (packageZone !== undefined && !ALLOWED[zone]!.includes(packageZone)) offenders.push(`${path} -> ${target}`);
+            continue;
+          }
+          if (!target.startsWith('.') || target.endsWith('/')) continue;
           const resolved = fileURLToPath(new URL(target, `file://${path}`));
-          if (!['kernel/', 'goldens/', 'surfaces/'].some((root) => resolved.startsWith(`${REPO_ROOT}${root}`))) offenders.push(`${path} -> ${target}`);
+          if (!ALLOWED[zone]!.some((root) => resolved.startsWith(`${REPO_ROOT}${root}/`))) offenders.push(`${path} -> ${target}`);
         }
       }
     }
   };
-  walk(`${REPO_ROOT}kernel`);
-  walk(`${REPO_ROOT}goldens`);
-  walk(`${REPO_ROOT}surfaces`);
+  for (const zone of Object.keys(ALLOWED)) walk(zone, `${REPO_ROOT}${zone}`);
   assert.deepEqual(offenders, []);
 });

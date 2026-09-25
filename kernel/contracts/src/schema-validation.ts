@@ -10,7 +10,7 @@
 import { readFileSync } from 'node:fs';
 import Ajv2020 from 'ajv/dist/2020.js';
 import type { ErrorObject, ValidateFunction } from 'ajv/dist/2020.js';
-import { diagnostic, type Diagnostic } from './primitives/diagnostics.ts';
+import { diagnostic, type Diagnostic, type DiagnosticCode, type DiagnosticLayer } from './primitives/diagnostics.ts';
 import type { ContractKind } from './primitives/refs.ts';
 
 export const SCHEMA_DIRECTORY = new URL('../schemas/v1alpha1/', import.meta.url);
@@ -63,6 +63,37 @@ export function schemaDiagnostics(kind: ContractKind, document: unknown, ref?: s
   return (validate.errors ?? []).map((error) =>
     diagnostic('CONTRACT_SCHEMA_VIOLATION', describe(error), {
       ref,
+      path: error.instancePath || '/',
+      details: { keyword: error.keyword, schemaPath: error.schemaPath },
+    }),
+  );
+}
+
+/**
+ * Validates a value against any other published JSON Schema of the Foundation
+ * (for instance the adapter manifest), with the same interpreter and the same
+ * diagnostic shape as the contract schemas. Compiled schemas are cached by
+ * their `$id`.
+ */
+const extraValidators = new Map<string, ValidateFunction>();
+
+export function jsonSchemaDiagnostics(
+  schema: Record<string, unknown>,
+  value: unknown,
+  options: { code: DiagnosticCode; layer?: DiagnosticLayer; ref?: string },
+): Diagnostic[] {
+  const id = schema.$id;
+  if (typeof id !== 'string') throw new Error('schema must declare an $id');
+  let validate = extraValidators.get(id);
+  if (!validate) {
+    validate = new Ajv2020.default({ allErrors: true, strict: true, strictTypes: false }).compile(schema);
+    extraValidators.set(id, validate);
+  }
+  if (validate(value)) return [];
+  return (validate.errors ?? []).map((error) =>
+    diagnostic(options.code, describe(error), {
+      ref: options.ref,
+      layer: options.layer,
       path: error.instancePath || '/',
       details: { keyword: error.keyword, schemaPath: error.schemaPath },
     }),

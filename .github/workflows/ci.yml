@@ -1,7 +1,7 @@
 name: CI
 
-# CI minimale (ADR-094) — quatre jobs aux noms stables, qui sont les checks requis
-# de la branche protégée : kernel, secret-scan, docs, audit. Aucun déploiement,
+# CI minimale (ADR-094, ADR-096) — jobs aux noms stables, qui sont les checks requis
+# de la branche protégée : kernel, adapters, secret-scan, docs, audit. Aucun déploiement,
 # registry, image, secret ni publication.
 
 on:
@@ -40,6 +40,40 @@ jobs:
           npm run golden:asteria:update
           git status --porcelain goldens/
           test -z "$(git status --porcelain goldens/)"
+
+  # Premier adapter (E2, ADR-096) : matérialise l'Authority API du golden Asteria puis la vérifie
+  # réellement (installation, build, démarrage + GET /health, audit). Chaque vérification devient un
+  # EvidenceRecord, publié en artefact.
+  adapters:
+    name: adapters
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: matérialisation (golden Asteria, extensions réelles)
+        run: |
+          set +e
+          node surfaces/cli/src/cli.ts materialize goldens/asteria/contracts goldens/asteria/evidence \
+            --extensions extensions --out "$RUNNER_TEMP/asteria-ws" > "$RUNNER_TEMP/materialize.json"
+          code=$?
+          cat "$RUNNER_TEMP/materialize.json"
+          # 2 = PARTIAL attendu : les composants sans adapter restent UNSUPPORTED et listés.
+          test "$code" -eq 2
+      - name: vérification structurelle et toolchain
+        run: |
+          node surfaces/cli/src/cli.ts verify "$RUNNER_TEMP/asteria-ws" --extensions extensions \
+            --toolchain --environment ci --evidence-out "$RUNNER_TEMP/evidence"
+      - name: EvidenceRecords
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: adapters-evidence
+          path: ${{ runner.temp }}/evidence
+          if-no-files-found: ignore
 
   # Analyse de secrets (ADR-073) sur tout l'historique : un secret retiré du HEAD
   # reste exposé dans les commits.

@@ -1,12 +1,13 @@
 {
-  "name": "@enistere/foundation-cli",
+  "name": "@enistere/foundation-engine-materializer",
   "version": "0.1.0",
   "private": true,
-  "description": "Enistere Foundation \u2014 headless CLI over the Kernel Fa\u00e7ade and the Engine (validate, resolve, plan, materialize, verify).",
+  "description": "Enistere Foundation — E2 Engine: extension host, MATERIALIZE under the ownership rule, VERIFY producing EvidenceRecords.",
   "license": "UNLICENSED",
   "type": "module",
-  "bin": {
-    "enistere-foundation": "./src/cli.ts"
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts"
   },
   "engines": {
     "node": ">=22.18"
@@ -16,9 +17,9 @@
     "test": "node --test test/*.test.ts"
   },
   "dependencies": {
-    "@enistere/foundation-engine-materializer": "0.1.0",
     "@enistere/foundation-kernel-compiler": "0.1.0",
-    "@enistere/foundation-kernel-contracts": "0.1.0"
+    "@enistere/foundation-kernel-contracts": "0.1.0",
+    "@enistere/foundation-kernel-extensions": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

@@ -1,51 +1,83 @@
 #!/usr/bin/env node
 /**
- * enistere-foundation — headless CLI over the Kernel Façade (surface only:
- * reading files, printing JSON and choosing the exit code; every decision is
- * the façade's).
+ * enistere-foundation — headless CLI over the Kernel Façade and the Engine
+ * (surface only: reading files, printing JSON and choosing the exit code;
+ * every decision belongs to the façade, the extension host and the
+ * materializer).
  *
- *   enistere-foundation <validate|resolve|plan> <file|directory>... [--catalog <file>] [--definition <id>]
+ *   enistere-foundation <validate|resolve|plan> <contracts>... [--catalog <file> | --extensions <dir>] [--definition <id>]
+ *   enistere-foundation materialize <contracts>... --extensions <dir> --out <workspace> [--definition <id>]
+ *   enistere-foundation verify <workspace> --extensions <dir> [--toolchain] [--evidence-out <dir>] [--environment local|ci]
  *
- * Exit codes: 0 VALID / RESOLVED / PLANNED · 1 INVALID · 2 PARTIAL (UNSUPPORTED
- * items are listed in the output) · 64 usage error.
+ * Exit codes: 0 VALID / RESOLVED / PLANNED / MATERIALIZED / PASS · 1 INVALID or
+ * FAIL · 2 PARTIAL (UNSUPPORTED items are listed) · 3 CONFLICT (nothing was
+ * overwritten) · 64 usage error.
  */
 
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import process from 'node:process';
 
-import { createKernelFacade } from '@enistere/foundation-kernel-compiler';
+import { createKernelFacade, type PlanResult } from '@enistere/foundation-kernel-compiler';
+import { hasErrors, sortDiagnostics, type Diagnostic } from '@enistere/foundation-kernel-contracts';
+import { loadExtensions, materialize, verifyWorkspace, type ExtensionHost } from '@enistere/foundation-engine-materializer';
 
-const USAGE = 'usage: enistere-foundation <validate|resolve|plan> <file|directory>... [--catalog <file>] [--definition <id>]';
-const COMMANDS = ['validate', 'resolve', 'plan'] as const;
+const USAGE = [
+  'usage: enistere-foundation <validate|resolve|plan> <contracts>... [--catalog <file> | --extensions <dir>] [--definition <id>]',
+  '       enistere-foundation materialize <contracts>... --extensions <dir> --out <workspace> [--definition <id>]',
+  '       enistere-foundation verify <workspace> --extensions <dir> [--toolchain] [--evidence-out <dir>] [--environment local|ci]',
+].join('\n');
+const COMMANDS = ['validate', 'resolve', 'plan', 'materialize', 'verify'] as const;
 type Command = (typeof COMMANDS)[number];
+const VALUE_OPTIONS = ['--catalog', '--extensions', '--definition', '--out', '--evidence-out', '--environment'] as const;
+type ValueOption = (typeof VALUE_OPTIONS)[number];
 
 export interface Invocation {
   command: Command;
   paths: string[];
   catalog?: string;
+  extensions?: string;
   definition?: string;
+  out?: string;
+  evidenceOut?: string;
+  environment?: 'local' | 'ci';
+  toolchain: boolean;
 }
+
+const FIELD: Readonly<Record<ValueOption, 'catalog' | 'extensions' | 'definition' | 'out' | 'evidenceOut' | 'environment'>> = {
+  '--catalog': 'catalog',
+  '--extensions': 'extensions',
+  '--definition': 'definition',
+  '--out': 'out',
+  '--evidence-out': 'evidenceOut',
+  '--environment': 'environment',
+};
 
 export function parseArguments(argv: readonly string[]): Invocation | string {
   const [command, ...rest] = argv;
   if (!COMMANDS.includes(command as Command)) return USAGE;
-  const invocation: Invocation = { command: command as Command, paths: [] };
+  const invocation: Invocation = { command: command as Command, paths: [], toolchain: false };
   for (let index = 0; index < rest.length; index += 1) {
     const argument = rest[index] as string;
-    if (argument === '--catalog' || argument === '--definition') {
+    if ((VALUE_OPTIONS as readonly string[]).includes(argument)) {
       const value = rest[index + 1];
       if (value === undefined || value.startsWith('--')) return `${argument} requires a value\n${USAGE}`;
-      if (argument === '--catalog') invocation.catalog = value;
-      else invocation.definition = value;
+      (invocation as unknown as Record<string, string>)[FIELD[argument as ValueOption]] = value;
       index += 1;
+    } else if (argument === '--toolchain') {
+      invocation.toolchain = true;
     } else if (argument.startsWith('--')) {
       return `unknown option ${argument}\n${USAGE}`;
     } else {
       invocation.paths.push(argument);
     }
   }
-  if (invocation.paths.length === 0) return `no contract file or directory given\n${USAGE}`;
+  if (invocation.paths.length === 0) return `no input given\n${USAGE}`;
+  if (invocation.catalog !== undefined && invocation.extensions !== undefined) return `--catalog and --extensions are exclusive\n${USAGE}`;
+  if (invocation.environment !== undefined && !['local', 'ci'].includes(invocation.environment)) return `--environment must be local or ci\n${USAGE}`;
+  if ((invocation.command === 'materialize' || invocation.command === 'verify') && invocation.extensions === undefined) return `${invocation.command} requires --extensions\n${USAGE}`;
+  if (invocation.command === 'materialize' && invocation.out === undefined) return `materialize requires --out\n${USAGE}`;
+  if (invocation.command === 'verify' && invocation.paths.length !== 1) return `verify takes one workspace\n${USAGE}`;
   return invocation;
 }
 
@@ -58,28 +90,87 @@ function jsonFiles(path: string): string[] {
 }
 
 const readJson = (path: string): unknown => JSON.parse(readFileSync(path, 'utf8'));
+const print = (value: unknown): string => JSON.stringify(value, null, 2);
+const statusCode = (status: string): number => ({ INVALID: 1, FAIL: 1, PARTIAL: 2, CONFLICT: 3 })[status] ?? 0;
 
-export function run(argv: readonly string[]): { code: number; output: string } {
+/** Compiles with the given catalog, or with the catalog of the loaded extensions. */
+function compile(invocation: Invocation, documents: unknown[], catalog: unknown, host: ExtensionHost | null, stage: 'resolve' | 'plan'): PlanResult | ReturnType<ReturnType<typeof createKernelFacade>['resolve']> {
+  const facade = createKernelFacade();
+  const options = { catalog: host ? (host.catalog ?? { invalid: true }) : catalog, definition: invocation.definition };
+  const result = stage === 'plan' ? facade.plan(documents, options) : facade.resolve(documents, options);
+  if (!host) return result;
+  const diagnostics = sortDiagnostics([...result.diagnostics, ...host.diagnostics]);
+  return { ...result, diagnostics, status: hasErrors(host.diagnostics) ? 'INVALID' : result.status } as typeof result;
+}
+
+export async function run(argv: readonly string[]): Promise<{ code: number; output: string }> {
   const invocation = parseArguments(argv);
   if (typeof invocation === 'string') return { code: 64, output: invocation };
-  let documents: unknown[];
+  let documents: unknown[] = [];
   let catalog: unknown;
+  let host: ExtensionHost | null = null;
   try {
-    documents = invocation.paths.flatMap(jsonFiles).map(readJson);
+    if (invocation.command !== 'verify') documents = invocation.paths.flatMap(jsonFiles).map(readJson);
     catalog = invocation.catalog === undefined ? undefined : readJson(invocation.catalog);
+    if (invocation.extensions !== undefined) host = await loadExtensions(invocation.extensions);
   } catch (error) {
     return { code: 64, output: `cannot read input: ${error instanceof Error ? error.message : String(error)}` };
   }
-  const facade = createKernelFacade();
-  const options = { catalog, definition: invocation.definition };
-  const result =
-    invocation.command === 'validate' ? facade.validate(documents) : invocation.command === 'resolve' ? facade.resolve(documents, options) : facade.plan(documents, options);
-  const code = result.status === 'INVALID' ? 1 : result.status === 'PARTIAL' ? 2 : 0;
-  return { code, output: JSON.stringify(result, null, 2) };
+
+  if (invocation.command === 'validate') {
+    const result = createKernelFacade().validate(documents);
+    return { code: statusCode(result.status), output: print(result) };
+  }
+  if (invocation.command === 'resolve' || invocation.command === 'plan') {
+    const result = compile(invocation, documents, catalog, host, invocation.command);
+    return { code: statusCode(result.status), output: print(result) };
+  }
+
+  const extensionHost = host as ExtensionHost;
+  if (invocation.command === 'materialize') {
+    const planned = compile(invocation, documents, catalog, extensionHost, 'plan') as PlanResult;
+    if (planned.status === 'INVALID') return { code: 1, output: print({ stage: 'materialize', status: 'INVALID', definition: planned.definition, records: [], diagnostics: planned.diagnostics }) };
+    const { records, diagnostics } = materialize(planned, extensionHost, invocation.out as string);
+    const all: Diagnostic[] = sortDiagnostics([...planned.diagnostics, ...diagnostics]);
+    const status = records.some((record) => record.status === 'CONFLICT')
+      ? 'CONFLICT'
+      : hasErrors(all)
+        ? 'INVALID'
+        : planned.status === 'PARTIAL' || diagnostics.length > 0
+          ? 'PARTIAL'
+          : 'MATERIALIZED';
+    const output = { stage: 'materialize', status, definition: planned.definition, plan: planned.plan?.digest ?? null, unsupported: planned.plan?.unsupported ?? [], records, diagnostics: all };
+    return { code: statusCode(status), output: print(output) };
+  }
+
+  // verify
+  const observedAt = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const environment = invocation.environment === 'ci' ? { id: 'ci', kind: 'CI' as const } : { id: 'local', kind: 'LOCAL' as const };
+  const { evidence, diagnostics } = await verifyWorkspace(invocation.paths[0] as string, extensionHost, { toolchain: invocation.toolchain, observedAt, environment });
+  if (invocation.evidenceOut !== undefined) {
+    mkdirSync(invocation.evidenceOut, { recursive: true });
+    for (const record of evidence) writeFileSync(join(invocation.evidenceOut, `evidence-record--${record.metadata.id}--r${record.metadata.revision}.json`), `${print(record)}\n`);
+  }
+  const all = sortDiagnostics([...extensionHost.diagnostics, ...diagnostics]);
+  const passed = evidence.length > 0 && evidence.every((record) => record.spec.result === 'PASS') && !hasErrors(all);
+  const output = {
+    stage: 'verify',
+    status: passed ? 'PASS' : 'FAIL',
+    toolchain: invocation.toolchain,
+    evidence: evidence.map((record) => ({
+      id: record.metadata.id,
+      component: record.spec.subject.component ?? null,
+      obligation: record.spec.obligation.id,
+      result: record.spec.result,
+      summary: record.spec.summary ?? null,
+    })),
+    diagnostics: all,
+  };
+  return { code: passed ? 0 : 1, output: print(output) };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const { code, output } = run(process.argv.slice(2));
+  const { code, output } = await run(process.argv.slice(2));
   (code === 64 ? process.stderr : process.stdout).write(`${output}\n`);
   process.exitCode = code;
 }
