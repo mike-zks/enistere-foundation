@@ -50,7 +50,7 @@ décomposition P1–P10 (ADR-092).
 | `node factory/quality/scripts/docs-link-check.mjs` (défaut + fichiers racine, kernel, goldens) | OK |
 | `node factory/quality/scripts/audit-check.mjs . --targets nestjs,nextjs` | 0 advisory non couvert |
 | `node factory/quality/scripts/secret-allowlist-check.mjs` | OK |
-| gitleaks 8.30.1 (binaire épinglé, checksum vérifié), historique complet | Voir le rapport de mission (exécuté après commit) |
+| gitleaks 8.30.1 (binaire épinglé, checksum vérifié), historique complet (`--log-opts=--all`) | 128 commits, **no leaks found** |
 
 **NOT RUN** : builds/lint/tests `ui-kit` et `web-nextjs`, workflows runtime (`api-runtime-ci`,
 `web-angular-ci`, `web-e2e-ci`, `factory-golden-runtime`, `registry-ci`) — non touchés par la mission,
