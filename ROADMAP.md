@@ -1,6 +1,6 @@
 # ROADMAP — Enistere Foundation
 
-> Résumé opérationnel du [document 06 — Versions et feuille de route](docs/06%20—%20Versions%20et%20feuille%20de%20route%20—%20ENISTERE%20FOUNDATION.docx),
+> Résumé opérationnel du [document 06 — Versions et feuille de route](docs/06%20—%20Versions%20et%20feuille%20de%20route%20—%20ENISTERE%20FOUNDATION.docx) (v1.1, septembre 2026 : ADR-094/095 intégrés, modifications suivies à accepter),
 > qui fait autorité. Règle : **RELEASE GATE OVER CALENDAR** — la preuve autorise le passage, la date
 > structure la gestion sans créer le statut. Changer l'ordre des missions ou des gates exige une
 > validation humaine.
@@ -32,7 +32,7 @@
 | E7 | V1 | Day-2 Change Intelligence | Impact/diff avant apply ; Evidence périmée visible | — |
 | E8 | V1 | Second Adapter substitution | Aucun `if framework` dans le Kernel | — |
 | E9 | V1 | Competitive golden run | CONTINUE / SIMPLIFY / REPOSITION / STOP | — |
-| E10 | Sortie V1 | Canonical cutover | Sans objet depuis ADR-094 (plus de chemin historique) ; à redéfinir avec le dossier (ARB-12) | — |
+| E10 | Sortie V1 | Canonical cutover | Seulement si E7–E9 suffisent ; aucun legacy à basculer (ADR-094, document 06 v1.1) | — |
 
 ## Tracks continus (document 06 §6.9)
 

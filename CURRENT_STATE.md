@@ -30,8 +30,8 @@ Aucun.
 
 ## Blocked
 
-Aucun. Le tag `laboratory-final` (commit `f2590a8`) n'est toujours pas sur le dépôt distant (le proxy de
-session refuse les tags) : `git tag laboratory-final f2590a8 && git push origin laboratory-final`.
+Aucun. Le tag `laboratory-final` est abandonné : le commit `f2590a8` reste atteignable comme ancêtre de
+`main` (ADR-094).
 
 ## Tests (exécutés le 2026-09-25 sur `claude/e1-kernel-facade`)
 
@@ -59,7 +59,7 @@ le job `secret-scan`).
 - Pas de Domain IR (E3) ; les items de domaine sont seulement épinglés dans l'IR.
 - Pas de record d'exécution persistant (closure, plan) ni d'Evidence de compilation : E4.
 - Aucun Control Plane, Workbench, Worker, Registry ni AI Gateway.
-- Passages du dossier contredits par ADR-094/095, à réviser (ARB-12) ; divergences D-2 à D-5 et D-9.
+- Document 06 révisé en v1.1 (modifications suivies à accepter) ; document 03 §6.11 encore à réviser (ARB-12) ; divergences D-2 à D-5.
 
 ## Decisions
 

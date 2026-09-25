@@ -4,6 +4,12 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### Document 06 v1.1 — 2026-09-25
+
+- Document 06 (Versions et feuille de route) révisé en v1.1 par modifications suivies : retrait du
+  laboratoire (ADR-094) et gate E1 redéfinie, E2 « premier adapter », E3 « Domain IR » (ADR-095), gate R0
+  sur le golden Asteria. Le tag `laboratory-final` est abandonné (commit `f2590a8` ancêtre de `main`).
+
 ### E1 — Kernel Façade — 2026-09-25
 
 - Package `kernel/compiler` ([ADR-095](docs/adr/ADR-095-e1-kernel-facade.md)) : System Closure, System IR,
