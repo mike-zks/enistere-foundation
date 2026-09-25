@@ -25,12 +25,11 @@
 
 ## En attente de validation humaine
 
-| Sujet | Propriétaire | Référence |
-|---|---|---|
-| Décomposition P1–P10 du gate E0 | Produit / Pilotage | ADR-092, CONTEXT D-1 |
-| Renommage du dépôt GitHub et domaines `*.foundation.enistere.com` | Direction + plateforme | ADR-091, CONTEXT D-6 |
-| Correction doc 05 §2B (Ubuntu, RabbitMQ) | Gouvernance | CONTEXT D-2, D-3 |
-| Fourniture de `design-tokens.json` et des maquettes du doc 04 | Design UX UI | CONTEXT D-5 |
+Registre détaillé avec options et recommandations :
+[`docs/governance/ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md) (ARB-01 à ARB-10). Le point
+structurant est ARB-02 : insérer une mission **R0-C — Repository Realignment** (retrait/archivage des
+actifs morts ou non conformes, alignement du nommage) avant E1. Tant qu'il n'est pas tranché, la
+prochaine mission reste E1, conformément au document 06.
 
 ## Dettes identifiées (non planifiées)
 

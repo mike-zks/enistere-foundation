@@ -24,7 +24,7 @@ observabilité ou déploiement.
 ## Décisions et gouvernance
 
 - [`adr/`](adr/README.md) — registre des ADR (ADR-091+ : Foundation ; ADR-044 → 090 : laboratoire).
-- [`governance/`](governance/SOURCE_OF_TRUTH.md) — source de vérité, Definition of Done,
+- [`governance/`](governance/SOURCE_OF_TRUTH.md) — source de vérité, [arbitrages en attente](governance/ARBITRATIONS.md), Definition of Done,
   [production readiness](governance/PRODUCTION_READINESS.md), [registre des risques](governance/RISK_REGISTER.md),
   [dépendances critiques](governance/DEPENDENCIES.md), politiques opérationnelles.
 - [`runbooks/`](runbooks/README.md) — exploitation (déploiement, rollback, restauration, rotation, local).

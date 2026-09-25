@@ -80,6 +80,8 @@ en compatibilité, archivage sans suppression) et ADR-092 (E0 Contract Foundatio
 
 ## Divergences documentaires ouvertes
 
+Arbitrages associés et propositions : [`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
+
 | # | Divergence | Proposition | Arbitrage |
 |---|---|---|---|
 | D-1 | Doc 06 exige « P1–P10 PASS » pour E0 sans les définir ; le brief E0 (n° 28) est absent du dossier. | Décomposition proposée dans ADR-092 ; critère opposable retenu : doc 05 §8.1. | Validation humaine requise (Produit / Pilotage) |
