@@ -13,6 +13,13 @@
 
 export const DIAGNOSTIC_LAYER = 'kernel.contracts';
 
+/**
+ * Layers allowed to emit diagnostics: the contract layer (default), the
+ * compiler (closure, IR, catalog, resolution, plan) and the Kernel Façade.
+ */
+export const DIAGNOSTIC_LAYERS = ['kernel.contracts', 'kernel.compiler', 'kernel.facade'] as const;
+export type DiagnosticLayer = (typeof DIAGNOSTIC_LAYERS)[number];
+
 /** Failure classes of document 03 §6.18 used by the contract layer. */
 export const FAILURE_CLASSES = [
   'INVALID_INPUT',
@@ -119,6 +126,18 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   EVIDENCE_SECRET_IN_URI: spec('POLICY_DENIED', 'error', 'Artifacts are referenced without credentials; secrets never enter Evidence.'),
   EVIDENCE_WAIVER_WITHOUT_FAILURE: spec('INVALID_INPUT', 'warning', 'A waiver only makes sense for a FAIL or INCONCLUSIVE result.'),
   EVIDENCE_STALE: spec('EVIDENCE_INCONCLUSIVE', 'warning', 'Re-run the checker against the current revision; the proof no longer describes it.'),
+  // E1 Extension catalog (descriptors of runtime adapters and capability providers, as data).
+  CATALOG_INVALID: spec('INVALID_INPUT', 'error', 'Provide a catalog object with runtimeAdapters and capabilityProviders arrays of well-formed descriptors.'),
+  CATALOG_DUPLICATE_ID: spec('INVALID_INPUT', 'error', 'Give every catalog descriptor a unique id.'),
+  CATALOG_OVERLAPPING_COVERAGE: spec('RESOLUTION_CONFLICT', 'error', 'Keep a single descriptor per component kind and runtime (or per capability and runtime): resolution never picks one arbitrarily.'),
+  // E1 Resolution against the catalog.
+  RESOLVE_NO_RUNTIME_PREFERENCE: spec('UNSUPPORTED', 'warning', 'Declare at least one runtime preference for the component.'),
+  RESOLVE_NO_ADAPTER: spec('UNSUPPORTED', 'warning', 'Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.'),
+  RESOLVE_PREFERENCE_FALLBACK: spec('UNSUPPORTED', 'warning', 'A preferred runtime has no adapter: a later preference was selected. Review the choice or add the missing adapter.'),
+  RESOLVE_NO_CAPABILITY_PROVIDER: spec('UNSUPPORTED', 'warning', 'Add a provider of this platform capability for the selected runtime; the capability is not bound.'),
+  // E1 Kernel Façade.
+  FACADE_NO_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Provide an accepted System Definition in the contract set (or name an existing one).'),
+  FACADE_AMBIGUOUS_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Name the System Definition to compile: several are in force.'),
 } as const);
 
 export type DiagnosticCode = keyof typeof DIAGNOSTIC_CODES;
@@ -127,7 +146,7 @@ export interface Diagnostic {
   code: DiagnosticCode;
   class: FailureClass;
   severity: Severity;
-  layer: typeof DIAGNOSTIC_LAYER;
+  layer: DiagnosticLayer;
   message: string;
   ref?: string;
   path?: string;
@@ -140,6 +159,7 @@ export interface DiagnosticInput {
   ref?: string | undefined;
   path?: string | undefined;
   details?: Record<string, unknown> | undefined;
+  layer?: DiagnosticLayer | undefined;
 }
 
 /** Builds a frozen diagnostic from a registered code. */
@@ -150,7 +170,7 @@ export function diagnostic(code: DiagnosticCode, message: string, input: Diagnos
     code,
     class: codeSpec.class,
     severity: codeSpec.severity,
-    layer: DIAGNOSTIC_LAYER,
+    layer: input.layer ?? DIAGNOSTIC_LAYER,
     message,
     remediation: codeSpec.remediation,
     retryable: false,

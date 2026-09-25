@@ -423,5 +423,28 @@
       "status": "VALID"
     }
   ],
+  "compilation": {
+    "status": "PARTIAL",
+    "definition": {
+      "ref": "SystemDefinition/asteria@2",
+      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+    },
+    "closure": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad",
+    "ir": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0",
+    "resolved": "sha256:20d68f3ab8d1aa788c41af8478a43b6d4d21f349fb67c5eef3e31cf4761f15df",
+    "plan": "sha256:ad0c721c0753a742fd53b6ba00ac3af3a0969332a26e2bde1955efe6541764f7",
+    "unsupported": [
+      {
+        "component": "asteria-objects",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "async-worker",
+        "capability": "notifications",
+        "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      }
+    ]
+  },
   "diagnostics": []
 }

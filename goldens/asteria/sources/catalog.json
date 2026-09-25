@@ -1,0 +1,15 @@
+{
+  "$comment": "Catalogue SYNTHÉTIQUE du golden Asteria (mission E1). Aucun adapter réel n'existe avant l'Adapter Protocol (E2) : ces descripteurs ne matérialisent rien, ils prouvent la résolution. 'object-store' et la capability 'notifications' sont volontairement non couverts pour prouver l'UNSUPPORTED explicite.",
+  "runtimeAdapters": [
+    { "id": "synthetic-nestjs", "version": "0.0.1", "componentKinds": ["api-service", "async-worker"], "runtime": "nestjs" },
+    { "id": "synthetic-nextjs", "version": "0.0.1", "componentKinds": ["web-application"], "runtime": "nextjs" },
+    { "id": "synthetic-angular", "version": "0.0.1", "componentKinds": ["web-application"], "runtime": "angular" },
+    { "id": "synthetic-flutter", "version": "0.0.1", "componentKinds": ["mobile-application"], "runtime": "flutter" },
+    { "id": "synthetic-postgresql", "version": "0.0.1", "componentKinds": ["datastore"], "runtime": "postgresql" }
+  ],
+  "capabilityProviders": [
+    { "id": "synthetic-authentication", "version": "0.0.1", "capability": "authentication", "runtimes": ["nestjs", "nextjs", "angular", "flutter"] },
+    { "id": "synthetic-authorization", "version": "0.0.1", "capability": "authorization", "runtimes": ["nestjs", "angular"] },
+    { "id": "synthetic-files", "version": "0.0.1", "capability": "files", "runtimes": ["nestjs", "nextjs", "flutter"] }
+  ]
+}
