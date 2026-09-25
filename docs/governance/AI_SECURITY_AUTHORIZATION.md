@@ -2,8 +2,8 @@
 
 Politique opérationnelle subordonnée à [`SOURCE_OF_TRUTH.md`](SOURCE_OF_TRUTH.md). Elle borne le
 périmètre des travaux de sécurité réalisés par Codex, Claude Code ou tout autre agent IA. Elle ne définit
-pas l'architecture ni les contrôles du système, qui restent décrits par
-[`SECURITY_ARCHITECTURE.md`](../architecture/SECURITY_ARCHITECTURE.md).
+pas l'architecture ni les contrôles du système, qui relèvent du document 03 (§4.11 sécurité) et de
+[`docs/Server Prod/`](../Server%20Prod/POLITIQUE.md).
 
 Cette politique fournit un contexte d'autorisation au sein du projet. Elle ne remplace ni une approbation
 requise par mission, ni les politiques et protections d'un fournisseur d'IA, ni l'autorisation explicite
@@ -79,8 +79,8 @@ autorisation d'effectuer des tests de sécurité sur les services contactés.
 
 ## Séparation des responsabilités documentaires
 
-- [`SECURITY_ARCHITECTURE.md`](../architecture/SECURITY_ARCHITECTURE.md) définit l'architecture et les
-  contrôles de sécurité du système ;
+- le document 03 et [`docs/Server Prod/`](../Server%20Prod/POLITIQUE.md) définissent l'architecture et
+  les contrôles de sécurité du système ;
 - le présent document définit le périmètre et les règles d'autorisation des opérations de sécurité des
   agents ;
 - [`AGENTS.md`](../../AGENTS.md) est seulement l'instruction d'entrée qui renvoie vers ces sources.

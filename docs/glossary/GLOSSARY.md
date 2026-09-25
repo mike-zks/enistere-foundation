@@ -1,7 +1,7 @@
 # Glossaire — Enistere Foundation
 
-Termes de la cible produit, repris des documents 01, 02, 03, 05, 06 et 07 (qui font foi). Le glossaire du
-laboratoire (statuts de core, profils, starters) est archivé :
+Termes de la cible produit, repris des documents 01, 02, 03, 05, 06 et 07 (qui font foi). Le glossaire de
+l'itération précédente (statuts de core, profils, starters), supprimée par l'ADR-094, est archivé :
 [`archive/laboratory/GLOSSARY.md`](../archive/laboratory/GLOSSARY.md).
 
 ## Produit
@@ -55,4 +55,4 @@ laboratoire (statuts de core, profils, starters) est archivé :
 | Gate | Décision PASS / FAIL / CONTINUE / SIMPLIFY / REPOSITION ; RELEASE GATE OVER CALENDAR. |
 | Golden | Scénario de référence reproductible (Asteria pour la transition). |
 | Compatibility seam | Frontière temporaire entre ancien et nouveau modèle pendant une migration contrôlée. |
-| Laboratoire | Dépôt historique (pipeline Blueprint → CSM, starters, capabilities) : actif de preuve et couche de compatibilité jusqu'au cutover E10. |
+| Laboratoire | Itération précédente du dépôt (générateur, starters, capabilities), jamais en production : supprimée par l'ADR-094, dernier état au commit `f2590a8`. |

@@ -9,7 +9,7 @@
 
 | Horizon | Fenêtre cible | Preuve attendue | État |
 |---|---|---|---|
-| R0 | sept.–nov. 2026 | Nouveau Kernel / extension / System Definition sans perdre les goldens | **En cours** — E0 livré (voir `CURRENT_STATE.md`) |
+| R0 | sept.–nov. 2026 | Nouveau Kernel / extension / System Definition ; golden Asteria préservé | **En cours** — E0, R0-C et R0-D livrés (voir `CURRENT_STATE.md`) |
 | V1 | déc. 2026–mai 2027 | Création gouvernée + premier changement contrôlé ; ≥ 2 stacks ; golden compétitif | Non démarré |
 | V2 | juin 2027–fév. 2028 | Réutilisation organisationnelle sur ≥ 3 systèmes | Non démarré |
 | V3 | mars 2028–fév. 2029 | Évolution, drift et brownfield | Non démarré |
@@ -22,8 +22,9 @@
 |---|---|---|---|---|
 | E0 | R0 | Contract Foundation — 7 contrats A1–A7 | P1–P10 PASS ; seule suite : E1 | **PASS** (P1–P10 validés, ADR-093) |
 | R0-C | R0 | Repository Realignment — niveaux 1 et 2 (ADR-093) | Laboratoire vert, rien de prouvé supprimé, dépôt sans actif mort ni non conforme | **Livré** |
-| E1 | R0 | Kernel Façade headless | CLI/test via validate-resolve-plan ; legacy déterministe identique | Prochaine mission (+ niveau 3 du nettoyage pour ce qu'elle enveloppe) |
-| E2 | R0 | Adapter Protocol v0 + premier wrapper | Discovery/resolve/plan/materialize/verify par manifest | — |
+| R0-D | R0 | Repartir propre : suppression de l'itération précédente (ADR-094) | Kernel seul, une implémentation par concept, CI minimale verte | **Livré** (CI verte sous réserve du ruleset, ARB-11) |
+| E1 | R0 | Kernel Façade headless | CLI/test via validate-resolve-plan ; résolution native déterministe (gate « legacy identique » caduque, ADR-094) | Prochaine mission — à redéfinir |
+| E2 | R0 | Adapter Protocol v0 + premier adapter (écrit de zéro, ADR-094) | Discovery/resolve/plan/materialize/verify par manifest | — |
 | E3 | R0 | System Definition → Internal IR bridge | IR déterministe ; unsupported explicite | — |
 | E4 | V1 | Ownership & Evidence extraction | Owner change survit ; proof chain exportable | — |
 | E5 | V1 | Domain Contract projection | Domain distinct de capability ; contrat partagé | — |
@@ -31,7 +32,7 @@
 | E7 | V1 | Day-2 Change Intelligence | Impact/diff avant apply ; Evidence périmée visible | — |
 | E8 | V1 | Second Adapter substitution | Aucun `if framework` dans le Kernel | — |
 | E9 | V1 | Competitive golden run | CONTINUE / SIMPLIFY / REPOSITION / STOP | — |
-| E10 | Sortie V1 | Canonical cutover | Seulement si E7–E9 suffisent ; legacy → compatibilité/import | — |
+| E10 | Sortie V1 | Canonical cutover | Sans objet depuis ADR-094 (plus de chemin historique) ; à redéfinir avec le dossier (ARB-12) | — |
 
 ## Tracks continus (document 06 §6.9)
 

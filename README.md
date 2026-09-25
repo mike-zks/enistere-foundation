@@ -15,7 +15,7 @@ Point d'entrée : [`CONTEXT.md`](CONTEXT.md) — vision, sources de vérité, mi
 |---|---|
 | `kernel/contracts/` | Foundation Kernel — contrats A1–A7 et primitives partagées (mission E0) |
 | `goldens/asteria/` | Golden de transition Asteria (Requester Web, Internal Ops Web, Field Mobile, Authority API, Async Worker) |
-| `factory/`, `starters/`, `capabilities/`, `packages/`, `contracts/`, `deployment/` | Laboratoire historique — couche de compatibilité jusqu'au cutover E10 ([ADR-091](docs/adr/ADR-091-foundation-dossier-authority-and-laboratory-status.md)) |
+| `tools/quality/` | Outillage du dépôt : discipline de l'allowlist gitleaks, liens de documentation |
 | `docs/` | Dossier projet 01–07, production Enistere, ADR, gouvernance, runbooks |
 
 ## Démarrage local
@@ -26,10 +26,14 @@ Prérequis : Node.js ≥ 22.18 (CI : Node 24), npm.
 npm ci
 npm run foundation:typecheck   # Kernel E0 + golden
 npm run foundation:test        # contrats A1–A7, ensemble fermé, golden Asteria
-npm run factory:test           # laboratoire (pipeline historique, conformance)
+npm run golden:asteria:update  # régénère le golden (diff attendu vide)
 ```
 
 Détails : [`docs/runbooks/LOCAL_DEVELOPMENT.md`](docs/runbooks/LOCAL_DEVELOPMENT.md).
+
+L'itération précédente du dépôt (générateur, starters, capabilities), jamais mise en production, a été
+supprimée pour repartir sur une base unique ([ADR-094](docs/adr/ADR-094-clean-slate.md)) ; son dernier
+état reste dans l'historique Git (commit `f2590a8`).
 
 ## Documentation de référence
 

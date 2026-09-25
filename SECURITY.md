@@ -11,8 +11,7 @@ N'incluez jamais de secret réel, de donnée personnelle ou d'identifiant de pro
 
 ## Périmètre
 
-- Code de ce dépôt : Kernel (`kernel/`), goldens, laboratoire (`factory/`, `starters/`, `capabilities/`,
-  `packages/`, `contracts/`), workflows CI.
+- Code de ce dépôt : Kernel (`kernel/`), goldens (`goldens/`), outillage (`tools/`), workflows CI.
 - Hors périmètre : l'infrastructure partagée Enistere (voir `docs/Server Prod/`) et tout système tiers.
   Aucune mention d'hôte, domaine ou service dans ce dépôt ne vaut autorisation de test
   ([`AI_SECURITY_AUTHORIZATION.md`](docs/governance/AI_SECURITY_AUTHORIZATION.md)).
@@ -21,7 +20,7 @@ N'incluez jamais de secret réel, de donnée personnelle ou d'identifiant de pro
 
 - Recherche de secrets sur tout l'historique (gitleaks épinglé et vérifié, ADR-073) avec exceptions
   justifiées et datées (`.gitleaks.toml`).
-- Audit des dépendances avec exceptions scopées et datées (`factory/quality/audit-exceptions.json`).
+- Audit des dépendances en CI (`npm audit --audit-level=high`), sans exception.
 - Contrats E0 : aucun secret dans les modèles ni les Evidence (`EVIDENCE_SECRET_IN_URI`), références
   de secrets par SecretRef uniquement (document 03 §4.11) ; l'IA ne peut ni décider ni vérifier.
 

@@ -23,18 +23,11 @@ observabilité ou déploiement.
 
 ## Décisions et gouvernance
 
-- [`adr/`](adr/README.md) — registre des ADR (ADR-091+ : Foundation ; ADR-044 → 090 : laboratoire).
+- [`adr/`](adr/README.md) — registre des ADR actifs (ADR-073, ADR-091 et suivants).
 - [`governance/`](governance/SOURCE_OF_TRUTH.md) — source de vérité, [arbitrages en attente](governance/ARBITRATIONS.md), Definition of Done,
   [production readiness](governance/PRODUCTION_READINESS.md), [registre des risques](governance/RISK_REGISTER.md),
   [dépendances critiques](governance/DEPENDENCIES.md), politiques opérationnelles.
 - [`runbooks/`](runbooks/README.md) — exploitation (déploiement, rollback, restauration, rotation, local).
-
-## Référence du laboratoire (couche de compatibilité)
-
-Décrivent l'implémentation **historique** — pipeline Blueprint → CSM → ResolvedSystem →
-GenerationPlan, runtimes, capabilities, baseline — et non la cible produit :
-[`specifications/`](specifications/README.md), [`architecture/`](architecture/README.md), `guides/`,
-`checklists/`, `project-factory/`.
 
 ## Prise en main
 
@@ -43,6 +36,6 @@ GenerationPlan, runtimes, capabilities, baseline — et non la cible produit :
 
 ## Archives
 
-[`archive/`](archive/README.md) — documents du laboratoire remplacés ou non conformes (mandat, état,
-roadmap, stratégie, audits, prompts IA, staging, glossaire, onboarding, exemples de profils). Non autoritaires ; conservés comme preuves
-historiques.
+[`archive/`](archive/README.md) — documents de l'itération précédente, supprimée par l'ADR-094 (ADR 001–090,
+spécifications, architecture, checklists, guides, mandat, état, roadmap, audits…). Non autoritaires ;
+conservés comme histoire.

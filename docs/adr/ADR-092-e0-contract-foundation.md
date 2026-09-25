@@ -1,6 +1,7 @@
 # ADR-092 — E0 Contract Foundation : sept contrats de première classe et primitives partagées
 
 - Statut : Accepté — décomposition P1–P10 validée le 2026-09-25 ([ADR-093](ADR-093-r0c-repository-realignment.md), ARB-01)
+- Amendé par : [ADR-094](ADR-094-clean-slate.md) — le pipeline historique et la sonde de compatibilité du golden sont supprimés
 - Date : 2026-09-25
 - Décideur : Responsable technique (document 03) ; rédigé par l'agent de la mission E0
 - Sources : document 05 §8.1, document 06 §6.8, document 02 (FR-*, NFR-*, SEC-*), document 03 §6.9–6.18

@@ -37,13 +37,12 @@ document 05 §2.
 [`IMPLEMENTATION_MATRIX.md`](../../IMPLEMENTATION_MATRIX.md), [`DECISIONS.md`](../../DECISIONS.md),
 [`BACKLOG.md`](../../BACKLOG.md), [`RISK_REGISTER.md`](RISK_REGISTER.md).
 
-## Laboratoire
+## Itération précédente
 
-Les spécifications, l'architecture de référence V2 et les ADR-044 → ADR-090 décrivent la couche de
-compatibilité du laboratoire. Ils restent la référence de **ce** périmètre (pipeline historique,
-runtimes, capabilities, Platform Baseline) et sont subordonnés au dossier projet. Observability et
-Technical Audit restent des invariants du Platform Baseline, pas des capabilities (documents 01 §4.7 et
-07 §4.2).
+Supprimée par l'ADR-094 (dernier état au commit `f2590a8`). Ses spécifications, son architecture et ses
+ADR 001–090 (sauf ADR-073) sont archivés dans [`docs/archive/`](../archive/README.md) et n'ont plus
+d'autorité. Observability et Technical Audit restent des invariants de plateforme, pas des capabilities
+(documents 01 §4.7 et 07 §4.2).
 
 ## Politiques opérationnelles
 

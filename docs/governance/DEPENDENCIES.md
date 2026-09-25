@@ -7,7 +7,7 @@ Politique d'ajout : [`DEPENDENCY_POLICY.md`](DEPENDENCY_POLICY.md).
 
 | Dépendance | Version | Utilisée par | Criticité | Remarque |
 |---|---|---|---|---|
-| Node.js | ≥ 22.18 (CI : 24) | Kernel (exécution TypeScript native), laboratoire, CI | Haute | Type stripping requis par `kernel/contracts` |
+| Node.js | ≥ 22.18 (CI : 24) | Kernel (exécution TypeScript native), outillage, CI | Haute | Type stripping requis par `kernel/contracts` |
 | npm workspaces | npm 10/11 | Monorepo | Haute | Lockfile `package-lock.json` versionné |
 | TypeScript | ^5.9.3 | Typage du Kernel et des goldens (`tsc --noEmit`) | Moyenne | Aucune émission de build en E0 |
 | Ajv | ^8.20.0 | Validation structurelle des contrats A1–A7 (seule dépendance d'exécution du Kernel) | Haute | Draft 2020-12, mode strict |

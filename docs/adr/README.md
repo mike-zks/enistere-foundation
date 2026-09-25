@@ -10,23 +10,19 @@ Les ADR se placent sous les documents 01–04 et la documentation de production 
 code (document 05 §2.3, [ADR-091](ADR-091-foundation-dossier-authority-and-laboratory-status.md)).
 Ajout libre ; suppression ou réécriture d'un ADR accepté = validation humaine (document 05 §2F).
 
-## Périodes
-
-| Plage | Période | Portée actuelle |
-|---|---|---|
-| ADR-001 → ADR-043 | Laboratoire V1 (starters, cores, CI) | Historique ; valide pour les actifs concernés sauf supersession explicite |
-| ADR-044 → ADR-090 | Laboratoire V2 (pipeline Blueprint → CSM → plan, runtimes, capabilities) | Valide **pour la couche de compatibilité** (ADR-091) |
-| ADR-091 → | Enistere Foundation (dossier 01–07) | Cible produit et missions E0 → E10 |
-
-## ADR de la reprise
+## Registre actif
 
 | ADR | Titre | Statut |
 |---|---|---|
-| [ADR-091](ADR-091-foundation-dossier-authority-and-laboratory-status.md) | Le dossier 01–07 fait autorité ; le laboratoire devient couche de compatibilité | Accepté |
-| [ADR-092](ADR-092-e0-contract-foundation.md) | E0 Contract Foundation : sept contrats et primitives partagées | Accepté ; P1–P10 validés |
-| [ADR-093](ADR-093-r0c-repository-realignment.md) | Mission R0-C « Repository Realignment » entre E0 et E1, et nommage | Accepté |
+| [ADR-073](ADR-073-secret-scanning.md) | Analyse de secrets bloquante (gitleaks, allowlist justifiée) | Accepté ; amendé par ADR-094 |
+| [ADR-091](ADR-091-foundation-dossier-authority-and-laboratory-status.md) | Le dossier 01–07 fait autorité | Accepté ; amendé par ADR-094 |
+| [ADR-092](ADR-092-e0-contract-foundation.md) | E0 Contract Foundation : sept contrats et primitives partagées | Accepté ; P1–P10 validés ; amendé par ADR-094 |
+| [ADR-093](ADR-093-r0c-repository-realignment.md) | Mission R0-C « Repository Realignment » entre E0 et E1, et nommage | Accepté ; amendé par ADR-094 |
+| [ADR-094](ADR-094-clean-slate.md) | Repartir propre : suppression de l'itération précédente | Accepté |
 
-Backlog historique des ADR du laboratoire : [`ADR_BACKLOG.md`](ADR_BACKLOG.md).
+Les ADR 001–090 de l'itération précédente (sauf ADR-073) sont archivés dans
+[`archive/laboratory/adr/`](../archive/laboratory/adr/) : histoire, sans autorité (ADR-094). La
+numérotation continue à partir d'ADR-095.
 
 ## Gabarit
 

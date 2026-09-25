@@ -24,15 +24,13 @@ Modifier le golden : éditer `goldens/asteria/source.ts` (jamais les JSON géné
 `golden:asteria:update`, relire le diff (contrats, preuves, `expected/report.json`), puis les tests.
 `update.ts` refuse d'écrire un golden dont l'ensemble de contrats est invalide.
 
-## Laboratoire (couche de compatibilité)
+## Outillage du dépôt
 
 ```sh
-npm run factory:test             # pipeline historique, conformance, parité, fitness functions
-npm run contracts:check          # bindings polyglottes à jour
-npm run design:check             # contrat design à jour
-npm run typecheck && npm test    # packages api-contracts / api-client-fetch
-node factory/quality/scripts/docs-link-check.mjs   # liens de la documentation
+npm run tools:test               # tests de tools/quality
+npm run secrets:allowlist        # exceptions gitleaks justifiées et non expirées
+npm run docs:links               # aucun lien interne mort (docs/archive exclu)
+npm audit --audit-level=high     # dépendances
 ```
 
-Les starters (NestJS, Spring, FastAPI, Next.js, Angular, React Native, Flutter) ont leurs propres
-prérequis ; voir leur README.
+Ce sont les commandes des quatre checks requis de la CI ([`.github/workflows/README.md`](../../.github/workflows/README.md)).

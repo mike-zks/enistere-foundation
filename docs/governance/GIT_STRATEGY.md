@@ -22,6 +22,6 @@ de missions ni les anciennes architectures documentaires.
 
 ## Ruptures
 
-Les breaking changes de blueprint, manifests, CLI ou packages publics exigent une migration et un
-incrément SemVer, selon
-[`LIFECYCLE_AND_UPGRADE_SPECIFICATION.md`](../specifications/LIFECYCLE_AND_UPGRADE_SPECIFICATION.md).
+Les breaking changes de contrats (`apiVersion`), manifests, CLI ou packages publics exigent une
+migration enregistrée (seam de migration du Kernel, `kernel/contracts/src/primitives/versioning.ts`) et
+un incrément SemVer.

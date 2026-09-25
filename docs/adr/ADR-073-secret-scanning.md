@@ -1,6 +1,7 @@
 # ADR-073 — Analyse de secrets bloquante
 
 - Statut : Validé et implémenté
+- Amendé par : [ADR-094](ADR-094-clean-slate.md) — le script d'allowlist vit dans `tools/quality/secret-allowlist-check.mjs` ; les commandes `factory:*` citées plus bas n'existent plus
 - Date : 2026-07-28
 - Décideur : Owner Foundation
 - Complète : ADR-013 et ADR-071

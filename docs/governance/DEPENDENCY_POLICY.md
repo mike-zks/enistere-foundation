@@ -18,8 +18,9 @@ Foundation et des systèmes générés.
 
 > Aucun système généré ne dépend de `file:`, `npm link` ou d'un chemin vers la Foundation publiée.
 
-Cet invariant est exécutable : il est vérifié par `factory/test/reproducibility.test.mjs` et par la
-validation des overlays. Un système généré doit s'installer et démarrer sans le dépôt Foundation.
+Un système généré doit s'installer et démarrer sans le dépôt Foundation. L'invariant sera rendu
+exécutable par la mission qui introduira la matérialisation (Adapter Protocol, E2) ; aucun test ne le
+vérifie aujourd'hui, faute de génération (ADR-094).
 
 ## Upgrades majeurs
 
