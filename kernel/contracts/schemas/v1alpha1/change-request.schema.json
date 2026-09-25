@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/change-request.schema.json",
+  "title": "A6 — Change Request",
+  "description": "Governed request to evolve an authoritative contract from one exact base revision (pinned by digest) to a proposed revision. It carries the motivation, the explicit changes, the risk classification (FR-LIF-02) and the declared impact: components, Evidence to invalidate, owner work and migration. A new authoritative revision never mutates existing state silently.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "ChangeRequest" },
+    "metadata": {
+      "properties": { "status": { "enum": ["DRAFT", "PROPOSED", "ACCEPTED", "REJECTED", "APPLIED", "WITHDRAWN"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "base", "trigger", "summary", "justifiedBy", "changes", "classification", "impact"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "base": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+        "proposed": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+        "trigger": {
+          "enum": [
+            "REQUIREMENT_CHANGE",
+            "DECISION_CHANGE",
+            "POLICY_CHANGE",
+            "RUNTIME_UPGRADE",
+            "CAPABILITY_CHANGE",
+            "DESIGN_MIGRATION",
+            "CONTRACT_EVOLUTION",
+            "DEPENDENCY_UPDATE",
+            "DRIFT_REMEDIATION"
+          ]
+        },
+        "summary": { "$ref": "common.schema.json#/$defs/text" },
+        "justifiedBy": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/contractRef" } },
+        "changes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["op", "path", "rationale"],
+            "properties": {
+              "op": { "enum": ["ADD", "REPLACE", "REMOVE"] },
+              "path": {
+                "description": "JSON Pointer (RFC 6901) into the base document. Only the spec changes through a Change Request; metadata is lifecycle.",
+                "type": "string",
+                "pattern": "^/spec(?:/(?:[^~/]|~[01])*)+$",
+                "maxLength": 500
+              },
+              "value": {},
+              "rationale": { "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        },
+        "classification": { "enum": ["SAFE_AUTOMATIC", "REVIEW_REQUIRED", "MIGRATION_REQUIRED", "MANUAL_ONLY", "UNSUPPORTED"] },
+        "impact": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["components", "evidenceToInvalidate", "ownerWork"],
+          "properties": {
+            "components": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+            "evidenceToInvalidate": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/contractRef" } },
+            "ownerWork": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["id", "description"],
+                "properties": {
+                  "id": { "$ref": "common.schema.json#/$defs/itemId" },
+                  "description": { "$ref": "common.schema.json#/$defs/text" },
+                  "component": { "$ref": "common.schema.json#/$defs/itemId" }
+                }
+              }
+            },
+            "migration": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["strategy", "reversible"],
+              "properties": {
+                "strategy": { "$ref": "common.schema.json#/$defs/text" },
+                "reversible": { "type": "boolean" },
+                "rollback": { "$ref": "common.schema.json#/$defs/text" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

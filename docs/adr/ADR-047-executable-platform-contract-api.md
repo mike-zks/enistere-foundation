@@ -13,7 +13,7 @@ conformité peut désormais être rendue **mesurable** sur le pipeline. Elle ne 
   (« aucun Markdown ne promeut manuellement un statut »), or `RUNTIME_CONFORMANCE_GAP_MATRIX`,
   `CAPABILITY_PARITY_GAP_MATRIX` et `IMPLEMENTATION_MATRIX` sont **écrites à la main** ;
 - maturité réelle = **`Bootable`** ; aucune composition n'est prouvée `Conformant` ni `Product-equivalent`
-  ([`GOLDEN_AND_CONFORMANCE_GAP_ANALYSIS`](../audits/GOLDEN_AND_CONFORMANCE_GAP_ANALYSIS.md)) ;
+  ([`GOLDEN_AND_CONFORMANCE_GAP_ANALYSIS`](../archive/laboratory/audits/GOLDEN_AND_CONFORMANCE_GAP_ANALYSIS.md)) ;
 - **il n'existe aucune suite Platform Contract exécutable commune** (P0-1 de l'audit).
 
 Un audit direct du code (Phase A, 2026-07-23) a **vérifié** l'état de la famille API sur le **socle**

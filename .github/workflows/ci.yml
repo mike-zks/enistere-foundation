@@ -130,6 +130,28 @@ jobs:
       - name: rapports de conformité committés à jour (anti-péremption)
         run: git diff --exit-code factory/conformance/reports/
 
+  # 5b) E0 — Contract Foundation (ADR-092) : contrats A1–A7, primitives partagées et golden
+  #     Asteria. Indépendant du pipeline historique : le golden ne l'alimente pas.
+  kernel-contracts:
+    name: kernel-contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: typecheck (Kernel contracts + golden Asteria)
+        run: npm run foundation:typecheck
+      - name: tests (primitives, A1–A7, ensemble fermé, golden Asteria byte-identique)
+        run: npm run foundation:test
+      - name: golden Asteria régénéré à l'identique (anti-dérive)
+        run: |
+          npm run golden:asteria:update
+          git status --porcelain goldens/asteria/
+          test -z "$(git status --porcelain goldens/asteria/)"
+
   # 6) Analyse de secrets (ADR-073). §12 confie au projet le secret scanning ;
   #    jusqu'ici il était documenté sans jamais s'exécuter. L'historique complet
   #    est couvert : un secret retiré du HEAD reste exposé dans les commits.

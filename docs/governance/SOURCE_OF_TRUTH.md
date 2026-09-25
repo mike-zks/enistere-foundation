@@ -1,48 +1,59 @@
 # Source officielle de vérité
 
-## Hiérarchie
+Adoptée par [ADR-091](../adr/ADR-091-foundation-dossier-authority-and-laboratory-status.md), conformément au
+document 05 §2.
 
-1. Spécifications normatives versionnées
-2. ADR acceptés
-3. Schémas, manifests et policies exécutables
-4. Tests de conformité et fitness functions
-5. Code
-6. État courant et matrices calculées
-7. Guides, README et documentation locale
+## Deux questions, deux autorités
 
-## Architecture de référence active
+- **La cible produit** est définie par le dossier projet (documents 01 à 07 dans `docs/`).
+- **L'état d'implémentation** est défini par le dépôt réel : branche principale, code, contrats, tests,
+  CI, ADR et preuves d'exécution. Une mention « terminé », « supporté » ou « conforme » n'a aucune
+  autorité sans preuve correspondante.
 
-- [`ENISTERE_REFERENCE_ARCHITECTURE.md`](../architecture/ENISTERE_REFERENCE_ARCHITECTURE.md) ;
-- [`ARCHITECTURE_PROFILE_SPECIFICATION.md`](../specifications/ARCHITECTURE_PROFILE_SPECIFICATION.md) ;
-- [`PLATFORM_BASELINE_SPECIFICATION.md`](../specifications/PLATFORM_BASELINE_SPECIFICATION.md) ;
-- [`INFRASTRUCTURE_PRIMITIVE_SPECIFICATION.md`](../specifications/INFRASTRUCTURE_PRIMITIVE_SPECIFICATION.md) ;
-- [`ADR-057`](../adr/ADR-057-reference-architecture-and-platform-baseline.md).
+## Ordre d'autorité en cas de conflit
 
-Observability et Technical Audit sont des invariants du Platform Baseline, pas des capabilities.
+1. Décisions explicites les plus récentes des documents 01 à 04 (01 : décisions structurantes ; 02 :
+   obligations produit et critères d'acceptation ; 03 : traduction technique ; 04 : parcours et surfaces).
+   Le document 06 fait autorité sur la séquence E0–E10 et les gates, le 07 sur CAP-01…CAP-16, le 05 sur la
+   méthode de reprise.
+2. Documentation de production Enistere ([`../Server Prod/`](../Server%20Prod/README.md)) pour toute
+   contrainte touchant la plateforme partagée.
+3. ADR validés ([`../adr/`](../adr/README.md)).
+4. Code existant.
 
-## Divergence
+## Règles
 
-Le code ne redéfinit pas silencieusement la règle. Une divergence rend le composant non conforme jusqu’à correction du code ou modification formelle de la spécification.
+- Si le code contredit la cible : documenter l'écart, mesurer l'impact, proposer une convergence ; ne pas
+  réécrire la cible.
+- Si une documentation historique contredit le code : le code fait foi pour l'implémentation.
+- Une nouvelle contrainte qui remet en cause une décision cible produit une proposition d'ADR, jamais un
+  fait accompli.
+- Aucune contradiction n'est résolue silencieusement : elle est inscrite dans
+  [`CONTEXT.md`](../../CONTEXT.md) et [`DECISIONS.md`](../../DECISIONS.md) avec une proposition.
+
+## Fichiers vivants
+
+[`CONTEXT.md`](../../CONTEXT.md), [`CURRENT_STATE.md`](../../CURRENT_STATE.md),
+[`IMPLEMENTATION_MATRIX.md`](../../IMPLEMENTATION_MATRIX.md), [`DECISIONS.md`](../../DECISIONS.md),
+[`BACKLOG.md`](../../BACKLOG.md), [`RISK_REGISTER.md`](RISK_REGISTER.md).
+
+## Laboratoire
+
+Les spécifications, l'architecture de référence V2 et les ADR-044 → ADR-090 décrivent la couche de
+compatibilité du laboratoire. Ils restent la référence de **ce** périmètre (pipeline historique,
+runtimes, capabilities, Platform Baseline) et sont subordonnés au dossier projet. Observability et
+Technical Audit restent des invariants du Platform Baseline, pas des capabilities (documents 01 §4.7 et
+07 §4.2).
 
 ## Politiques opérationnelles
 
-Subordonnées à cette hiérarchie, elles fixent les règles d'exécution sans redéfinir l'architecture :
-
-- [`DEPENDENCY_POLICY.md`](DEPENDENCY_POLICY.md) ;
-- [`ENGINEERING_STANDARDS.md`](ENGINEERING_STANDARDS.md) ;
-- [`GIT_STRATEGY.md`](GIT_STRATEGY.md) ;
-- [`AI_SECURITY_AUTHORIZATION.md`](AI_SECURITY_AUTHORIZATION.md) ;
-- [`ARCHITECTURE_GOVERNANCE.md`](ARCHITECTURE_GOVERNANCE.md) ;
-- [`DEFINITION_OF_READY.md`](DEFINITION_OF_READY.md) et [`DEFINITION_OF_DONE.md`](DEFINITION_OF_DONE.md).
+Subordonnées à cette hiérarchie : [`DEPENDENCY_POLICY.md`](DEPENDENCY_POLICY.md),
+[`ENGINEERING_STANDARDS.md`](ENGINEERING_STANDARDS.md), [`GIT_STRATEGY.md`](GIT_STRATEGY.md),
+[`AI_SECURITY_AUTHORIZATION.md`](AI_SECURITY_AUTHORIZATION.md),
+[`ARCHITECTURE_GOVERNANCE.md`](ARCHITECTURE_GOVERNANCE.md), [`DEFINITION_OF_READY.md`](DEFINITION_OF_READY.md),
+[`DEFINITION_OF_DONE.md`](DEFINITION_OF_DONE.md), [`PRODUCTION_READINESS.md`](PRODUCTION_READINESS.md).
 
 ## Documents non autoritaires
 
-- rapports historiques ;
-- notes de session ;
-- anciennes roadmaps ;
-- prompts IA ;
-- tickets non adoptés.
-
-## Historique
-
-Le dépôt actif ne conserve pas d’ancienne architecture documentaire. Git et les releases assurent l’historique.
+Archives ([`../archive/`](../archive/README.md)), rapports historiques, notes de session, prompts IA,
+conversations, tickets non adoptés.

@@ -13,12 +13,12 @@ Décrire le besoin ou l'opportunité.
 ## Core ciblé
 
 - **Core** : (ex. api-nestjs / web-nextjs / mobile-react-native / ui-kit / quality-core / ai-core / …)
-- **Statut actuel du core** : (ex. `VALIDE_V1` / `IMPLEMENTATION_AVANCEE` / `SPECIFICATION_DOCUMENTAIRE` — voir `docs/project-status/IMPLEMENTATION_MATRIX.md`)
+- **Statut actuel du core** : (ex. `VALIDE_V1` / `IMPLEMENTATION_AVANCEE` / `SPECIFICATION_DOCUMENTAIRE` — voir `IMPLEMENTATION_MATRIX.md`)
 - **Statut attendu après cette feature** : (ou "inchangé")
 
 ## Lien roadmap / spec / ADR
 
-- **Roadmap §** : (ex. §13, §22 — ou "non référencé" — voir `docs/roadmap/ENISTERE_FACTORY_V2_ROADMAP.md`)
+- **Mission roadmap** : (E0 … E10, horizon R0 … V5 — voir `ROADMAP.md` et le document 06)
 - **ADR lié** : (ex. ADR-013 — ou "ADR à rédiger")
 - **Section specification active** : (si applicable)
 

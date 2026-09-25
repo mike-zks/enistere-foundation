@@ -7,16 +7,15 @@ name: Registry CI
 # Images : ghcr.io/<owner>/<repo>/api-nestjs et /web-nextjs (owner/repo dérivés de github.repository).
 # Tags : sha-<short> (toujours) ; main-<short> (sur main) ; pr-<n> (build PR, non poussé). PAS de `latest`.
 
+# PUBLICATION SUSPENDUE (ADR-093, mission R0-C) : les images du laboratoire ne sont plus poussées vers
+# GHCR. Le déclencheur `push` sur main est retiré ; le workflow ne fait plus que construire et tester les
+# images en PR. Les conditions `github.event_name == 'push'` ci-dessous sont donc inertes. La publication
+# reviendra avec le premier service Foundation, selon docs/Server Prod et PRODUCTION_READINESS.md.
 on:
   pull_request:
-  push:
-    branches:
-      - main
 
-# `packages: write` n'est utilisé que pour le push sur main (login conditionnel). Sinon lecture seule.
 permissions:
   contents: read
-  packages: write
 
 concurrency:
   group: registry-ci-${{ github.ref }}
@@ -24,7 +23,7 @@ concurrency:
 
 jobs:
   # Deployment 8 — ferme l'angle mort CI : l'image API était buildée mais JAMAIS exécutée, ce qui a laissé
-  # passer un défaut runtime (moteur Prisma incompatible OpenSSL → crash-loop, cf. STAGING_DRY_RUN_REPORT.md).
+  # passer un défaut runtime (moteur Prisma incompatible OpenSSL → crash-loop, cf. docs/archive/laboratory/deployment/docs/STAGING_DRY_RUN_REPORT.md).
   # Ce job construit l'image API, la LANCE, et vérifie que le moteur de requête Prisma se charge au runtime
   # (sans base de données : une erreur de CONNEXION prouve que le moteur a chargé ; une erreur « moteur
   # introuvable » fait ÉCHOUER le job). Le push (job `images`) est conditionné à la réussite de ce smoke.
@@ -117,7 +116,7 @@ jobs:
             type=raw,value=pr-${{ github.event.number }},enable=${{ github.event_name == 'pull_request' }}
           labels: |
             org.opencontainers.image.title=enistere-${{ matrix.name }}
-            org.opencontainers.image.description=Enistere OS Foundation — image ${{ matrix.name }} (sans déploiement)
+            org.opencontainers.image.description=Enistere Foundation — image ${{ matrix.name }} (sans déploiement)
 
       # PR → build seul (push:false). Push main → build + push GHCR.
       - name: Build${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') && ' and push' || ' only (no push)' }}

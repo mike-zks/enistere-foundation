@@ -1,4 +1,4 @@
-# RELEASE_PROCESS_RUNBOOK.md — Processus de release Enistere OS Foundation
+# RELEASE_PROCESS_RUNBOOK.md — Processus de release Enistere Foundation
 
 > Référence : `QUALITY_SPECIFICATION.md`, `QUALITY_GATES_MATRIX.md`, `BRANCH_PROTECTION_RUNBOOK.md`,
 > `docs/checklists/RELEASE_READINESS_CHECKLIST.md`, ADR-013, ADR-014.
@@ -54,7 +54,7 @@ fondation — ou un périmètre explicitement défini — atteint un niveau de q
 Une validation staging est un **acte de déploiement technique** sur l'environnement `staging.enistere.com`.
 Elle ne produit pas de release, mais peut être un prérequis à une release `staging-candidate`.
 
-Voir `deployment/docs/CC11_OPERATIONAL_RUNBOOK.md`.
+Voir `docs/runbooks/` et `docs/Server Prod/PROCEDURE.md` (le runbook de staging CC11 du laboratoire est archivé sous `docs/archive/laboratory/deployment/docs/`).
 
 ### 1.5 Production
 

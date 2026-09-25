@@ -7,7 +7,7 @@
 
 ## Contexte
 
-L'[audit de parité opérationnelle](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)
+L'[audit de parité opérationnelle](../archive/laboratory/audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)
 a exécuté les artefacts livrés par la Factory. Deux Dockerfiles sur trois sont
 rouges dans un projet dérivé : NestJS attend un lockfile applicatif supprimé par
 le workspace unifié ; Next.js cherche encore `starters/nextjs`. FastAPI construit,

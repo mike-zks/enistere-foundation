@@ -1,0 +1,6 @@
+{
+  "name": "@enistere/foundation-goldens",
+  "private": true,
+  "type": "module",
+  "description": "Golden systems of Enistere Foundation (not a workspace, not published)."
+}

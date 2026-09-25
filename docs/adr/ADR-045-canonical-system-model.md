@@ -4,9 +4,14 @@
 - Date : 2026-07-22
 - Décideur : Owner Foundation
 
+> **Note de reprise (2026-09-25).** Portée limitée à la couche de compatibilité du laboratoire par
+> [ADR-091](ADR-091-foundation-dossier-authority-and-laboratory-status.md). Les contrats autoritatifs de la
+> cible (A1–A7) sont définis par [ADR-092](ADR-092-e0-contract-foundation.md) ; ils ne sont pas une
+> représentation interne de ce pipeline, qui reste la seule entrée de génération jusqu'au cutover E10.
+
 ## Contexte
 
-L'audit d'écart V2 ([`docs/audits/`](../audits/README.md)) a classé **P0-3** l'absence de Canonical
+L'audit d'écart V2 ([`docs/audits/`](../archive/laboratory/audits/README.md)) a classé **P0-3** l'absence de Canonical
 System Model : le blueprint (`version: "1"`) circule brut dans toutes les couches de la Factory
 (planning, résolution des profils, génération) via `factory/engine/applications.mjs`. Le moteur raisonne
 directement sur le document utilisateur — son format, ses valeurs par défaut implicites, sa forme

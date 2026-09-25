@@ -1,0 +1,178 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "ChangeRequest",
+  "metadata": {
+    "id": "asteria-cr-001",
+    "revision": 1,
+    "title": "Move attachment analysis from the Authority API to the Async Worker",
+    "status": "APPLIED",
+    "owner": {
+      "team": "asteria-architecture"
+    },
+    "provenance": {
+      "origin": "HUMAN",
+      "actor": {
+        "type": "HUMAN",
+        "id": "architect@asteria.example",
+        "role": "architect"
+      }
+    },
+    "acceptance": {
+      "decision": "ACCEPTED",
+      "authority": "DECIDE",
+      "actor": {
+        "type": "HUMAN",
+        "id": "architect@asteria.example",
+        "role": "architect"
+      },
+      "at": "2026-09-22T09:00:00Z",
+      "rationale": "Synchronous analysis blocks uploads under load (NFR-001)."
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "base": {
+      "kind": "SystemDefinition",
+      "id": "asteria",
+      "revision": 1,
+      "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+    },
+    "proposed": {
+      "kind": "SystemDefinition",
+      "id": "asteria",
+      "revision": 2,
+      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+    },
+    "trigger": "DECISION_CHANGE",
+    "summary": "Attachment analysis becomes an asynchronous worker job triggered by AttachmentUploaded; the API keeps INV-004.",
+    "justifiedBy": [
+      {
+        "kind": "RequirementBaseline",
+        "id": "asteria-requirements",
+        "revision": 1,
+        "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b",
+        "item": "NFR-001"
+      },
+      {
+        "kind": "RequirementBaseline",
+        "id": "asteria-requirements",
+        "revision": 1,
+        "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b",
+        "item": "SEC-002"
+      },
+      {
+        "kind": "DecisionSet",
+        "id": "asteria-decisions",
+        "revision": 1,
+        "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127",
+        "item": "AD-002"
+      }
+    ],
+    "changes": [
+      {
+        "op": "REPLACE",
+        "path": "/spec/components/3/responsibilities",
+        "value": [
+          "Single system of record of service requests, assignments and reports.",
+          "Enforces authorization intents and status transitions.",
+          "Publishes domain events through a transactional outbox."
+        ],
+        "rationale": "The API no longer analyses attachments synchronously."
+      },
+      {
+        "op": "REPLACE",
+        "path": "/spec/components/3/integrations",
+        "value": [
+          "enistere-oidc"
+        ],
+        "rationale": "The malware scanner is called by the worker only."
+      },
+      {
+        "op": "ADD",
+        "path": "/spec/components/4/responsibilities/-",
+        "value": "Analyses uploaded attachments for malware and records the result.",
+        "rationale": "New worker job."
+      },
+      {
+        "op": "ADD",
+        "path": "/spec/components/4/requirements/-",
+        "value": "SEC-002",
+        "rationale": "The worker now contributes to SEC-002."
+      },
+      {
+        "op": "ADD",
+        "path": "/spec/components/4/subscribes/-",
+        "value": "asteria-service-requests#AttachmentUploaded",
+        "rationale": "The job is triggered by the upload event."
+      },
+      {
+        "op": "ADD",
+        "path": "/spec/components/4/consumes/0/operations/-",
+        "value": "asteria-service-requests#record-scan-result",
+        "rationale": "The result goes back through the API, which keeps INV-004."
+      },
+      {
+        "op": "ADD",
+        "path": "/spec/components/4/data",
+        "value": [
+          {
+            "store": "asteria-objects",
+            "access": "READ"
+          }
+        ],
+        "rationale": "The worker reads the uploaded object to analyse it."
+      },
+      {
+        "op": "ADD",
+        "path": "/spec/components/4/integrations/-",
+        "value": "malware-scanner",
+        "rationale": "The worker calls the scanner."
+      }
+    ],
+    "classification": "REVIEW_REQUIRED",
+    "impact": {
+      "components": [
+        "authority-api",
+        "async-worker"
+      ],
+      "evidenceToInvalidate": [
+        {
+          "kind": "EvidenceRecord",
+          "id": "asteria-sd1-closure",
+          "revision": 1,
+          "digest": "sha256:051c363e2896b382f7f7b674202b4c89af6b9f6373f43effbe356b2ad287b2e9"
+        },
+        {
+          "kind": "EvidenceRecord",
+          "id": "asteria-sd1-requirement-allocation",
+          "revision": 1,
+          "digest": "sha256:2074b437155e5c9d016238a5e6a3784b2c7bbf7775da0aebacfc7608248b9a55"
+        },
+        {
+          "kind": "EvidenceRecord",
+          "id": "asteria-sd1-worker-extensibility",
+          "revision": 1,
+          "digest": "sha256:6019125d8521f483f126fb3b1e6af1c2a89868e4374b749333660e7e0494f674"
+        },
+        {
+          "kind": "EvidenceRecord",
+          "id": "asteria-sd1-legacy-materialization",
+          "revision": 1,
+          "digest": "sha256:cb18b46033bc052ecb2e66574c5b19914b0620056d8dabd5c3b64b78ebb9a8d1"
+        }
+      ],
+      "ownerWork": [
+        {
+          "id": "OW-001",
+          "description": "Move the scanner call from the upload handler into a worker job.",
+          "component": "async-worker"
+        },
+        {
+          "id": "OW-002",
+          "description": "Keep attachments PENDING until record-scan-result stores CLEAN.",
+          "component": "authority-api"
+        }
+      ]
+    }
+  }
+}

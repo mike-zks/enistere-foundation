@@ -250,7 +250,7 @@ describe('profiles stay distinct from the 27 stack combinations', () => {
 });
 
 describe('documentation matches the registry', () => {
-  const matrixPath = resolve(root, 'docs/project-status/PROFILE_MATRIX.md');
+  const matrixPath = resolve(root, 'docs/project-factory/PROFILE_MATRIX.md');
 
   // Profile ids appear as the first cell of a table row: `| \`<id>\` | ...`.
   async function documentedProfileIds() {
@@ -299,7 +299,7 @@ describe('golden coverage is reported honestly', () => {
     const uncovered = Object.keys(COMPOSITIONS).filter((golden) => !claimed.has(golden));
     // Not a failure: a golden may be tested without being offered as a supported
     // combination. It must however be named in the matrix rather than hidden.
-    const doc = await readFile(resolve(root, 'docs/project-status/PROFILE_MATRIX.md'), 'utf8');
+    const doc = await readFile(resolve(root, 'docs/project-factory/PROFILE_MATRIX.md'), 'utf8');
     for (const golden of uncovered) {
       assert.match(doc, new RegExp(`\`${golden}\``), `uncovered golden ${golden} must be documented`);
     }

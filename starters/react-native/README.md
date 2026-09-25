@@ -57,5 +57,5 @@ npm run build
 `smoke:android` et `smoke:ios` exigent un environnement device adapté et ne font
 pas partie de la preuve headless.
 
-Voir [STARTER_SPECIFICATION.md](./STARTER_SPECIFICATION.md) et
-[ARCHITECTURE.md](./ARCHITECTURE.md).
+Voir [STARTER_SPECIFICATION.md](STARTER_SPECIFICATION.md) et
+[ARCHITECTURE.md](ARCHITECTURE.md).

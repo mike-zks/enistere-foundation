@@ -4,6 +4,11 @@
 - Date : 2026-07-22
 - Décideur : Owner Foundation
 
+> **Note de reprise (2026-09-25).** Portée limitée à la couche de compatibilité du laboratoire par
+> [ADR-091](ADR-091-foundation-dossier-authority-and-laboratory-status.md). Les contrats autoritatifs de la
+> cible (A1–A7) sont définis par [ADR-092](ADR-092-e0-contract-foundation.md) ; ils ne sont pas une
+> représentation interne de ce pipeline, qui reste la seule entrée de génération jusqu'au cutover E10.
+
 ## Contexte
 
 [ADR-045](ADR-045-canonical-system-model.md) a introduit un Canonical System Model (CSM) minimal, mais le
@@ -12,7 +17,7 @@ le blueprint brut (`resolveApplications`, `resolveStack`, `blueprint.stack/capab
 capability targets étaient appliquées à toutes les applications, un profil servait de représentation
 interne centrale (`matchProfile(blueprint)`), et un adapter transitoire reliait le CSM à l'ancienne
 entrée de génération. Le blueprint circulait donc dans toutes les couches
-([audit §BLUEPRINT_GAP](../audits/BLUEPRINT_GAP_ANALYSIS.md), [§FACTORY_ENGINE_GAP](../audits/FACTORY_ENGINE_GAP_ANALYSIS.md)).
+([audit §BLUEPRINT_GAP](../archive/laboratory/audits/BLUEPRINT_GAP_ANALYSIS.md), [§FACTORY_ENGINE_GAP](../archive/laboratory/audits/FACTORY_ENGINE_GAP_ANALYSIS.md)).
 
 ## Décision
 

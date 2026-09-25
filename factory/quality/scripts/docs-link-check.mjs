@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
-const DEFAULT_TARGETS = ['README.md', 'docs', 'factory/quality', 'factory/ai/prompts/README.md'];
+const DEFAULT_TARGETS = ['README.md', 'docs', 'factory/quality'];
 const MARKDOWN_EXTENSIONS = new Set(['.md', '.mdx']);
 
 export function isExternalLink(href) {

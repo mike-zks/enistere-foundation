@@ -1,5 +1,10 @@
 # Deployment Specification
 
+> **Statut (2026-09-25)** : spécification du **laboratoire**, subordonnée à la production Enistere
+> ([`docs/Server Prod/`](../docs/Server%20Prod/POLITIQUE.md)) et à
+> [`PRODUCTION_READINESS.md`](../docs/governance/PRODUCTION_READINESS.md) (ADR-091, ADR-093). Elle ne constitue
+> plus « la spécification canonique de la livraison opérationnelle ».
+
 ## 1. Autorité et portée
 
 Ce document est la spécification canonique de la livraison opérationnelle. La
@@ -9,7 +14,7 @@ mécanismes ; les packs providers matérialisent un environnement. ADR-089 adopt
 la séparation.
 
 La cible n'est pas une déclaration d'implémentation. L'état mesuré est publié
-dans l'[audit opérationnel du 2026-08-02](../docs/audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
+dans l'[audit opérationnel du 2026-08-02](../docs/archive/laboratory/audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
 
 ## 2. Modèle
 

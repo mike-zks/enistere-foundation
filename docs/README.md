@@ -1,38 +1,48 @@
 # Documentation
 
-La documentation canonique définit l'architecture Enistere V2. Le code ne la redéfinit pas
-silencieusement : voir [`governance/SOURCE_OF_TRUTH.md`](governance/SOURCE_OF_TRUTH.md).
+Hiérarchie : [`governance/SOURCE_OF_TRUTH.md`](governance/SOURCE_OF_TRUTH.md) ·
+[ADR-091](adr/ADR-091-foundation-dossier-authority-and-laboratory-status.md).
 
-## Sources canoniques
+## Dossier projet (sources de vérité cible)
 
-Par ordre d'autorité décroissante :
+Par ordre d'autorité pour la cible produit :
 
-1. `specifications/` : Architecture Profiles, Platform Baseline/Contract, Runtime Adapter, Capability,
-   System Blueprint, Infrastructure Primitive, Composition Model, Conformance Model, Lifecycle & Upgrade ;
-2. `adr/` : décisions durables et backlog ;
-3. `architecture/` : architecture de référence, profils, baseline, fonctionnelle, technique, capability,
-   contract, security, operations et AI ;
-4. `governance/` : source de vérité, gouvernance, DoR, DoD, politiques opérationnelles ;
-5. `strategy/` : vision, positionnement, utilisateurs, principes, périmètre ;
-6. `roadmap/` : roadmap maître de construction ;
-7. `project-status/` : état courant, matrices calculées et action unique ;
-8. `examples/reference-systems/` : exemples cibles avec statut réel explicite ;
-9. `guides/`, `onboarding/`, `checklists/`, `project-factory/`, `glossary/` : usage opérationnel.
+1. [01 — Synthèse de l'étude](01%20—%20Synthèse%20de%20l’étude%20—%20ENISTERE%20FOUNDATION.docx)
+2. [02 — Cahier des charges produit](02%20—%20Cahier%20des%20charges%20produit%20—%20ENISTERE%20FOUNDATION.docx)
+3. [03 — Architecture technique](03%20—%20Architecture%20technique%20—%20ENISTERE%20FOUNDATION.docx)
+4. [04 — Système de design UX UI et interfaces de référence](04%20—%20Système%20de%20design%20UX%20UI%20et%20interfaces%20de%20référence%20—%20ENISTERE%20FOUNDATION.docx)
+5. [05 — Prompt de reprise du repository](05%20—%20Prompt%20de%20démarrage%20du%20développement%20—%20ENISTERE%20FOUNDATION.md)
+6. [06 — Versions et feuille de route](06%20—%20Versions%20et%20feuille%20de%20route%20—%20ENISTERE%20FOUNDATION.docx)
+7. [07 — Carte produit et capacités](07%20—%20Carte%20produit%20et%20capacités%20—%20ENISTERE%20FOUNDATION.docx)
 
-## Surfaces techniques
+## Production Enistere
 
-- Factory : `../factory/`
-- Starters : `../starters/`
-- Capabilities : `../capabilities/`
-- Packages : `../packages/`
-- Deployment : `../deployment/`
-- Exemples : `../examples/`
+[`Server Prod/`](Server%20Prod/README.md) — architecture, politique et procédure de l'écosystème de
+production partagé ; s'impose dès qu'un travail touche réseau, secrets, données partagées,
+observabilité ou déploiement.
 
-Les README de ces surfaces documentent l'usage local. Ils ne définissent ni la vision, ni le modèle
-canonique, ni leur propre source de vérité.
+## Décisions et gouvernance
 
-## Règle de maintenance
+- [`adr/`](adr/README.md) — registre des ADR (ADR-091+ : Foundation ; ADR-044 → 090 : laboratoire).
+- [`governance/`](governance/SOURCE_OF_TRUTH.md) — source de vérité, [arbitrages en attente](governance/ARBITRATIONS.md), Definition of Done,
+  [production readiness](governance/PRODUCTION_READINESS.md), [registre des risques](governance/RISK_REGISTER.md),
+  [dépendances critiques](governance/DEPENDENCIES.md), politiques opérationnelles.
+- [`runbooks/`](runbooks/README.md) — exploitation (déploiement, rollback, restauration, rotation, local).
 
-Les documents actifs restent synthétiques. Git, les tags et GitHub Releases conservent les rapports et
-étapes historiques ; le dépôt actif ne conserve pas d'ancienne architecture documentaire. Un changement
-documentaire doit passer le link checker de `factory/quality/scripts`.
+## Référence du laboratoire (couche de compatibilité)
+
+Décrivent l'implémentation **historique** — pipeline Blueprint → CSM → ResolvedSystem →
+GenerationPlan, runtimes, capabilities, baseline — et non la cible produit :
+[`specifications/`](specifications/README.md), [`architecture/`](architecture/README.md), `guides/`,
+`checklists/`, `project-factory/`.
+
+## Prise en main
+
+[`onboarding/ONBOARDING.md`](onboarding/ONBOARDING.md) · [`glossary/GLOSSARY.md`](glossary/GLOSSARY.md)
+(termes de la cible Foundation).
+
+## Archives
+
+[`archive/`](archive/README.md) — documents du laboratoire remplacés ou non conformes (mandat, état,
+roadmap, stratégie, audits, prompts IA, staging, glossaire, onboarding, exemples de profils). Non autoritaires ; conservés comme preuves
+historiques.

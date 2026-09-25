@@ -10,7 +10,7 @@ interne assaini, navigation `replace`/`refresh`). **Sans middleware, sans Server
 (SSR Auth **hybride** : Option C pour le privé, Option A pour le public).
 
 > **Statut** : `IMPLEMENTATION_PARTIELLE` (compile, build, lint, tests verts + serveur local + preuve
-> API réelle). Source de vérité de pilotage : [`docs/project-status/`](../../docs/project-status/README.md).
+> API réelle). Source de vérité de pilotage : [`docs/project-status/`](../../docs/archive/laboratory/project-status/README.md).
 
 ---
 

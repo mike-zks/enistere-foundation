@@ -35,5 +35,5 @@ flutter build apk --debug
 ```
 
 La spécification locale
-[`STARTER_SPECIFICATION.md`](./STARTER_SPECIFICATION.md) décrit les limites
+[`STARTER_SPECIFICATION.md`](STARTER_SPECIFICATION.md) décrit les limites
 actuelles et les exigences de convergence.

@@ -4,8 +4,16 @@
 
 Décrire brièvement le changement.
 
-## Core concerné
+## Mission et capacité
 
+- **Mission** : (E0 … E10 — voir [`BACKLOG.md`](../BACKLOG.md))
+- **Contrats / capacités** : (A1–A7, CAP-01 … CAP-16 — voir [`IMPLEMENTATION_MATRIX.md`](../IMPLEMENTATION_MATRIX.md))
+- **ADR** : (ex. ADR-092 — ou « ADR à rédiger »)
+
+## Core concerné (laboratoire)
+
+- [ ] kernel/contracts (E0)
+- [ ] goldens
 - [ ] api-nestjs
 - [ ] api-spring
 - [ ] mobile-react-native
@@ -77,13 +85,12 @@ Décrire brièvement le changement.
 
 ## Statut / gouvernance
 
-> Remplir uniquement si cette PR modifie `docs/project-status/` ou change le statut d'un core.
+> Protocole de continuité : [`AGENTS.md`](../AGENTS.md). Obligatoire en fin de mission.
 
-- [ ] `IMPLEMENTATION_MATRIX.md` mis à jour avec preuve
-- [ ] `FOUNDATION_CURRENT_STATE.md` mis à jour
-- [ ] `NEXT_ACTIONS.md` mis à jour
-- [ ] `FOUNDATION_CURRENT_STATE.md` mis à jour
-- [ ] Rapport de revue versionné dans `docs/project-status/` si promotion de statut
+- [ ] `CURRENT_STATE.md` mis à jour (état réel, tests exécutés et NOT RUN)
+- [ ] `IMPLEMENTATION_MATRIX.md` mis à jour avec preuve (aucun VERIFIED sans Evidence)
+- [ ] `DECISIONS.md` et ADR mis à jour si une décision est prise
+- [ ] `BACKLOG.md` : mission active et prochaine action unique
 
 ## Documentation
 

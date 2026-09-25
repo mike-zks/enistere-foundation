@@ -1,0 +1,63 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "ChangeRequest",
+  "metadata": {
+    "id": "asteria-cr-002",
+    "revision": 1,
+    "title": "Peer-to-peer synchronization between field devices",
+    "status": "PROPOSED",
+    "provenance": {
+      "origin": "AI_PROPOSAL",
+      "actor": {
+        "type": "AI_AGENT",
+        "id": "foundation-intake-assistant",
+        "role": "analyst-assistant"
+      },
+      "confidence": 0.64
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "base": {
+      "kind": "SystemDefinition",
+      "id": "asteria",
+      "revision": 2,
+      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+    },
+    "trigger": "REQUIREMENT_CHANGE",
+    "summary": "Field devices exchange assignments directly without the Authority API when no network is available.",
+    "justifiedBy": [
+      {
+        "kind": "RequirementBaseline",
+        "id": "asteria-requirements",
+        "revision": 1,
+        "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b",
+        "item": "FR-004"
+      },
+      {
+        "kind": "RequirementBaseline",
+        "id": "asteria-requirements",
+        "revision": 1,
+        "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b",
+        "item": "AMB-001"
+      }
+    ],
+    "changes": [
+      {
+        "op": "ADD",
+        "path": "/spec/components/2/responsibilities/-",
+        "value": "Synchronizes assignments peer-to-peer between nearby devices.",
+        "rationale": "Proposed by the assistant from AMB-001."
+      }
+    ],
+    "classification": "UNSUPPORTED",
+    "impact": {
+      "components": [
+        "field-mobile",
+        "authority-api"
+      ],
+      "evidenceToInvalidate": [],
+      "ownerWork": []
+    }
+  }
+}

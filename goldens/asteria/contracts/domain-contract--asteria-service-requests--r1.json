@@ -1,0 +1,851 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "DomainContract",
+  "metadata": {
+    "id": "asteria-service-requests",
+    "revision": 1,
+    "title": "Asteria — service requests domain contract",
+    "status": "ACCEPTED",
+    "owner": {
+      "team": "asteria-product"
+    },
+    "provenance": {
+      "origin": "HUMAN",
+      "actor": {
+        "type": "HUMAN",
+        "id": "architect@asteria.example",
+        "role": "architect"
+      },
+      "derivedFrom": [
+        {
+          "kind": "RequirementBaseline",
+          "id": "asteria-requirements",
+          "revision": 1,
+          "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+        }
+      ]
+    },
+    "acceptance": {
+      "decision": "ACCEPTED",
+      "authority": "DECIDE",
+      "actor": {
+        "type": "HUMAN",
+        "id": "product-owner@asteria.example",
+        "role": "product-owner"
+      },
+      "at": "2026-09-16T14:00:00Z"
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "boundedContext": "service-requests",
+    "requirementBaseline": {
+      "kind": "RequirementBaseline",
+      "id": "asteria-requirements",
+      "revision": 1,
+      "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+    },
+    "types": [
+      {
+        "id": "ServiceRequest",
+        "kind": "ENTITY",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "reference",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "requesterId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "category",
+            "type": "RequestCategory",
+            "required": true
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "required": true
+          },
+          {
+            "name": "location",
+            "type": "GeoLocation",
+            "required": true
+          },
+          {
+            "name": "status",
+            "type": "RequestStatus",
+            "required": true
+          },
+          {
+            "name": "priority",
+            "type": "Priority",
+            "required": false
+          },
+          {
+            "name": "createdAt",
+            "type": "datetime",
+            "required": true
+          },
+          {
+            "name": "attachments",
+            "type": "list<Attachment>",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "GeoLocation",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "longitude",
+            "type": "decimal",
+            "required": true
+          },
+          {
+            "name": "address",
+            "type": "string",
+            "required": false,
+            "sensitive": true
+          }
+        ]
+      },
+      {
+        "id": "Attachment",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "file",
+            "type": "file-ref",
+            "required": true
+          },
+          {
+            "name": "mediaType",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "scanStatus",
+            "type": "ScanStatus",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "Assignment",
+        "kind": "ENTITY",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "requestId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "fieldAgentId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "dueAt",
+            "type": "datetime",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "InterventionReport",
+        "kind": "ENTITY",
+        "fields": [
+          {
+            "name": "id",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "assignmentId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "outcome",
+            "type": "InterventionOutcome",
+            "required": true
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": true
+          },
+          {
+            "name": "photos",
+            "type": "list<Attachment>",
+            "required": true
+          },
+          {
+            "name": "recordedAt",
+            "type": "datetime",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "RequestStatus",
+        "kind": "ENUM",
+        "values": [
+          "SUBMITTED",
+          "TRIAGED",
+          "ASSIGNED",
+          "IN_PROGRESS",
+          "RESOLVED",
+          "CLOSED",
+          "REJECTED"
+        ]
+      },
+      {
+        "id": "Priority",
+        "kind": "ENUM",
+        "values": [
+          "LOW",
+          "NORMAL",
+          "HIGH",
+          "URGENT"
+        ]
+      },
+      {
+        "id": "RequestCategory",
+        "kind": "ENUM",
+        "values": [
+          "LIGHTING",
+          "ROADWORKS",
+          "WASTE",
+          "WATER",
+          "OTHER"
+        ]
+      },
+      {
+        "id": "ScanStatus",
+        "kind": "ENUM",
+        "values": [
+          "PENDING",
+          "CLEAN",
+          "INFECTED"
+        ]
+      },
+      {
+        "id": "InterventionOutcome",
+        "kind": "ENUM",
+        "values": [
+          "RESOLVED",
+          "PARTIALLY_RESOLVED",
+          "NOT_RESOLVABLE"
+        ]
+      },
+      {
+        "id": "SubmitRequestInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "category",
+            "type": "RequestCategory",
+            "required": true
+          },
+          {
+            "name": "description",
+            "type": "text",
+            "required": true
+          },
+          {
+            "name": "location",
+            "type": "GeoLocation",
+            "required": true
+          },
+          {
+            "name": "attachmentIds",
+            "type": "list<uuid>",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "UploadAttachmentInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "file",
+            "type": "file-ref",
+            "required": true
+          },
+          {
+            "name": "mediaType",
+            "type": "string",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "TriageInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "requestId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "priority",
+            "type": "Priority",
+            "required": true
+          },
+          {
+            "name": "category",
+            "type": "RequestCategory",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "AssignInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "requestId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "fieldAgentId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "dueAt",
+            "type": "datetime",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "InterventionInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "assignmentId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "outcome",
+            "type": "InterventionOutcome",
+            "required": true
+          },
+          {
+            "name": "notes",
+            "type": "text",
+            "required": true
+          },
+          {
+            "name": "photoIds",
+            "type": "list<uuid>",
+            "required": true
+          },
+          {
+            "name": "clientReportId",
+            "type": "uuid",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "ScanResultInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "attachmentId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "scanStatus",
+            "type": "ScanStatus",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "EscalationInput",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "requestId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "dueAt",
+            "type": "datetime",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "RequestStatusChange",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "requestId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "from",
+            "type": "RequestStatus",
+            "required": true
+          },
+          {
+            "name": "to",
+            "type": "RequestStatus",
+            "required": true
+          },
+          {
+            "name": "at",
+            "type": "datetime",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "AttachmentReference",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "attachmentId",
+            "type": "uuid",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "AttachmentScan",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "attachmentId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "scanStatus",
+            "type": "ScanStatus",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "Escalation",
+        "kind": "VALUE",
+        "fields": [
+          {
+            "name": "requestId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "supervisorId",
+            "type": "uuid",
+            "required": true
+          },
+          {
+            "name": "at",
+            "type": "datetime",
+            "required": true
+          }
+        ]
+      }
+    ],
+    "operations": [
+      {
+        "id": "upload-attachment",
+        "kind": "COMMAND",
+        "summary": "Upload a photo or document; it stays PENDING until analysed.",
+        "input": "UploadAttachmentInput",
+        "output": "Attachment",
+        "errors": [
+          "UNSUPPORTED_MEDIA_TYPE",
+          "FILE_TOO_LARGE"
+        ],
+        "authorization": {
+          "intent": "An authenticated requester or field agent uploads on their own behalf.",
+          "roles": [
+            "requester",
+            "field-agent"
+          ]
+        },
+        "emits": [
+          "AttachmentUploaded"
+        ],
+        "invariants": [
+          "INV-004"
+        ]
+      },
+      {
+        "id": "submit-request",
+        "kind": "COMMAND",
+        "summary": "Create a service request.",
+        "input": "SubmitRequestInput",
+        "output": "ServiceRequest",
+        "errors": [
+          "OUTSIDE_TERRITORY",
+          "ATTACHMENT_NOT_OWNED"
+        ],
+        "authorization": {
+          "intent": "An authenticated requester creates a request on their own behalf.",
+          "roles": [
+            "requester"
+          ]
+        },
+        "emits": [
+          "RequestStatusChanged"
+        ],
+        "invariants": [
+          "INV-001",
+          "INV-002"
+        ],
+        "idempotent": true
+      },
+      {
+        "id": "list-my-requests",
+        "kind": "QUERY",
+        "summary": "List the requests of the calling requester.",
+        "output": "list<ServiceRequest>",
+        "authorization": {
+          "intent": "A requester only reads their own requests.",
+          "roles": [
+            "requester"
+          ]
+        }
+      },
+      {
+        "id": "list-requests",
+        "kind": "QUERY",
+        "summary": "List and filter all requests.",
+        "output": "list<ServiceRequest>",
+        "authorization": {
+          "intent": "Operations staff read every request.",
+          "roles": [
+            "ops-agent",
+            "supervisor"
+          ]
+        }
+      },
+      {
+        "id": "triage-request",
+        "kind": "COMMAND",
+        "summary": "Qualify and prioritize a request.",
+        "input": "TriageInput",
+        "output": "ServiceRequest",
+        "errors": [
+          "INVALID_TRANSITION"
+        ],
+        "authorization": {
+          "intent": "An operations agent triages requests.",
+          "roles": [
+            "ops-agent"
+          ]
+        },
+        "emits": [
+          "RequestStatusChanged"
+        ],
+        "invariants": [
+          "INV-002"
+        ]
+      },
+      {
+        "id": "assign-request",
+        "kind": "COMMAND",
+        "summary": "Assign a triaged request to a field agent.",
+        "input": "AssignInput",
+        "output": "Assignment",
+        "errors": [
+          "INVALID_TRANSITION",
+          "AGENT_UNAVAILABLE"
+        ],
+        "authorization": {
+          "intent": "An operations agent assigns requests.",
+          "roles": [
+            "ops-agent"
+          ]
+        },
+        "emits": [
+          "RequestStatusChanged"
+        ],
+        "invariants": [
+          "INV-002",
+          "INV-003"
+        ]
+      },
+      {
+        "id": "list-assignments",
+        "kind": "QUERY",
+        "summary": "List the assignments of the calling field agent.",
+        "output": "list<Assignment>",
+        "authorization": {
+          "intent": "A field agent only reads their own assignments.",
+          "roles": [
+            "field-agent"
+          ]
+        }
+      },
+      {
+        "id": "record-intervention",
+        "kind": "COMMAND",
+        "summary": "Record the report of an intervention (replayable after offline work).",
+        "input": "InterventionInput",
+        "output": "InterventionReport",
+        "errors": [
+          "INVALID_TRANSITION",
+          "ASSIGNMENT_NOT_OWNED"
+        ],
+        "authorization": {
+          "intent": "The assigned field agent reports on their own assignment.",
+          "roles": [
+            "field-agent"
+          ]
+        },
+        "emits": [
+          "RequestStatusChanged"
+        ],
+        "invariants": [
+          "INV-002"
+        ],
+        "idempotent": true
+      },
+      {
+        "id": "record-scan-result",
+        "kind": "COMMAND",
+        "summary": "Record the malware analysis result of an attachment.",
+        "input": "ScanResultInput",
+        "output": "Attachment",
+        "authorization": {
+          "intent": "Only the platform worker identity records analysis results.",
+          "roles": [
+            "asteria-worker"
+          ]
+        },
+        "emits": [
+          "AttachmentScanned"
+        ],
+        "invariants": [
+          "INV-004"
+        ],
+        "idempotent": true
+      },
+      {
+        "id": "escalate-request",
+        "kind": "COMMAND",
+        "summary": "Escalate an overdue request to a supervisor.",
+        "input": "EscalationInput",
+        "output": "ServiceRequest",
+        "errors": [
+          "NOT_OVERDUE"
+        ],
+        "authorization": {
+          "intent": "Only the platform worker identity escalates, on schedule.",
+          "roles": [
+            "asteria-worker"
+          ]
+        },
+        "emits": [
+          "RequestEscalated"
+        ],
+        "idempotent": true
+      }
+    ],
+    "invariants": [
+      {
+        "id": "INV-001",
+        "statement": "A request is located inside the served territory.",
+        "appliesTo": [
+          "ServiceRequest"
+        ],
+        "enforcement": "OWNER_WORK"
+      },
+      {
+        "id": "INV-002",
+        "statement": "Status transitions follow SUBMITTED → TRIAGED → ASSIGNED → IN_PROGRESS → RESOLVED → CLOSED; REJECTED only from SUBMITTED or TRIAGED.",
+        "appliesTo": [
+          "ServiceRequest"
+        ],
+        "enforcement": "DETERMINISTIC"
+      },
+      {
+        "id": "INV-003",
+        "statement": "An assignment targets exactly one active field agent and one request that is TRIAGED or ASSIGNED.",
+        "appliesTo": [
+          "Assignment"
+        ],
+        "enforcement": "OWNER_WORK"
+      },
+      {
+        "id": "INV-004",
+        "statement": "An attachment is never exposed before its scan status is CLEAN.",
+        "appliesTo": [
+          "Attachment"
+        ],
+        "enforcement": "DETERMINISTIC"
+      }
+    ],
+    "events": [
+      {
+        "id": "RequestStatusChanged",
+        "version": 1,
+        "payload": "RequestStatusChange",
+        "description": "Published through the transactional outbox on every status transition."
+      },
+      {
+        "id": "AttachmentUploaded",
+        "version": 1,
+        "payload": "AttachmentReference"
+      },
+      {
+        "id": "AttachmentScanned",
+        "version": 1,
+        "payload": "AttachmentScan"
+      },
+      {
+        "id": "RequestEscalated",
+        "version": 1,
+        "payload": "Escalation"
+      }
+    ],
+    "acceptance": [
+      {
+        "id": "ACC-001",
+        "scenario": "A requester uploads a photo, submits a geolocated request and sees it SUBMITTED.",
+        "operations": [
+          "upload-attachment",
+          "submit-request",
+          "list-my-requests"
+        ],
+        "requirements": [
+          "FR-001",
+          "FR-002"
+        ]
+      },
+      {
+        "id": "ACC-002",
+        "scenario": "An operations agent triages and assigns a request; the field agent sees the assignment.",
+        "operations": [
+          "triage-request",
+          "assign-request",
+          "list-assignments"
+        ],
+        "requirements": [
+          "FR-003",
+          "FR-004"
+        ]
+      },
+      {
+        "id": "ACC-003",
+        "scenario": "A report recorded offline is replayed twice after reconnection and stored once.",
+        "operations": [
+          "record-intervention"
+        ],
+        "requirements": [
+          "FR-004"
+        ]
+      },
+      {
+        "id": "ACC-004",
+        "scenario": "An infected attachment is never exposed to any role.",
+        "operations": [
+          "upload-attachment",
+          "record-scan-result"
+        ],
+        "requirements": [
+          "SEC-002"
+        ]
+      },
+      {
+        "id": "ACC-005",
+        "scenario": "An overdue request is escalated once to a supervisor.",
+        "operations": [
+          "escalate-request"
+        ],
+        "requirements": [
+          "FR-006"
+        ]
+      },
+      {
+        "id": "ACC-006",
+        "scenario": "Each status transition produces exactly one requester notification.",
+        "operations": [
+          "triage-request",
+          "assign-request",
+          "record-intervention"
+        ],
+        "requirements": [
+          "FR-005"
+        ]
+      }
+    ],
+    "facets": [
+      {
+        "id": "offline-sync",
+        "version": "1",
+        "appliesTo": [
+          "record-intervention",
+          "list-assignments"
+        ],
+        "configuration": {
+          "maxOfflineHours": 12,
+          "conflictPolicy": "server-wins-with-owner-review"
+        }
+      },
+      {
+        "id": "scheduling",
+        "version": "1",
+        "appliesTo": [
+          "escalate-request"
+        ],
+        "configuration": {
+          "interval": "PT5M"
+        }
+      },
+      {
+        "id": "workflow",
+        "version": "1",
+        "appliesTo": [
+          "ServiceRequest"
+        ],
+        "configuration": {
+          "stateField": "status",
+          "invariant": "INV-002"
+        }
+      }
+    ]
+  }
+}

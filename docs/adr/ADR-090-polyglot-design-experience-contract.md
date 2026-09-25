@@ -7,7 +7,7 @@
 
 ## Contexte
 
-L'[étude UI/UX multi-runtime](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)
+L'[étude UI/UX multi-runtime](../archive/laboratory/audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)
 a exécuté les suites des quatre familles clientes. Next.js consomme directement
 `@enistere/ui-kit`, qui mélange tokens neutres et 19 composants React DOM.
 Angular, React Native et Flutter copient ou adaptent des valeurs sans source

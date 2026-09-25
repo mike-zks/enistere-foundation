@@ -18,7 +18,6 @@ release et les règles de protection. Factory Quality ne modifie pas les runtime
 - `QUALITY_GATES_MATRIX.md`
 - `BRANCH_PROTECTION_RUNBOOK.md`
 - `RELEASE_PROCESS_RUNBOOK.md`
-- `AI_PROMPT_GOVERNANCE.md`
 - `scripts/`
 
 ## Validation

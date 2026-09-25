@@ -16,7 +16,7 @@
 # un secret réel en attente de rotation se traite par la rotation, pas par une
 # exception qui dort.
 
-title = "Enistere OS Foundation — secret scanning"
+title = "Enistere Foundation — secret scanning"
 
 [extend]
 useDefault = true

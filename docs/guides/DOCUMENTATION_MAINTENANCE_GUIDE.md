@@ -3,7 +3,7 @@
 > Documentation 5.
 > Derniere mise a jour : 2026-07-12.
 
-Ce guide explique comment maintenir la documentation d'Enistere OS Foundation sans dupliquer l'etat du
+Ce guide explique comment maintenir la documentation d'Enistere Foundation sans dupliquer l'etat du
 repository ni affaiblir la gouvernance.
 
 ## 1. Objectif
@@ -38,7 +38,7 @@ dans `docs/project-status/` ou corriger le document courant qui porte la synthes
 | Nouveau statut de conformite | `IMPLEMENTATION_MATRIX.md`, `FOUNDATION_CURRENT_STATE.md`, `NEXT_ACTIONS.md`, `CHANGELOG.md` |
 | Nouvelle preuve ou rapport | `docs/README.md`, rapport dans `docs/project-status/`, fichier statut concerne |
 | Nouvelle decision ADR | `docs/project-status/DECISIONS_REGISTER.md`, `docs/adr/ADR_BACKLOG.md` si besoin |
-| Nouvelle mission IA recurrente | `factory/ai/prompts/README.md`, `factory/quality/AI_PROMPT_GOVERNANCE.md` si le cadre change |
+| Nouvelle mission IA recurrente | `AGENTS.md` et le rapport de mission (document 05 §11) ; prompts du laboratoire archivés (ADR-093) |
 | Nouveau guide ou onboarding | `docs/README.md`, `factory/quality/README.md`, `docs/onboarding/CONTRIBUTOR_ONBOARDING.md` |
 
 ## 4. Regles de redaction

@@ -95,7 +95,7 @@ jobs:
           --health-retries 20
 
     env:
-      # Valeurs de test JETABLES (jamais des secrets réels ; cf. deployment/docs/SECRETS_POLICY.md).
+      # Valeurs de test JETABLES (jamais des secrets réels ; cf. docs/Server Prod/POLITIQUE.md « Identité et secrets »).
       GOLDEN_RUNTIME_DB: "1"
       DATABASE_URL: postgresql://enistere:enistere_test_password@localhost:5432/enistere_golden?schema=public
       SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/enistere_golden

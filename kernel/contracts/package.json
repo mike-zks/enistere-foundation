@@ -1,0 +1,28 @@
+{
+  "name": "@enistere/foundation-kernel-contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Enistere Foundation — E0 Contract Foundation: seven first-class contracts (A1–A7) and their shared primitives (version, stable ref, provenance, acceptance/status, diagnostics, digest, migration seam).",
+  "license": "UNLICENSED",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./schemas/*": "./schemas/*"
+  },
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.ts",
+    "golden:update": "node test/golden-update.ts"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}
