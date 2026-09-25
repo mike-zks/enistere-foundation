@@ -10,14 +10,14 @@
 > Rapport fondé sur l'ancien modèle de statuts. Depuis ADR-057, `TARGET` et `PLANNED` précèdent les niveaux
 > de preuve ; voir [TARGET_VS_CURRENT_IMPLEMENTATION.md](TARGET_VS_CURRENT_IMPLEMENTATION.md).
 
-Cible : [Conformance Model](../specifications/CONFORMANCE_MODEL.md), Conformance Engine de
-l'[architecture technique](../architecture/technical/ENISTERE_TECHNICAL_ARCHITECTURE.md).
+Cible : [Conformance Model](../../../specifications/CONFORMANCE_MODEL.md), Conformance Engine de
+l'[architecture technique](../../../architecture/technical/ENISTERE_TECHNICAL_ARCHITECTURE.md).
 Réel : `factory/test/*.test.mjs`, `factory/quality/scripts/{golden-runtime,fitness-functions}.mjs`,
 `.github/workflows/factory-golden-runtime.yml`.
 
 ## Niveaux de conformité atteints
 
-Le [modèle](../specifications/CONFORMANCE_MODEL.md) définit :
+Le [modèle](../../../specifications/CONFORMANCE_MODEL.md) définit :
 `TARGET → PLANNED → IMPLEMENTED → GENERATABLE → BOOTABLE → CONFORMANT → PRODUCT_EQUIVALENT →
 PRODUCTION_READY`.
 

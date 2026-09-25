@@ -77,5 +77,5 @@ les quality gates. Le golden `spring-base` doit en plus démarrer et réussir le
 contrat HTTP réel en CI. Ces preuves ne valent ni parité produit, ni backend
 OpenTelemetry imposé, ni statut `PRODUCTION_READY`.
 
-Voir également [STARTER_SPECIFICATION.md](./STARTER_SPECIFICATION.md) et le rapport
+Voir également [STARTER_SPECIFICATION.md](STARTER_SPECIFICATION.md) et le rapport
 calculé `factory/conformance/reports/platform-baseline-v2-gap.json`.

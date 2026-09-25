@@ -14,43 +14,43 @@ parité déclarée ; aucun statut `PRODUCT_EQUIVALENT` ou `PRODUCTION_READY` n�
 Les sept runtimes sont désormais conformes à leur Runtime Contract v2 ; aucune nouvelle capability ne
 doit être ajoutée avant la fin du chantier Architecture Profiles.
 
-Décision de refondation initiale : [`ADR-044`](../adr/ADR-044-enistere-foundation-v2-architecture-reset.md).
+Décision de refondation initiale : [`ADR-044`](../../../adr/ADR-044-enistere-foundation-v2-architecture-reset.md).
 Architecture de référence courante :
-[`ADR-057`](../adr/ADR-057-reference-architecture-and-platform-baseline.md).
+[`ADR-057`](../../../adr/ADR-057-reference-architecture-and-platform-baseline.md).
 Contrat exécutable courant :
-[`ADR-058`](../adr/ADR-058-executable-platform-baseline-v2.md).
+[`ADR-058`](../../../adr/ADR-058-executable-platform-baseline-v2.md).
 Convergence API courante :
-[`ADR-062`](../adr/ADR-062-fastapi-runtime-adapter.md).
+[`ADR-062`](../../../adr/ADR-062-fastapi-runtime-adapter.md).
 Convergence Web courante :
-[`ADR-063`](../adr/ADR-063-web-runtime-v2-convergence.md).
+[`ADR-063`](../../../adr/ADR-063-web-runtime-v2-convergence.md).
 Convergence Mobile courante :
-[`ADR-064`](../adr/ADR-064-mobile-runtime-v2-convergence.md).
+[`ADR-064`](../../../adr/ADR-064-mobile-runtime-v2-convergence.md).
 Profils système exécutables :
-[`ADR-065`](../adr/ADR-065-executable-system-architecture-profiles.md).
+[`ADR-065`](../../../adr/ADR-065-executable-system-architecture-profiles.md).
 Capability Manifest v2 :
-[`ADR-067`](../adr/ADR-067-capability-manifest-v2-and-deterministic-graph.md).
+[`ADR-067`](../../../adr/ADR-067-capability-manifest-v2-and-deterministic-graph.md).
 Conformité produit Authentication :
-[`ADR-068`](../adr/ADR-068-authentication-capability-product-conformance.md).
+[`ADR-068`](../../../adr/ADR-068-authentication-capability-product-conformance.md).
 Conformité produit RBAC et évaluateur générique :
-[`ADR-069`](../adr/ADR-069-authorization-capability-product-conformance.md).
+[`ADR-069`](../../../adr/ADR-069-authorization-capability-product-conformance.md).
 Responsabilités par target et parité par famille :
-[`ADR-070`](../adr/ADR-070-capability-responsibilities-and-family-parity.md).
+[`ADR-070`](../../../adr/ADR-070-capability-responsibilities-and-family-parity.md).
 Gates hermétiques :
-[`ADR-071`](../adr/ADR-071-hermetic-quality-gates.md).
+[`ADR-071`](../../../adr/ADR-071-hermetic-quality-gates.md).
 Schéma de capability normatif :
-[`ADR-072`](../adr/ADR-072-normative-capability-schema.md).
+[`ADR-072`](../../../adr/ADR-072-normative-capability-schema.md).
 Analyse de secrets bloquante :
-[`ADR-073`](../adr/ADR-073-secret-scanning.md).
+[`ADR-073`](../../../adr/ADR-073-secret-scanning.md).
 Parité de famille sur tous les runtimes :
-[`ADR-074`](../adr/ADR-074-family-parity-covers-every-runtime.md).
+[`ADR-074`](../../../adr/ADR-074-family-parity-covers-every-runtime.md).
 Créance navigateur et Auth sur Angular :
-[`ADR-075`](../adr/ADR-075-browser-credential-storage.md).
+[`ADR-075`](../../../adr/ADR-075-browser-credential-storage.md).
 Frontière de matérialisation des projets dérivés :
-[`ADR-086`](../adr/ADR-086-derived-project-materialization-boundary.md).
+[`ADR-086`](../../../adr/ADR-086-derived-project-materialization-boundary.md).
 Identités applicatives dérivées du CSM :
-[`ADR-087`](../adr/ADR-087-csm-derived-application-identities.md).
+[`ADR-087`](../../../adr/ADR-087-csm-derived-application-identities.md).
 Parité contractuelle et artefacts partagés :
-[`ADR-088`](../adr/ADR-088-contractual-parity-and-shared-artifacts.md).
+[`ADR-088`](../../../adr/ADR-088-contractual-parity-and-shared-artifacts.md).
 
 ## Actifs existants à migrer
 
@@ -75,8 +75,8 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
 ## Écarts (mesurés par l'audit)
 
 - **P0** — contrats centrés TypeScript. *Partiellement adressé* : le pipeline
-  canonique unique ([ADR-046](../adr/ADR-046-single-canonical-factory-pipeline.md)) et une **suite Platform
-  Contract exécutable** minimale pour la famille API ([ADR-047](../adr/ADR-047-executable-platform-contract-api.md))
+  canonique unique ([ADR-046](../../../adr/ADR-046-single-canonical-factory-pipeline.md)) et une **suite Platform
+  Contract exécutable** minimale pour la famille API ([ADR-047](../../../adr/ADR-047-executable-platform-contract-api.md))
   existent ; NestJS, Spring et FastAPI sont conformes sur les 28 invariants Common/API v2. ADR-088 a
   toutefois mesuré que cette conformité ne prouve pas leur interchangeabilité HTTP : FastAPI diverge du
   snapshot NestJS et Spring Files ne publie pas `/v3/api-docs`. `ApiErrorResponse` possède désormais des
@@ -138,7 +138,7 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
   manifests résolus jusqu'au plan, rapports schema v2, diagnostics et scan des sept runtimes.
 - `API Runtime Convergence v2` : **COMPLETE** (ADR-061/062) — NestJS, Spring et FastAPI sont chacun
   `28/0/0` (`COMPLIANT/PARTIAL/MISSING`) et leurs goldens prouvent le boot/HTTP : voir
-  [`platform-baseline-v2-gap.json`](../../factory/conformance/reports/platform-baseline-v2-gap.json).
+  [`platform-baseline-v2-gap.json`](../../../../factory/conformance/reports/platform-baseline-v2-gap.json).
 - `Web Runtime Convergence v2` : **COMPLETE** (ADR-063) — Next.js et Angular
   sont chacun `24/0/0`; leurs goldens prouvent build, démarrage et contrat E2E.
 - `Mobile Runtime Convergence v2` : **COMPLETE** (ADR-064) — React Native et

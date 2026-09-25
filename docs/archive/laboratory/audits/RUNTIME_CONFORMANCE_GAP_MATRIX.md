@@ -8,7 +8,7 @@
 > [`TARGET_VS_CURRENT_IMPLEMENTATION`](TARGET_VS_CURRENT_IMPLEMENTATION.md).
 
 Cette synthèse reflète le rapport calculé
-[`platform-baseline-v2-gap.json`](../../factory/conformance/reports/platform-baseline-v2-gap.json).
+[`platform-baseline-v2-gap.json`](../../../../factory/conformance/reports/platform-baseline-v2-gap.json).
 Elle mesure le Platform Baseline `common/2.0.0` et le contrat de famille
 `api/2.0.0`, `web/2.0.0` ou `mobile/2.0.0`.
 

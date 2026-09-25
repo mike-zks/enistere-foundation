@@ -69,7 +69,7 @@ hiérarchie §5 qui place les « schémas exécutables » au rang 3.
 ## Mission schéma achevée
 
 `capability.schema.json` est désormais **normatif et exécuté**
-([ADR-072](../adr/ADR-072-normative-capability-schema.md)) : compilé par Ajv,
+([ADR-072](../../../adr/ADR-072-normative-capability-schema.md)) : compilé par Ajv,
 appliqué à toute validation de manifest, et source des énumérations du moteur
 (statuts, primitives, modes de déploiement) au lieu qu'elles soient redéclarées.
 
@@ -86,7 +86,7 @@ cette propriété — le même défaut peut s'y trouver.
 ## Mission secret scanning achevée
 
 Un scan de secrets bloquant s'exécute sur chaque PR
-([ADR-073](../adr/ADR-073-secret-scanning.md)) : historique complet (352 commits),
+([ADR-073](../../../adr/ADR-073-secret-scanning.md)) : historique complet (352 commits),
 binaire épinglé et vérifié par SHA-256 plutôt qu'une action tierce, détections
 censurées dans les journaux, et exceptions justifiées — jamais de désactivation.
 
@@ -137,7 +137,7 @@ ADR-070 ne mesurait la parité qu'entre targets `ready` ; un runtime s'exonérai
 donc en déclarant `unsupported`. C'est exactement ce que faisait FastAPI :
 conforme au baseline (28/28), annoncé comme runtime API, et ne portant rien.
 
-[ADR-074](../adr/ADR-074-family-parity-covers-every-runtime.md) étend la règle à
+[ADR-074](../../../adr/ADR-074-family-parity-covers-every-runtime.md) étend la règle à
 **tous** les runtimes d'une famille servie. La barre reste la couverture des
 pairs, pas le périmètre total — `files/flutter` ne doit qu'`upload` parce que
 React Native ne tient qu'`upload` ; `rbac/flutter` ne doit rien parce qu'aucun
@@ -183,7 +183,7 @@ son moyen. Contrat en 1.1.0, quatre descripteurs alignés.
 ## Mission achevée
 
 `auth/angular` est **`ready`** : quatre responsabilités, six invariants, neuf
-preuves ([ADR-075](../adr/ADR-075-browser-credential-storage.md)). **L'écart de
+preuves ([ADR-075](../../../adr/ADR-075-browser-credential-storage.md)). **L'écart de
 parité Web est refermé** — Angular tient exactement ce que Next.js tient.
 
 Le compromis de stockage est tranché et écrit : la créance vit derrière une
@@ -209,7 +209,7 @@ Trois défauts trouvés par les tests en cours de route :
 ## Mission achevée — Authentication sur Flutter
 
 `auth/flutter` est **`ready`** : quatre responsabilités, six invariants, neuf
-preuves ([ADR-076](../adr/ADR-076-authentication-flutter.md)). **L'écart de
+preuves ([ADR-076](../../../adr/ADR-076-authentication-flutter.md)). **L'écart de
 parité Mobile d'Authentication est refermé** — Flutter tient ce que React Native
 tient.
 
@@ -295,7 +295,7 @@ indispensable, pas seulement prudent.
 ## Mission achevée — Authentication sur FastAPI
 
 `auth/fastapi` est **`ready`** : quatre responsabilités, huit invariants, onze
-preuves ([ADR-077](../adr/ADR-077-authentication-fastapi.md)).
+preuves ([ADR-077](../../../adr/ADR-077-authentication-fastapi.md)).
 
 ```text
 auth   api  nestjs 4/4 · spring 4/4 · fastapi 4/4 ✓   web nextjs 4/4 · angular 4/4 ✓
@@ -375,7 +375,7 @@ indispensable, pas seulement prudent.
 ## Mission achevée — RBAC sur FastAPI
 
 `rbac/fastapi` est **`ready`** : quatre responsabilités, six invariants, dix
-preuves ([ADR-078](../adr/ADR-078-authorization-fastapi.md)). **La parité API est
+preuves ([ADR-078](../../../adr/ADR-078-authorization-fastapi.md)). **La parité API est
 refermée sur RBAC** — les trois autorités tiennent 4/4.
 
 Le portage lui-même n'a rien révélé. **La composition à deux capabilities, si.**
@@ -451,7 +451,7 @@ indispensable, pas seulement prudent.
 
 ## Mission achevée — zones et coutures sur les sept runtimes
 
-[ADR-079](../adr/ADR-079-capability-zones.md) fixe trois zones et la règle qui
+[ADR-079](../../../adr/ADR-079-capability-zones.md) fixe trois zones et la règle qui
 les départage : **la zone dépend de la nature du code, pas de qui le livre**, et
 son corollaire opérant — *le cœur ne doit jamais savoir qu'une capability
 existe*.
@@ -618,7 +618,7 @@ confondre avec le stockage aurait produit un mauvais correctif.
 
 ## Mission achevée — le baseline FastAPI porte la persistance
 
-[ADR-080](../adr/ADR-080-baseline-owns-persistence.md). C'était le dernier cas
+[ADR-080](../../../adr/ADR-080-baseline-owns-persistence.md). C'était le dernier cas
 ouvert de la refonte, et le seul angle mort de mesure du dépôt.
 
 ### Ce que les faits disaient
@@ -675,7 +675,7 @@ trahit.
 
 ## Mission achevée — le cœur ne dépend pas de la zone métier
 
-[ADR-081](../adr/ADR-081-core-business-independence.md) pose **FF5e**, l'invariant
+[ADR-081](../../../adr/ADR-081-core-business-independence.md) pose **FF5e**, l'invariant
 complémentaire qu'ADR-079 avait explicitement laissé de côté : la frontière était
 tenue en écriture, jamais en dépendance.
 
@@ -740,7 +740,7 @@ elle ne peut pas diverger de ce que la Factory génère.
 
 ## Mission achevée — les racines de routage sous la même frontière
 
-[ADR-082](../adr/ADR-082-routing-root-import-frontier.md) referme la dernière
+[ADR-082](../../../adr/ADR-082-routing-root-import-frontier.md) referme la dernière
 zone que FF5e ne mesurait pas — et **corrige le diagnostic qu'ADR-081 avait posé
 la veille**.
 
@@ -795,7 +795,7 @@ d'une capability n'y apparaissent jamais.
 
 ## Mission achevée — la régénération
 
-[ADR-083](../adr/ADR-083-regeneration.md). Quatre ADR consécutives se terminaient
+[ADR-083](../../../adr/ADR-083-regeneration.md). Quatre ADR consécutives se terminaient
 par *la régénération n'existe pas*. Elle existe.
 
 ### L'obstacle réel n'était pas celui qu'on avait nommé
@@ -848,7 +848,7 @@ et vide — le projet aurait continué d'en avoir l'air.
 
 ## Mission achevée — une migration n'est pas du code
 
-[ADR-084](../adr/ADR-084-regeneration-across-families.md). La mission devait
+[ADR-084](../../../adr/ADR-084-regeneration-across-families.md). La mission devait
 étendre la preuve de régénération au-delà d'une composition. Elle a surtout
 montré qu'ADR-083 décrivait le mauvais problème.
 
@@ -902,7 +902,7 @@ et elle appartient au propriétaire.
 
 ## Mission achevée — les modules de modèles passent par une couture
 
-[ADR-085](../adr/ADR-085-alembic-model-seam.md). La mission devait refermer le
+[ADR-085](../../../adr/ADR-085-alembic-model-seam.md). La mission devait refermer le
 dernier défaut nommé de la famille API. **Elle a surtout démenti la description
 que trois ADR en donnaient.**
 
@@ -960,7 +960,7 @@ Le danger est réel ; il arrive plus tard qu'annoncé et frappe plus large.
 ## Mission achevée — autorisation des opérations de sécurité des agents IA
 
 Le contexte d'autorisation défensive est formalisé dans la politique opérationnelle
-[`AI_SECURITY_AUTHORIZATION.md`](../governance/AI_SECURITY_AUTHORIZATION.md), référencée par
+[`AI_SECURITY_AUTHORIZATION.md`](../../../governance/AI_SECURITY_AUTHORIZATION.md), référencée par
 `MANDAT.md`, la source de vérité et l'instruction d'entrée `AGENTS.md`.
 
 Le périmètre couvre la Foundation et les systèmes ou environnements explicitement contrôlés par le
@@ -1182,7 +1182,7 @@ coordonnées dérivées ; Flutter analyze, 26 tests et APK debug.
 
 ## Mission de formalisation achevée — Parité contractuelle et artefacts partagés
 
-[ADR-088](../adr/ADR-088-contractual-parity-and-shared-artifacts.md) retire à
+[ADR-088](../../../adr/ADR-088-contractual-parity-and-shared-artifacts.md) retire à
 l'axe NestJS + Next.js + React Native son statut implicite de référence. La
 parité distingue désormais produit, contrat externe, client et composition. Un
 profil n'est interchangeable qu'après preuve des quatre niveaux.
@@ -1241,12 +1241,12 @@ starters NestJS/Next.js sont encore livrées.
 
 ## Mission achevée — contrat de livraison opérationnelle
 
-[ADR-089](../adr/ADR-089-operational-delivery-units.md) sépare désormais quatre
+[ADR-089](../../../adr/ADR-089-operational-delivery-units.md) sépare désormais quatre
 plans : contrat opérationnel, adapter runtime, pack provider et pipeline dérivé.
 Le document canonique reste
-[`deployment/DEPLOYMENT_SPECIFICATION.md`](../../deployment/DEPLOYMENT_SPECIFICATION.md) ;
+[`deployment/DEPLOYMENT_SPECIFICATION.md`](../../../../deployment/DEPLOYMENT_SPECIFICATION.md) ;
 le schéma exécutable est
-[`deployment-unit.schema.json`](../../factory/schema/deployment-unit.schema.json).
+[`deployment-unit.schema.json`](../../../../factory/schema/deployment-unit.schema.json).
 
 Le premier slice refuse les secrets littéraux, les chemins hors projet, un
 artefact `ready` sans preuve, un artefact `blocked` sans blocker et une image
@@ -1310,7 +1310,7 @@ arbitraire.
 
 ## Mission achevée — contrat UI/UX polyglotte et ThemePacks
 
-[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md) formalise
+[ADR-090](../../../adr/ADR-090-polyglot-design-experience-contract.md) formalise
 `design-experience/v1` et `theme-pack/v1` sous `contracts/design/`. Deux schémas
 fermés, validés par l'évaluateur autonome et Ajv, portent 19 couleurs sémantiques,
 sept patterns UX et deux identités institutionnelles light/dark.

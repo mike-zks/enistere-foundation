@@ -25,7 +25,7 @@ L'écart avec la cible V2 n'est pas un défaut de qualité, c'est un **écart de
 la Foundation reste organisée autour du **starter** et de la verticale **TypeScript**, alors que la cible
 est organisée autour du **système** (blueprint → runtime adapters → capabilities → primitives → contrats
 → conformité) et de la **neutralité polyglotte**. Maturité réelle : niveau **`Bootable`** du
-[modèle de conformité](../specifications/CONFORMANCE_MODEL.md), pas `Conformant`.
+[modèle de conformité](../../../specifications/CONFORMANCE_MODEL.md), pas `Conformant`.
 
 ## 2. Forces existantes (à conserver)
 

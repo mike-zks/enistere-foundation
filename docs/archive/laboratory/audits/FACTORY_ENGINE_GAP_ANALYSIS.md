@@ -7,9 +7,9 @@
 > [`FOUNDATION_CURRENT_STATE`](../project-status/FOUNDATION_CURRENT_STATE.md),
 > [`TARGET_VS_CURRENT_IMPLEMENTATION`](TARGET_VS_CURRENT_IMPLEMENTATION.md).
 
-Cible : [Architecture technique](../architecture/technical/ENISTERE_TECHNICAL_ARCHITECTURE.md),
-[Composition Model](../specifications/COMPOSITION_MODEL.md),
-[Lifecycle & Upgrade](../specifications/LIFECYCLE_AND_UPGRADE_SPECIFICATION.md).
+Cible : [Architecture technique](../../../architecture/technical/ENISTERE_TECHNICAL_ARCHITECTURE.md),
+[Composition Model](../../../specifications/COMPOSITION_MODEL.md),
+[Lifecycle & Upgrade](../../../specifications/LIFECYCLE_AND_UPGRADE_SPECIFICATION.md).
 Réel : `factory/engine/*.mjs`, `factory/cli/enistere.mjs`, `factory/quality/scripts/*`.
 
 ## Pipeline cible vs réel

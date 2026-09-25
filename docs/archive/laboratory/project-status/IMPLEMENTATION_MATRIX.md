@@ -2,7 +2,7 @@
 
 > **État d'implémentation, pas architecture cible.** Les états ci-dessous décrivent le code actuel, dont
 > les statuts ont été établis sur l'ancien modèle. Ils seront requalifiés contre le
-> [modèle de conformité](../specifications/CONFORMANCE_MODEL.md) lors de l'audit d'écart. Aucun statut
+> [modèle de conformité](../../../specifications/CONFORMANCE_MODEL.md) lors de l'audit d'écart. Aucun statut
 > listé ici ne vaut déclaration de conformité V2.
 
 ## Factory

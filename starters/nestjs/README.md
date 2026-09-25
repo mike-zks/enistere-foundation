@@ -77,5 +77,5 @@ les quality gates. Le golden `nestjs-base` doit en plus démarrer et réussir le
 contrat HTTP réel en CI. Ces preuves ne valent ni parité produit, ni backend
 OpenTelemetry imposé, ni statut `PRODUCTION_READY`.
 
-Voir [STARTER_SPECIFICATION.md](./STARTER_SPECIFICATION.md) et le rapport calculé
+Voir [STARTER_SPECIFICATION.md](STARTER_SPECIFICATION.md) et le rapport calculé
 `factory/conformance/reports/platform-baseline-v2-gap.json`.

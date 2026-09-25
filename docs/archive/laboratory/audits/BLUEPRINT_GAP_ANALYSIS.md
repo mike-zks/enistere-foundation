@@ -7,7 +7,7 @@
 > [`FOUNDATION_CURRENT_STATE`](../project-status/FOUNDATION_CURRENT_STATE.md),
 > [`TARGET_VS_CURRENT_IMPLEMENTATION`](TARGET_VS_CURRENT_IMPLEMENTATION.md).
 
-Cible : [System Blueprint Specification](../specifications/SYSTEM_BLUEPRINT_SPECIFICATION.md).
+Cible : [System Blueprint Specification](../../../specifications/SYSTEM_BLUEPRINT_SPECIFICATION.md).
 Réel : `factory/schema/blueprint.schema.json`, `factory/engine/applications.mjs`,
 `factory/engine/topologies.mjs`.
 

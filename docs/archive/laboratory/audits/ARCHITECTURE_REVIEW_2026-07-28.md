@@ -28,7 +28,7 @@ par les commandes citées.
 ## 2. Défauts de conception
 
 **D1 — Le schéma `capability.schema.json` n'est exécuté nulle part.**
-*(Refermé le 2026-07-28 par [ADR-072](../adr/ADR-072-normative-capability-schema.md).)*
+*(Refermé le 2026-07-28 par [ADR-072](../../../adr/ADR-072-normative-capability-schema.md).)*
 `grep -rln "capability.schema.json" factory/` ne retourne rien hors le fichier
 lui-même ; aucun test ne charge ajv. La validation réelle est
 `validateCapabilityManifest` (à la main, dans `capabilities.mjs`). Il existe donc

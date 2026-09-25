@@ -1,23 +1,43 @@
-# Contribution
+# Contribuer à Enistere Foundation
 
-Ce repository sert de fondation commune. Les contributions doivent rester cohérentes avec sa vocation : documenter, standardiser et préparer les futurs socles techniques.
+Lire d'abord [`AGENTS.md`](AGENTS.md) (protocole de reprise, valable pour les humains comme pour les
+agents) et [`CONTEXT.md`](CONTEXT.md).
 
-## Principes
+## Missions
 
-- Rédiger en français clair et précis.
-- Garder une structure modulaire.
-- Ne pas ajouter de code applicatif pendant la Phase 0.
-- Ne pas introduire de dépendance technique sans décision validée.
-- Ne jamais committer de secret, jeton, clé privée ou information sensible.
+Le travail est découpé en missions courtes E0 → E10 (document 06, [`ROADMAP.md`](ROADMAP.md)). Chaque
+mission commence par MISSION ID, OBJECTIF, IN/OUT OF SCOPE, BASELINE GIT, CONTRATS/ADR IMPACTÉS, CRITÈRES
+DE PASS et se termine par le rapport du document 05 §11 (gabarit Annexe A §16), consigné dans
+[`CURRENT_STATE.md`](CURRENT_STATE.md).
 
-## Processus recommandé
+## Branches et commits
 
-1. Créer une branche dédiée.
-2. Documenter le changement dans le fichier ou le template concerné.
-3. Vérifier que le périmètre reste aligné avec la phase en cours.
-4. Ouvrir une pull request avec le contexte, l'impact et les validations réalisées.
+- Une branche dédiée par mission ; jamais de force-push sur une branche partagée ; jamais de merge,
+  publication ou suppression de branche distante sans autorisation.
+- Un commit = une unité explicable. Ne pas mélanger refactor massif, fonctionnalité, documentation et
+  montée de dépendances sans nécessité.
+- Messages : `type(portée): résumé` (`feat`, `fix`, `docs`, `test`, `refactor`, `chore`, `ci`),
+  en français ou en anglais, à l'impératif.
+- Avant commit : tests pertinents, relecture du diff, fichiers générés identifiés, recherche de secrets.
 
-## Documentation
+## Pull requests
 
-Les décisions structurantes doivent être placées dans `docs/adr/` ou `docs/decisions/` selon leur portée.
+Utiliser [`.github/PULL_REQUEST_TEMPLATE.md`](.github/PULL_REQUEST_TEMPLATE.md). Indiquer les commandes
+réellement exécutées, les gates **NOT RUN** et leur raison, la mission et les contrats ou capacités
+concernés.
 
+## Tests
+
+| Zone | Commandes |
+|---|---|
+| Kernel E0 et goldens | `npm run foundation:typecheck` · `npm run foundation:test` · `npm run golden:asteria:update` puis diff vide |
+| Laboratoire | `npm run factory:test` · `npm run contracts:check` · `npm run design:check` · `npm test` · `npm run typecheck` |
+| Documentation | `node factory/quality/scripts/docs-link-check.mjs` |
+
+Aucune capacité n'est déclarée VERIFIED sans preuve ; aucun golden ni migration n'est supprimé pour faire
+passer une suite.
+
+## Documentation et décisions
+
+Toute décision structurante est un ADR (`docs/adr/`) résumé dans [`DECISIONS.md`](DECISIONS.md). Ne jamais
+committer de secret, jeton, clé privée ou donnée personnelle.

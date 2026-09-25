@@ -33,7 +33,7 @@ mesure la consommation réelle des tokens, composants et thèmes dans Next.js,
 Angular, React Native et Flutter. Elle distingue le contrat de design polyglotte
 des composants idiomatiques et cadre les thèmes dynamiques institutionnels. Sa
 première recommandation est désormais exécutée par
-[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md) ; les migrations
+[ADR-090](../../../adr/ADR-090-polyglot-design-experience-contract.md) ; les migrations
 et preuves runtime qu'elle identifie restent ouvertes.
 
 ## Analyses closes (historique)

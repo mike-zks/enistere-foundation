@@ -37,5 +37,5 @@ npm run test:e2e
 ```
 
 La spécification normative locale est
-[`STARTER_SPECIFICATION.md`](./STARTER_SPECIFICATION.md). Les contrats canoniques
+[`STARTER_SPECIFICATION.md`](STARTER_SPECIFICATION.md). Les contrats canoniques
 sont définis dans `factory/contracts/runtime/`.

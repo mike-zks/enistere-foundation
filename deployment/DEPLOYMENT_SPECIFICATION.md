@@ -9,7 +9,7 @@ mécanismes ; les packs providers matérialisent un environnement. ADR-089 adopt
 la séparation.
 
 La cible n'est pas une déclaration d'implémentation. L'état mesuré est publié
-dans l'[audit opérationnel du 2026-08-02](../docs/audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
+dans l'[audit opérationnel du 2026-08-02](../docs/archive/laboratory/audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
 
 ## 2. Modèle
 

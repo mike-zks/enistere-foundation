@@ -2,9 +2,9 @@
 
 > Photographie transverse du starter à l'issue des blocs socle, Auth/RBAC et Files (Upload 1→5),
 > avec les durcissements transverses appliqués. Compléments permanents :
-> [`AUTH_RBAC_REVIEW.md`](./AUTH_RBAC_REVIEW.md), [`FILES_REVIEW.md`](./FILES_REVIEW.md),
-> [`API_CORE_V1_IMPLEMENTATION_STATUS.md`](./API_CORE_V1_IMPLEMENTATION_STATUS.md),
-> [`API_CORE_V1_NEXT_ROADMAP.md`](./API_CORE_V1_NEXT_ROADMAP.md).
+> [`AUTH_RBAC_REVIEW.md`](AUTH_RBAC_REVIEW.md), [`FILES_REVIEW.md`](FILES_REVIEW.md),
+> [`API_CORE_V1_IMPLEMENTATION_STATUS.md`](API_CORE_V1_IMPLEMENTATION_STATUS.md),
+> [`API_CORE_V1_NEXT_ROADMAP.md`](API_CORE_V1_NEXT_ROADMAP.md).
 
 ## 1. Résumé exécutif
 

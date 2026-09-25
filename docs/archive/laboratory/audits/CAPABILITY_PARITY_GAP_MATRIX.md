@@ -12,8 +12,8 @@
 > [TARGET_VS_CURRENT_IMPLEMENTATION.md](TARGET_VS_CURRENT_IMPLEMENTATION.md).
 
 Parité par capability et target, mesurée contre la
-[Capability Specification](../specifications/CAPABILITY_SPECIFICATION.md) et la
-[Capability Architecture](../architecture/CAPABILITY_ARCHITECTURE.md).
+[Capability Specification](../../../specifications/CAPABILITY_SPECIFICATION.md) et la
+[Capability Architecture](../../../architecture/CAPABILITY_ARCHITECTURE.md).
 
 Sources d'évidence : manifestes `capabilities/*/capability.json`, payloads
 `capabilities/*/targets/*/overlay.json`, matrice CI `.github/workflows/factory-golden-runtime.yml`.
@@ -21,7 +21,7 @@ Sources d'évidence : manifestes `capabilities/*/capability.json`, payloads
 ## Existence vs cible
 
 La cible courante est définie par
-[Capability Architecture](../architecture/CAPABILITY_ARCHITECTURE.md). Le tableau ci-dessous est
+[Capability Architecture](../../../architecture/CAPABILITY_ARCHITECTURE.md). Le tableau ci-dessous est
 requalifié selon cette cible.
 
 | Cible | Implémentation | État |

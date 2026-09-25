@@ -38,14 +38,14 @@ Attendu : branche connue, pas de modifications inattendues.
 Lire dans cet ordre :
 
 1. [`../governance/SOURCE_OF_TRUTH.md`](../governance/SOURCE_OF_TRUTH.md) ;
-2. [`../project-status/FOUNDATION_CURRENT_STATE.md`](../project-status/FOUNDATION_CURRENT_STATE.md) ;
-3. [`../project-status/NEXT_ACTIONS.md`](../project-status/NEXT_ACTIONS.md).
+2. [`../project-status/FOUNDATION_CURRENT_STATE.md`](../archive/laboratory/project-status/FOUNDATION_CURRENT_STATE.md) ;
+3. [`../project-status/NEXT_ACTIONS.md`](../archive/laboratory/project-status/NEXT_ACTIONS.md).
 
 Pour comprendre la logique globale, lire ensuite :
 
-- [`../strategy/01_VISION_AND_MISSION.md`](../strategy/01_VISION_AND_MISSION.md) ;
-- [`../roadmap/ENISTERE_FACTORY_V2_ROADMAP.md`](../roadmap/ENISTERE_FACTORY_V2_ROADMAP.md) ;
-- [`CONTRIBUTOR_ONBOARDING.md`](./CONTRIBUTOR_ONBOARDING.md).
+- [`../strategy/01_VISION_AND_MISSION.md`](../archive/laboratory/strategy/01_VISION_AND_MISSION.md) ;
+- [`../roadmap/ENISTERE_FACTORY_V2_ROADMAP.md`](../archive/laboratory/roadmap/ENISTERE_FACTORY_V2_ROADMAP.md) ;
+- [`CONTRIBUTOR_ONBOARDING.md`](CONTRIBUTOR_ONBOARDING.md).
 
 ### 3. Lancer le gate documentaire rapide
 
@@ -83,7 +83,7 @@ Cloud/staging, Android/iOS smoke, E2E Playwright complet selon contexte, et e2e 
 
 ### 6. Choisir une mission
 
-La mission active doit venir de [`../project-status/NEXT_ACTIONS.md`](../project-status/NEXT_ACTIONS.md)
+La mission active doit venir de [`../project-status/NEXT_ACTIONS.md`](../archive/laboratory/project-status/NEXT_ACTIONS.md)
 ou etre explicitement arbitree par le pilote.
 
 Avant de coder, lire aussi :

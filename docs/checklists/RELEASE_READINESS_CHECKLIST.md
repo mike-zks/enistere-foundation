@@ -50,7 +50,7 @@
 
 ### Pré-conditions
 
-- [ ] Rapport de revue rédigé dans `docs/project-status/` (ex. `UI_KIT_V1_READINESS_REVIEW.md`)
+- [ ] Preuves consignées dans `CURRENT_STATE.md` et `IMPLEMENTATION_MATRIX.md` (Evidence, jamais une déclaration)
 - [ ] Critères de validation de la `specification active` vérifiés un par un
 - [ ] Preuves d'exécution documentées (commandes + résultats)
 - [ ] Les cores dépendants ont été notifiés / ne régressent pas

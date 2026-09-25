@@ -4,6 +4,21 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E0 — Contract Foundation (R0) et reprise du dépôt — 2026-09-25
+
+- Reprise sous l'autorité du dossier Enistere Foundation 01–07 et de la production Enistere
+  ([ADR-091](docs/adr/ADR-091-foundation-dossier-authority-and-laboratory-status.md)) : le laboratoire
+  devient couche de compatibilité ; `MANDAT.md`, `docs/project-status/`, `docs/roadmap/`,
+  `docs/strategy/` et `docs/audits/` sont archivés sous `docs/archive/laboratory/` (aucune suppression).
+- Fichiers de gouvernance : `CONTEXT.md`, `AGENTS.md`, `ROADMAP.md`, `BACKLOG.md`, `CURRENT_STATE.md`,
+  `IMPLEMENTATION_MATRIX.md`, `DECISIONS.md`, `SECURITY.md`, registre ADR, runbooks,
+  `PRODUCTION_READINESS.md`, `RISK_REGISTER.md`, `DEPENDENCIES.md`.
+- Nouveau package `kernel/contracts` (`@enistere/foundation-kernel-contracts`) : contrats A1–A7,
+  primitives partagées, validation d'ensemble fermé ([ADR-092](docs/adr/ADR-092-e0-contract-foundation.md)).
+- Golden Asteria (`goldens/asteria/`) : cinq surfaces dont l'Async Worker, preuves produites par checker,
+  scénario Day-2 et proposition UNSUPPORTED ; job CI `kernel-contracts`.
+- Package racine renommé `enistere-foundation` (convention document 05 §2G).
+
 ### Architecture Reset V2 — adoption du corpus documentaire
 
 - Adoption du corpus documentaire Enistere Foundation V2 comme base canonique : `docs/strategy/`,

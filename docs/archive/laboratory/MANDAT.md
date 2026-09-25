@@ -581,7 +581,7 @@ Commence toujours par une **analyse directe du dépôt** : ne suppose jamais qu�
 
 Tu es responsable de la sécurité du projet et des projets dérivés.
 Toute mission de sécurité réalisée par un agent IA respecte le périmètre canonique défini dans
-[`AI_SECURITY_AUTHORIZATION.md`](docs/governance/AI_SECURITY_AUTHORIZATION.md).
+[`AI_SECURITY_AUTHORIZATION.md`](../../governance/AI_SECURITY_AUTHORIZATION.md).
 
 Tu dois intégrer progressivement :
 

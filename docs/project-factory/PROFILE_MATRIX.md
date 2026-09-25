@@ -5,7 +5,7 @@
 > héritage d'[ADR-042](../adr/ADR-042-ai-native-project-factory-architecture.md), remplacée comme cible
 > par [ADR-060](../adr/ADR-060-system-profile-taxonomy.md) et la
 > [System Blueprint Specification](../specifications/SYSTEM_BLUEPRINT_SPECIFICATION.md). L'écart est mesuré
-> dans [TARGET_VS_CURRENT_IMPLEMENTATION.md](../audits/TARGET_VS_CURRENT_IMPLEMENTATION.md).
+> dans [TARGET_VS_CURRENT_IMPLEMENTATION.md](../archive/laboratory/audits/TARGET_VS_CURRENT_IMPLEMENTATION.md).
 
 Dans le moteur actuel, un **preset de composition** — historiquement nommé profil — est une composition
 nommée de `{api, web?, mobile?, capabilities}`. Ce registre ne doit pas être confondu avec les quatre

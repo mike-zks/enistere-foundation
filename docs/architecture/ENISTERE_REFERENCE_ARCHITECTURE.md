@@ -302,5 +302,5 @@ provider de déploiement possible, jamais un invariant.
 - [Spécification des primitives](../specifications/INFRASTRUCTURE_PRIMITIVE_SPECIFICATION.md)
 - [Spécification design et expérience](../specifications/DESIGN_EXPERIENCE_SPECIFICATION.md)
 - [Exemples de référence](../examples/reference-systems/README.md)
-- [Roadmap maître](../roadmap/ENISTERE_IMPLEMENTATION_MASTER_ROADMAP.md)
-- [Audit cible/existant](../audits/TARGET_VS_CURRENT_IMPLEMENTATION.md)
+- [Roadmap maître](../archive/laboratory/roadmap/ENISTERE_IMPLEMENTATION_MASTER_ROADMAP.md)
+- [Audit cible/existant](../archive/laboratory/audits/TARGET_VS_CURRENT_IMPLEMENTATION.md)

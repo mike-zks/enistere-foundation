@@ -2,7 +2,7 @@
 
 Ce document court est remplacé comme source active par la
 [roadmap maître](ENISTERE_IMPLEMENTATION_MASTER_ROADMAP.md), adoptée avec
-[ADR-057](../adr/ADR-057-reference-architecture-and-platform-baseline.md).
+[ADR-057](../../../adr/ADR-057-reference-architecture-and-platform-baseline.md).
 
 La séquence canonique est :
 

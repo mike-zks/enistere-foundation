@@ -7,7 +7,7 @@ Ce guide aide un contributeur ou un agent IA a demarrer une mission dans Enister
 dependre de l'historique de conversation.
 
 Pour un premier tour rapide sans mission de code, commencer par
-[`DEVELOPER_QUICKSTART.md`](./DEVELOPER_QUICKSTART.md).
+[`DEVELOPER_QUICKSTART.md`](DEVELOPER_QUICKSTART.md).
 
 ## 1. Regle principale
 
@@ -19,10 +19,10 @@ Le code, les tests et les fichiers de statut courant priment.
 ## 2. Lecture obligatoire avant une mission
 
 1. [`../governance/SOURCE_OF_TRUTH.md`](../governance/SOURCE_OF_TRUTH.md)
-2. [`../project-status/FOUNDATION_CURRENT_STATE.md`](../project-status/FOUNDATION_CURRENT_STATE.md)
-3. [`../project-status/IMPLEMENTATION_MATRIX.md`](../project-status/IMPLEMENTATION_MATRIX.md)
-4. [`../project-status/NEXT_ACTIONS.md`](../project-status/NEXT_ACTIONS.md)
-5. [`../project-status/DECISIONS_REGISTER.md`](../project-status/DECISIONS_REGISTER.md)
+2. [`../project-status/FOUNDATION_CURRENT_STATE.md`](../archive/laboratory/project-status/FOUNDATION_CURRENT_STATE.md)
+3. [`../project-status/IMPLEMENTATION_MATRIX.md`](../archive/laboratory/project-status/IMPLEMENTATION_MATRIX.md)
+4. [`../project-status/NEXT_ACTIONS.md`](../archive/laboratory/project-status/NEXT_ACTIONS.md)
+5. [`../project-status/DECISIONS_REGISTER.md`](../archive/laboratory/project-status/DECISIONS_REGISTER.md)
 6. La spécification applicable dans [`../specifications/`](../specifications/)
 7. Les ADR applicables dans [`../adr/`](../adr/)
 
