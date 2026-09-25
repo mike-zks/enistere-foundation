@@ -1,0 +1,361 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "RequirementBaseline",
+  "metadata": {
+    "id": "asteria-requirements",
+    "revision": 1,
+    "title": "Asteria — accepted requirement baseline",
+    "status": "ACCEPTED",
+    "owner": {
+      "team": "asteria-product"
+    },
+    "provenance": {
+      "origin": "AI_PROPOSAL",
+      "actor": {
+        "type": "AI_AGENT",
+        "id": "foundation-intake-assistant",
+        "role": "analyst-assistant"
+      },
+      "tool": {
+        "name": "foundation-intake-assistant",
+        "version": "0.0.0-synthetic"
+      },
+      "sources": [
+        {
+          "id": "SRC-BRIEF",
+          "type": "BRIEF",
+          "uri": "goldens/asteria/sources/brief.md",
+          "digest": "sha256:d077e19c83a2f24de03f0bad11c095777b2ddf14bb41cc37ecf1615f423e4c19",
+          "title": "Asteria — brief client (synthétique)"
+        }
+      ],
+      "confidence": 0.82
+    },
+    "acceptance": {
+      "decision": "ACCEPTED",
+      "authority": "DECIDE",
+      "actor": {
+        "type": "HUMAN",
+        "id": "product-owner@asteria.example",
+        "role": "product-owner"
+      },
+      "at": "2026-09-15T09:00:00Z",
+      "rationale": "Extracted candidates reviewed one by one; ambiguity AMB-001 resolved in workshop, AMB-002 deferred."
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "sources": [
+      {
+        "id": "SRC-BRIEF",
+        "type": "BRIEF",
+        "uri": "goldens/asteria/sources/brief.md",
+        "digest": "sha256:d077e19c83a2f24de03f0bad11c095777b2ddf14bb41cc37ecf1615f423e4c19",
+        "title": "Asteria — brief client (synthétique)"
+      }
+    ],
+    "goals": [
+      {
+        "id": "G-1",
+        "statement": "Requesters submit and follow service requests without phone calls."
+      },
+      {
+        "id": "G-2",
+        "statement": "Operations triage and dispatch every request within its service level."
+      },
+      {
+        "id": "G-3",
+        "statement": "Field agents execute interventions even without connectivity."
+      }
+    ],
+    "actors": [
+      {
+        "id": "requester",
+        "name": "Requester",
+        "description": "Member of the public who reports an issue."
+      },
+      {
+        "id": "ops-agent",
+        "name": "Operations agent",
+        "description": "Qualifies, prioritizes and assigns requests."
+      },
+      {
+        "id": "field-agent",
+        "name": "Field agent",
+        "description": "Executes interventions on site."
+      },
+      {
+        "id": "supervisor",
+        "name": "Supervisor",
+        "description": "Receives escalations of overdue requests."
+      }
+    ],
+    "requirements": [
+      {
+        "id": "FR-001",
+        "type": "FUNCTIONAL",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "goals": [
+          "G-1"
+        ],
+        "actors": [
+          "requester"
+        ],
+        "statement": "A requester submits a geolocated service request with a category, a description and photos.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-1"
+          }
+        ],
+        "acceptanceCriteria": [
+          {
+            "id": "AC-001-1",
+            "statement": "A submitted request is stored with status SUBMITTED, its location and its attachments."
+          }
+        ]
+      },
+      {
+        "id": "FR-002",
+        "type": "FUNCTIONAL",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "goals": [
+          "G-1"
+        ],
+        "actors": [
+          "requester"
+        ],
+        "statement": "A requester follows the status of their own requests.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-1"
+          }
+        ],
+        "acceptanceCriteria": [
+          {
+            "id": "AC-002-1",
+            "statement": "The requester lists their requests with their current status and nothing else."
+          }
+        ]
+      },
+      {
+        "id": "FR-003",
+        "type": "FUNCTIONAL",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "goals": [
+          "G-2"
+        ],
+        "actors": [
+          "ops-agent"
+        ],
+        "statement": "An operations agent triages, prioritizes and assigns requests to field agents.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-2"
+          }
+        ],
+        "acceptanceCriteria": [
+          {
+            "id": "AC-003-1",
+            "statement": "A triaged request carries a priority; an assigned request names one field agent and a due date."
+          }
+        ]
+      },
+      {
+        "id": "FR-004",
+        "type": "FUNCTIONAL",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "goals": [
+          "G-3"
+        ],
+        "actors": [
+          "field-agent"
+        ],
+        "dependsOn": [
+          "FR-003"
+        ],
+        "statement": "A field agent receives assignments and records an intervention report with photos, including while offline.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-3"
+          }
+        ],
+        "acceptanceCriteria": [
+          {
+            "id": "AC-004-1",
+            "statement": "A report recorded offline is synchronized once, without duplicate, after reconnection."
+          }
+        ]
+      },
+      {
+        "id": "FR-005",
+        "type": "FUNCTIONAL",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "goals": [
+          "G-1"
+        ],
+        "actors": [
+          "requester"
+        ],
+        "statement": "A requester is notified by e-mail of every status change of their requests.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-4"
+          }
+        ],
+        "acceptanceCriteria": [
+          {
+            "id": "AC-005-1",
+            "statement": "Each status change produces exactly one notification to the requester."
+          }
+        ]
+      },
+      {
+        "id": "FR-006",
+        "type": "FUNCTIONAL",
+        "priority": "SHOULD",
+        "status": "ACCEPTED",
+        "goals": [
+          "G-2"
+        ],
+        "actors": [
+          "supervisor"
+        ],
+        "dependsOn": [
+          "FR-003"
+        ],
+        "statement": "A request that exceeds its service level is escalated automatically to a supervisor.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-5"
+          }
+        ],
+        "acceptanceCriteria": [
+          {
+            "id": "AC-006-1",
+            "statement": "An overdue request is escalated once and the supervisor is identified."
+          }
+        ]
+      },
+      {
+        "id": "FR-007",
+        "type": "FUNCTIONAL",
+        "priority": "COULD",
+        "status": "DEFERRED",
+        "goals": [
+          "G-1"
+        ],
+        "statement": "A public anonymized map shows open requests.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "hors-besoin-immediat"
+          }
+        ]
+      },
+      {
+        "id": "NFR-001",
+        "type": "NON_FUNCTIONAL",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "statement": "Long-running processing (notifications, escalations, attachment analysis) is asynchronous and never blocks a request to the API.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-7"
+          }
+        ]
+      },
+      {
+        "id": "SEC-001",
+        "type": "SECURITY",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "actors": [
+          "requester",
+          "field-agent"
+        ],
+        "statement": "Requesters only see their own requests; field agents only see their own assignments.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-1"
+          }
+        ]
+      },
+      {
+        "id": "SEC-002",
+        "type": "SECURITY",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "statement": "An uploaded attachment is analysed for malware before it becomes visible to anyone.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-6"
+          }
+        ]
+      },
+      {
+        "id": "UX-001",
+        "type": "UX_ACCESSIBILITY",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "actors": [
+          "requester"
+        ],
+        "statement": "The public requester portal meets WCAG 2.2 level AA.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-8"
+          }
+        ]
+      },
+      {
+        "id": "CON-001",
+        "type": "CONSTRAINT",
+        "priority": "MUST",
+        "status": "ACCEPTED",
+        "statement": "Authentication uses the shared Enistere OIDC provider with a dedicated realm for the project.",
+        "sourceRefs": [
+          {
+            "source": "SRC-BRIEF",
+            "locator": "besoin-exprime-9"
+          }
+        ]
+      }
+    ],
+    "ambiguities": [
+      {
+        "id": "AMB-001",
+        "impact": "HIGH",
+        "status": "RESOLVED",
+        "relatedRequirements": [
+          "FR-004"
+        ],
+        "question": "How long must a field agent be able to work offline?",
+        "resolution": "One shift (at most 12 hours); synchronization at reconnection."
+      },
+      {
+        "id": "AMB-002",
+        "impact": "DEFERRABLE",
+        "status": "DEFERRED",
+        "relatedRequirements": [
+          "FR-005"
+        ],
+        "question": "Which notification channels are needed besides e-mail?"
+      }
+    ]
+  }
+}

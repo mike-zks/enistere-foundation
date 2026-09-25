@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/effective-organization-context.schema.json",
+  "title": "A3 — Effective Organization Context",
+  "description": "Derived, reproducible explanation of the standards that effectively apply to one system after inheritance, precedence, locks and waivers (FR-GOV-02, REG-03). Every effective rule keeps the trace of its sources. Derived — never edited as a source of truth: the kernel recomputes it from its layers.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "EffectiveOrganizationContext" },
+    "metadata": {
+      "properties": { "status": { "enum": ["CURRENT", "STALE"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "derivation", "layers", "waivers", "effective"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "derivation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["algorithm", "version"],
+          "properties": {
+            "algorithm": { "const": "foundation.effective-organization-context" },
+            "version": { "const": "1" }
+          }
+        },
+        "layers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "scope", "precedence", "source", "rules"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "scope": { "enum": ["ORGANIZATION", "BUSINESS_UNIT", "CLIENT", "PRODUCT_LINE", "SYSTEM"] },
+              "precedence": { "type": "integer", "minimum": 0 },
+              "source": { "$ref": "common.schema.json#/$defs/externalRef" },
+              "rules": { "type": "array", "items": { "$ref": "#/$defs/rule" } }
+            }
+          }
+        },
+        "waivers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "rule", "value", "reason", "approvedBy", "expiresAt"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "rule": { "$ref": "#/$defs/ruleId" },
+              "value": {},
+              "reason": { "$ref": "common.schema.json#/$defs/text" },
+              "approvedBy": { "$ref": "common.schema.json#/$defs/actor" },
+              "expiresAt": { "$ref": "common.schema.json#/$defs/dateTime" }
+            }
+          }
+        },
+        "effective": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rule", "category", "value", "locked", "source", "trace"],
+            "properties": {
+              "rule": { "$ref": "#/$defs/ruleId" },
+              "category": { "$ref": "#/$defs/category" },
+              "value": {},
+              "locked": { "type": "boolean" },
+              "source": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["type", "id"],
+                "properties": {
+                  "type": { "enum": ["LAYER", "WAIVER"] },
+                  "id": { "$ref": "common.schema.json#/$defs/itemId" }
+                }
+              },
+              "trace": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["from", "id", "value", "outcome"],
+                  "properties": {
+                    "from": { "enum": ["LAYER", "WAIVER"] },
+                    "id": { "$ref": "common.schema.json#/$defs/itemId" },
+                    "value": {},
+                    "outcome": { "enum": ["APPLIED", "OVERRIDDEN", "REFUSED_LOCKED", "WAIVED"] },
+                    "reason": { "$ref": "common.schema.json#/$defs/text" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "ruleId": { "type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z0-9-]+)+$", "maxLength": 160 },
+    "category": { "enum": ["ARCHITECTURE", "RUNTIME", "SECURITY", "DATA", "DESIGN", "QUALITY", "DEPLOYMENT", "APPROVAL", "AI", "EVIDENCE"] },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "category", "value"],
+      "properties": {
+        "id": { "$ref": "#/$defs/ruleId" },
+        "category": { "$ref": "#/$defs/category" },
+        "value": {},
+        "locked": { "type": "boolean" },
+        "rationale": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    }
+  }
+}

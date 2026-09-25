@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/requirement-baseline.schema.json",
+  "title": "A1 — Requirement Baseline",
+  "description": "Versioned, accepted set of goals, actors, requirements, acceptance criteria and ambiguities of one system, each item keeping its provenance (FR-INT-02, FR-REQ-01/02). Desired state — authoritative.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "RequirementBaseline" },
+    "metadata": {
+      "properties": { "status": { "enum": ["DRAFT", "PROPOSED", "ACCEPTED", "REJECTED", "SUPERSEDED"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "sources", "goals", "actors", "requirements", "ambiguities"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "sources": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/sourceArtifact" } },
+        "goals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "statement"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "statement": { "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        },
+        "actors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "name": { "$ref": "common.schema.json#/$defs/text" },
+              "description": { "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "type", "statement", "priority", "status"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "type": { "enum": ["FUNCTIONAL", "NON_FUNCTIONAL", "DATA", "INTEGRATION", "UX_ACCESSIBILITY", "SECURITY", "CONSTRAINT"] },
+              "statement": { "$ref": "common.schema.json#/$defs/text" },
+              "priority": { "enum": ["MUST", "SHOULD", "COULD", "WONT"] },
+              "status": { "enum": ["INFERRED", "PROPOSED", "ACCEPTED", "REJECTED", "DEFERRED"] },
+              "goals": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "actors": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "sourceRefs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["source"],
+                  "properties": {
+                    "source": { "$ref": "common.schema.json#/$defs/itemId" },
+                    "locator": { "type": "string", "minLength": 1, "maxLength": 200 }
+                  }
+                }
+              },
+              "acceptanceCriteria": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["id", "statement"],
+                  "properties": {
+                    "id": { "$ref": "common.schema.json#/$defs/itemId" },
+                    "statement": { "$ref": "common.schema.json#/$defs/text" }
+                  }
+                }
+              },
+              "dependsOn": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "conflictsWith": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "owner": { "type": "string", "minLength": 1, "maxLength": 120 },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+            }
+          }
+        },
+        "ambiguities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "question", "impact", "status"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "question": { "$ref": "common.schema.json#/$defs/text" },
+              "impact": { "enum": ["BLOCKING", "HIGH", "DEFERRABLE"] },
+              "status": { "enum": ["OPEN", "RESOLVED", "DEFERRED"] },
+              "relatedRequirements": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "resolution": { "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

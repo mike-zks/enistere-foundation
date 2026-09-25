@@ -1,0 +1,404 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "EffectiveOrganizationContext",
+  "metadata": {
+    "id": "asteria-context",
+    "revision": 1,
+    "title": "Asteria — effective organization context",
+    "status": "CURRENT",
+    "provenance": {
+      "origin": "COMPILER",
+      "actor": {
+        "type": "COMPILER",
+        "id": "foundation-kernel-contracts"
+      },
+      "tool": {
+        "name": "@enistere/foundation-kernel-contracts",
+        "version": "0.1.0"
+      }
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "derivation": {
+      "algorithm": "foundation.effective-organization-context",
+      "version": "1"
+    },
+    "layers": [
+      {
+        "id": "L-ORGANIZATION",
+        "scope": "ORGANIZATION",
+        "precedence": 0,
+        "source": {
+          "type": "EntityProfile",
+          "id": "operator-organization",
+          "version": "1.0.0"
+        },
+        "rules": [
+          {
+            "id": "runtime.api.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "nestjs",
+              "spring",
+              "fastapi"
+            ]
+          },
+          {
+            "id": "runtime.web.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "nextjs",
+              "angular"
+            ]
+          },
+          {
+            "id": "runtime.mobile.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "react-native",
+              "flutter"
+            ]
+          },
+          {
+            "id": "security.identity.provider",
+            "category": "SECURITY",
+            "value": "enistere-shared-oidc",
+            "locked": true,
+            "rationale": "Production policy: shared Keycloak, one realm per project."
+          },
+          {
+            "id": "deployment.image.reference",
+            "category": "DEPLOYMENT",
+            "value": "digest",
+            "locked": true,
+            "rationale": "Production policy: images are deployed by immutable digest, never latest."
+          },
+          {
+            "id": "ai.decide.allowed",
+            "category": "AI",
+            "value": false,
+            "locked": true,
+            "rationale": "AI proposes; humans decide."
+          },
+          {
+            "id": "quality.accessibility.level",
+            "category": "QUALITY",
+            "value": "WCAG-2.2-A"
+          },
+          {
+            "id": "evidence.retention.days",
+            "category": "EVIDENCE",
+            "value": 365
+          },
+          {
+            "id": "data.residency",
+            "category": "DATA",
+            "value": "eu"
+          }
+        ]
+      },
+      {
+        "id": "L-CLIENT",
+        "scope": "CLIENT",
+        "precedence": 10,
+        "source": {
+          "type": "EntityProfile",
+          "id": "asteria-operator",
+          "version": "3.0.0"
+        },
+        "rules": [
+          {
+            "id": "security.identity.provider",
+            "category": "SECURITY",
+            "value": "client-directory",
+            "rationale": "Client asked to reuse its own directory."
+          },
+          {
+            "id": "quality.accessibility.level",
+            "category": "QUALITY",
+            "value": "WCAG-2.2-AA"
+          },
+          {
+            "id": "data.residency",
+            "category": "DATA",
+            "value": "eu-west"
+          }
+        ]
+      },
+      {
+        "id": "L-SYSTEM",
+        "scope": "SYSTEM",
+        "precedence": 20,
+        "source": {
+          "type": "PolicyPack",
+          "id": "asteria-system-policies",
+          "version": "1.0.0"
+        },
+        "rules": [
+          {
+            "id": "evidence.retention.days",
+            "category": "EVIDENCE",
+            "value": 730
+          },
+          {
+            "id": "runtime.web.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "nextjs",
+              "angular"
+            ]
+          }
+        ]
+      }
+    ],
+    "waivers": [
+      {
+        "id": "W-001",
+        "rule": "data.residency",
+        "value": [
+          "eu-west",
+          "eu-central"
+        ],
+        "reason": "Object storage replica in eu-central during the hosting migration window.",
+        "approvedBy": {
+          "type": "HUMAN",
+          "id": "platform-admin@operator.example",
+          "role": "platform-admin"
+        },
+        "expiresAt": "2027-03-31T23:59:59Z"
+      }
+    ],
+    "effective": [
+      {
+        "rule": "ai.decide.allowed",
+        "category": "AI",
+        "value": false,
+        "locked": true,
+        "source": {
+          "type": "LAYER",
+          "id": "L-ORGANIZATION"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": false,
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "data.residency",
+        "category": "DATA",
+        "value": [
+          "eu-west",
+          "eu-central"
+        ],
+        "locked": false,
+        "source": {
+          "type": "WAIVER",
+          "id": "W-001"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": "eu",
+            "outcome": "OVERRIDDEN"
+          },
+          {
+            "from": "LAYER",
+            "id": "L-CLIENT",
+            "value": "eu-west",
+            "outcome": "OVERRIDDEN"
+          },
+          {
+            "from": "WAIVER",
+            "id": "W-001",
+            "value": [
+              "eu-west",
+              "eu-central"
+            ],
+            "outcome": "WAIVED",
+            "reason": "Object storage replica in eu-central during the hosting migration window."
+          }
+        ]
+      },
+      {
+        "rule": "deployment.image.reference",
+        "category": "DEPLOYMENT",
+        "value": "digest",
+        "locked": true,
+        "source": {
+          "type": "LAYER",
+          "id": "L-ORGANIZATION"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": "digest",
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "evidence.retention.days",
+        "category": "EVIDENCE",
+        "value": 730,
+        "locked": false,
+        "source": {
+          "type": "LAYER",
+          "id": "L-SYSTEM"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": 365,
+            "outcome": "OVERRIDDEN"
+          },
+          {
+            "from": "LAYER",
+            "id": "L-SYSTEM",
+            "value": 730,
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "quality.accessibility.level",
+        "category": "QUALITY",
+        "value": "WCAG-2.2-AA",
+        "locked": false,
+        "source": {
+          "type": "LAYER",
+          "id": "L-CLIENT"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": "WCAG-2.2-A",
+            "outcome": "OVERRIDDEN"
+          },
+          {
+            "from": "LAYER",
+            "id": "L-CLIENT",
+            "value": "WCAG-2.2-AA",
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "runtime.api.allowed",
+        "category": "RUNTIME",
+        "value": [
+          "nestjs",
+          "spring",
+          "fastapi"
+        ],
+        "locked": false,
+        "source": {
+          "type": "LAYER",
+          "id": "L-ORGANIZATION"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": [
+              "nestjs",
+              "spring",
+              "fastapi"
+            ],
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "runtime.mobile.allowed",
+        "category": "RUNTIME",
+        "value": [
+          "react-native",
+          "flutter"
+        ],
+        "locked": false,
+        "source": {
+          "type": "LAYER",
+          "id": "L-ORGANIZATION"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": [
+              "react-native",
+              "flutter"
+            ],
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "runtime.web.allowed",
+        "category": "RUNTIME",
+        "value": [
+          "nextjs",
+          "angular"
+        ],
+        "locked": false,
+        "source": {
+          "type": "LAYER",
+          "id": "L-SYSTEM"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": [
+              "nextjs",
+              "angular"
+            ],
+            "outcome": "OVERRIDDEN"
+          },
+          {
+            "from": "LAYER",
+            "id": "L-SYSTEM",
+            "value": [
+              "nextjs",
+              "angular"
+            ],
+            "outcome": "APPLIED"
+          }
+        ]
+      },
+      {
+        "rule": "security.identity.provider",
+        "category": "SECURITY",
+        "value": "enistere-shared-oidc",
+        "locked": true,
+        "source": {
+          "type": "LAYER",
+          "id": "L-ORGANIZATION"
+        },
+        "trace": [
+          {
+            "from": "LAYER",
+            "id": "L-ORGANIZATION",
+            "value": "enistere-shared-oidc",
+            "outcome": "APPLIED"
+          },
+          {
+            "from": "LAYER",
+            "id": "L-CLIENT",
+            "value": "client-directory",
+            "outcome": "REFUSED_LOCKED",
+            "reason": "locked by layer 'L-ORGANIZATION'"
+          }
+        ]
+      }
+    ]
+  }
+}

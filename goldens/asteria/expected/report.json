@@ -1,0 +1,485 @@
+{
+  "golden": "asteria",
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "checker": {
+    "id": "asteria-golden-contract-check",
+    "version": "0.1.0",
+    "mode": "AUTOMATED"
+  },
+  "set": {
+    "system": "asteria",
+    "valid": true,
+    "errors": 0,
+    "warnings": 0
+  },
+  "contracts": [
+    {
+      "ref": "ChangeRequest/asteria-cr-001@1",
+      "code": "A6",
+      "plane": "DESIRED",
+      "status": "APPLIED",
+      "digest": "sha256:c3fd02ba1d71a48b7cb7d9ec75befd6f29598ecc761db085adaaa7e8eaddbc1e",
+      "file": "contracts/change-request--asteria-cr-001--r1.json"
+    },
+    {
+      "ref": "ChangeRequest/asteria-cr-002@1",
+      "code": "A6",
+      "plane": "DESIRED",
+      "status": "PROPOSED",
+      "digest": "sha256:0dfa46c5778988c2dc2aefa5d97dc72a01dddfc22a70ca59bbce3bc2f77c6d09",
+      "file": "contracts/change-request--asteria-cr-002--r1.json"
+    },
+    {
+      "ref": "DecisionSet/asteria-decisions@1",
+      "code": "A2",
+      "plane": "DESIRED",
+      "status": "ACCEPTED",
+      "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127",
+      "file": "contracts/decision-set--asteria-decisions--r1.json"
+    },
+    {
+      "ref": "DomainContract/asteria-service-requests@1",
+      "code": "A5",
+      "plane": "DESIRED",
+      "status": "ACCEPTED",
+      "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a",
+      "file": "contracts/domain-contract--asteria-service-requests--r1.json"
+    },
+    {
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "code": "A3",
+      "plane": "DERIVED",
+      "status": "CURRENT",
+      "digest": "sha256:736c950ebaa7a3aa2ee016628203ea8364cb8b10606f2edc24c6053829b840da",
+      "file": "contracts/effective-organization-context--asteria-context--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-closure@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:051c363e2896b382f7f7b674202b4c89af6b9f6373f43effbe356b2ad287b2e9",
+      "file": "evidence/evidence-record--asteria-sd1-closure--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-closure@2",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "INVALIDATED",
+      "digest": "sha256:bf08cb1d7a0d7d22dfda8f8fe1a8c15890a9805a7eaa1176b23cb3d9a1eb45b0",
+      "file": "evidence/evidence-record--asteria-sd1-closure--r2.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-legacy-materialization@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:cb18b46033bc052ecb2e66574c5b19914b0620056d8dabd5c3b64b78ebb9a8d1",
+      "file": "evidence/evidence-record--asteria-sd1-legacy-materialization--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-legacy-materialization@2",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "INVALIDATED",
+      "digest": "sha256:66be932bdc999e59cd4f6d2d77f54d89c6f879eabaa906e06cb6cfd6b5e49b88",
+      "file": "evidence/evidence-record--asteria-sd1-legacy-materialization--r2.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-requirement-allocation@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:2074b437155e5c9d016238a5e6a3784b2c7bbf7775da0aebacfc7608248b9a55",
+      "file": "evidence/evidence-record--asteria-sd1-requirement-allocation--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-requirement-allocation@2",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "INVALIDATED",
+      "digest": "sha256:1fa70edd055cbc8084b42b0e4b9032d3b66644aac099bc4f857a7854ccc07983",
+      "file": "evidence/evidence-record--asteria-sd1-requirement-allocation--r2.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-worker-extensibility@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:6019125d8521f483f126fb3b1e6af1c2a89868e4374b749333660e7e0494f674",
+      "file": "evidence/evidence-record--asteria-sd1-worker-extensibility--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-worker-extensibility@2",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "INVALIDATED",
+      "digest": "sha256:dbe3b0f1cde995ad1a045b21358ce4e95d22c3d62803de7579c6b4230ce34c5d",
+      "file": "evidence/evidence-record--asteria-sd1-worker-extensibility--r2.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-closure@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:ed9ebcf793cf3258334b9ec4cbb63b19e1600b7ee2071670b5f3bac9dc0357f6",
+      "file": "evidence/evidence-record--asteria-sd2-closure--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-legacy-materialization@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:5757c6b4cbda15666d1e5efff2fe1147740bcf29752daf6b4c6880b356bd394c",
+      "file": "evidence/evidence-record--asteria-sd2-legacy-materialization--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-requirement-allocation@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:7837db95484461fa7c1d378b8c409be99f35415168eff10d269981fb670d17f6",
+      "file": "evidence/evidence-record--asteria-sd2-requirement-allocation--r1.json"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-worker-extensibility@1",
+      "code": "A7",
+      "plane": "EVIDENCE",
+      "status": "VALID",
+      "digest": "sha256:04ee3f6e6e8e53375a8da7c16dcaa85fb8fec6f888ae353a286fe4e1c3563b0c",
+      "file": "evidence/evidence-record--asteria-sd2-worker-extensibility--r1.json"
+    },
+    {
+      "ref": "RequirementBaseline/asteria-requirements@1",
+      "code": "A1",
+      "plane": "DESIRED",
+      "status": "ACCEPTED",
+      "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b",
+      "file": "contracts/requirement-baseline--asteria-requirements--r1.json"
+    },
+    {
+      "ref": "SystemDefinition/asteria@1",
+      "code": "A4",
+      "plane": "DESIRED",
+      "status": "SUPERSEDED",
+      "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac",
+      "file": "contracts/system-definition--asteria--r1.json"
+    },
+    {
+      "ref": "SystemDefinition/asteria@2",
+      "code": "A4",
+      "plane": "DESIRED",
+      "status": "ACCEPTED",
+      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5",
+      "file": "contracts/system-definition--asteria--r2.json"
+    }
+  ],
+  "surfaces": [
+    {
+      "component": "requester-web",
+      "name": "Requester Web",
+      "kind": "web-application",
+      "audience": "PUBLIC",
+      "runtimePreferences": [
+        "nextjs"
+      ],
+      "legacy": {
+        "representable": true,
+        "reason": "REPRESENTABLE as legacy web/nextjs"
+      }
+    },
+    {
+      "component": "ops-web",
+      "name": "Internal Ops Web",
+      "kind": "web-application",
+      "audience": "INTERNAL",
+      "runtimePreferences": [
+        "angular"
+      ],
+      "legacy": {
+        "representable": true,
+        "reason": "REPRESENTABLE as legacy web/angular"
+      }
+    },
+    {
+      "component": "field-mobile",
+      "name": "Field Mobile",
+      "kind": "mobile-application",
+      "audience": "FIELD",
+      "runtimePreferences": [
+        "flutter"
+      ],
+      "legacy": {
+        "representable": true,
+        "reason": "REPRESENTABLE as legacy mobile/flutter"
+      }
+    },
+    {
+      "component": "authority-api",
+      "name": "Authority API",
+      "kind": "api-service",
+      "audience": "SYSTEM",
+      "runtimePreferences": [
+        "nestjs"
+      ],
+      "legacy": {
+        "representable": true,
+        "reason": "REPRESENTABLE as legacy api/nestjs"
+      }
+    },
+    {
+      "component": "async-worker",
+      "name": "Async Worker",
+      "kind": "async-worker",
+      "audience": "SYSTEM",
+      "runtimePreferences": [
+        "nestjs"
+      ],
+      "legacy": {
+        "representable": false,
+        "reason": "UNSUPPORTED: kind 'async-worker' has no equivalent among legacy application kinds [api, web, mobile]"
+      }
+    }
+  ],
+  "traceability": [
+    {
+      "requirement": "FR-001",
+      "type": "FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-001"
+      ],
+      "components": [
+        "requester-web",
+        "authority-api"
+      ],
+      "acceptance": [
+        "ACC-001"
+      ]
+    },
+    {
+      "requirement": "FR-002",
+      "type": "FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-001"
+      ],
+      "components": [
+        "requester-web",
+        "authority-api"
+      ],
+      "acceptance": [
+        "ACC-001"
+      ]
+    },
+    {
+      "requirement": "FR-003",
+      "type": "FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-001",
+        "AD-003"
+      ],
+      "components": [
+        "ops-web",
+        "authority-api"
+      ],
+      "acceptance": [
+        "ACC-002"
+      ]
+    },
+    {
+      "requirement": "FR-004",
+      "type": "FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-001",
+        "AD-004"
+      ],
+      "components": [
+        "field-mobile",
+        "authority-api"
+      ],
+      "acceptance": [
+        "ACC-002",
+        "ACC-003"
+      ]
+    },
+    {
+      "requirement": "FR-005",
+      "type": "FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-002"
+      ],
+      "components": [
+        "async-worker"
+      ],
+      "acceptance": [
+        "ACC-006"
+      ]
+    },
+    {
+      "requirement": "FR-006",
+      "type": "FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-002"
+      ],
+      "components": [
+        "async-worker"
+      ],
+      "acceptance": [
+        "ACC-005"
+      ]
+    },
+    {
+      "requirement": "FR-007",
+      "type": "FUNCTIONAL",
+      "status": "DEFERRED",
+      "decisions": [],
+      "components": [],
+      "acceptance": []
+    },
+    {
+      "requirement": "NFR-001",
+      "type": "NON_FUNCTIONAL",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-002"
+      ],
+      "components": [
+        "async-worker"
+      ],
+      "acceptance": []
+    },
+    {
+      "requirement": "SEC-001",
+      "type": "SECURITY",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-001",
+        "AD-003",
+        "AD-005"
+      ],
+      "components": [
+        "authority-api"
+      ],
+      "acceptance": []
+    },
+    {
+      "requirement": "SEC-002",
+      "type": "SECURITY",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-002"
+      ],
+      "components": [
+        "authority-api",
+        "async-worker"
+      ],
+      "acceptance": [
+        "ACC-004"
+      ]
+    },
+    {
+      "requirement": "UX-001",
+      "type": "UX_ACCESSIBILITY",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-003"
+      ],
+      "components": [
+        "requester-web"
+      ],
+      "acceptance": []
+    },
+    {
+      "requirement": "CON-001",
+      "type": "CONSTRAINT",
+      "status": "ACCEPTED",
+      "decisions": [
+        "AD-005"
+      ],
+      "components": [
+        "authority-api"
+      ],
+      "acceptance": []
+    }
+  ],
+  "changeRequests": [
+    {
+      "ref": "ChangeRequest/asteria-cr-001@1",
+      "status": "APPLIED",
+      "classification": "REVIEW_REQUIRED",
+      "base": "SystemDefinition/asteria@1",
+      "proposed": "SystemDefinition/asteria@2"
+    },
+    {
+      "ref": "ChangeRequest/asteria-cr-002@1",
+      "status": "PROPOSED",
+      "classification": "UNSUPPORTED",
+      "base": "SystemDefinition/asteria@2",
+      "proposed": null
+    }
+  ],
+  "evidence": [
+    {
+      "ref": "EvidenceRecord/asteria-sd1-closure@2",
+      "obligation": "closure",
+      "subject": "SystemDefinition/asteria@1",
+      "result": "PASS",
+      "status": "INVALIDATED"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-legacy-materialization@2",
+      "obligation": "legacy-materialization",
+      "subject": "SystemDefinition/asteria@1#async-worker",
+      "result": "UNSUPPORTED",
+      "status": "INVALIDATED"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-requirement-allocation@2",
+      "obligation": "requirement-allocation",
+      "subject": "SystemDefinition/asteria@1",
+      "result": "PASS",
+      "status": "INVALIDATED"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd1-worker-extensibility@2",
+      "obligation": "worker-extensibility",
+      "subject": "SystemDefinition/asteria@1#async-worker",
+      "result": "PASS",
+      "status": "INVALIDATED"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-closure@1",
+      "obligation": "closure",
+      "subject": "SystemDefinition/asteria@2",
+      "result": "PASS",
+      "status": "VALID"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-legacy-materialization@1",
+      "obligation": "legacy-materialization",
+      "subject": "SystemDefinition/asteria@2#async-worker",
+      "result": "UNSUPPORTED",
+      "status": "VALID"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-requirement-allocation@1",
+      "obligation": "requirement-allocation",
+      "subject": "SystemDefinition/asteria@2",
+      "result": "PASS",
+      "status": "VALID"
+    },
+    {
+      "ref": "EvidenceRecord/asteria-sd2-worker-extensibility@1",
+      "obligation": "worker-extensibility",
+      "subject": "SystemDefinition/asteria@2#async-worker",
+      "result": "PASS",
+      "status": "VALID"
+    }
+  ],
+  "diagnostics": []
+}

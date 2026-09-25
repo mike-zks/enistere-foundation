@@ -1,0 +1,95 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "EvidenceRecord",
+  "metadata": {
+    "id": "asteria-sd1-closure",
+    "revision": 1,
+    "title": "Asteria — closure of system definition revision 1",
+    "status": "VALID",
+    "provenance": {
+      "origin": "CHECKER",
+      "actor": {
+        "type": "CHECKER",
+        "id": "asteria-golden-harness"
+      },
+      "tool": {
+        "name": "asteria-golden-contract-check",
+        "version": "0.1.0"
+      }
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "subject": {
+      "contract": {
+        "kind": "SystemDefinition",
+        "id": "asteria",
+        "revision": 1,
+        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+      }
+    },
+    "obligation": {
+      "id": "closure",
+      "statement": "The contract set is closed: every reference resolves, every pinned digest matches and every contract is valid.",
+      "source": {
+        "kind": "SystemDefinition",
+        "id": "asteria",
+        "revision": 1,
+        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+      }
+    },
+    "checker": {
+      "id": "asteria-golden-contract-check",
+      "version": "0.1.0",
+      "mode": "AUTOMATED"
+    },
+    "producedBy": {
+      "type": "CHECKER",
+      "id": "asteria-golden-harness"
+    },
+    "environment": {
+      "id": "kernel-contracts-golden",
+      "kind": "CI",
+      "attributes": {
+        "suite": "goldens/asteria"
+      }
+    },
+    "result": "PASS",
+    "summary": "5 contracts checked; 0 errors; 0 warnings.",
+    "observedAt": "2026-09-17T12:00:00Z",
+    "expiresAt": "2026-12-16T12:00:00Z",
+    "inputs": [
+      {
+        "kind": "DecisionSet",
+        "id": "asteria-decisions",
+        "revision": 1,
+        "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+      },
+      {
+        "kind": "DomainContract",
+        "id": "asteria-service-requests",
+        "revision": 1,
+        "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+      },
+      {
+        "kind": "EffectiveOrganizationContext",
+        "id": "asteria-context",
+        "revision": 1,
+        "digest": "sha256:736c950ebaa7a3aa2ee016628203ea8364cb8b10606f2edc24c6053829b840da"
+      },
+      {
+        "kind": "RequirementBaseline",
+        "id": "asteria-requirements",
+        "revision": 1,
+        "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+      },
+      {
+        "kind": "SystemDefinition",
+        "id": "asteria",
+        "revision": 1,
+        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+      }
+    ],
+    "artifacts": []
+  }
+}

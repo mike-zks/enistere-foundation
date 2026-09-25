@@ -1,11 +1,12 @@
 {
-  "name": "enistere-os-foundation",
+  "name": "enistere-foundation",
   "version": "0.0.0",
   "private": true,
-  "description": "Enistere OS Foundation — AI-native project factory and independent technology starters.",
+  "description": "Enistere Foundation — Software System Engineering Platform (Governed System Compiler, Evidence-Driven System Evolution Engine). The laboratory factory and starters remain as a compatibility layer until the E10 cutover.",
   "license": "UNLICENSED",
   "workspaces": [
     "packages/*",
+    "kernel/*",
     "starters/nextjs"
   ],
   "overrides": {
@@ -16,6 +17,9 @@
     }
   },
   "scripts": {
+    "foundation:test": "npm run test --workspace=@enistere/foundation-kernel-contracts",
+    "foundation:typecheck": "npm run typecheck --workspace=@enistere/foundation-kernel-contracts",
+    "golden:asteria:update": "node goldens/asteria/update.ts",
     "enistere": "node factory/cli/enistere.mjs",
     "factory:test": "node --test factory/test/*.test.mjs factory/ai/runtime/test/*.test.mjs factory/quality/scripts/*.test.mjs factory/conformance/*.test.mjs",
     "factory:baseline-gap": "node factory/conformance/repository-gap.mjs",

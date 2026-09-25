@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/evidence-record.schema.json",
+  "title": "A7 — EvidenceRecord",
+  "description": "Versioned proof that links one obligation to a subject, the checker (or human reviewer) and its version, the environment, a result, the exact inputs checked (pinned by digest), artifacts, time, expiry, provenance and an optional waiver (FR-EVI-02, FR-EVI-04). Append-only record: a new check produces a new record; a stale record is invalidated, never rewritten. An AI answer is never Evidence.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "EvidenceRecord" },
+    "metadata": {
+      "properties": { "status": { "enum": ["VALID", "EXPIRED", "INVALIDATED"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "subject", "obligation", "checker", "producedBy", "environment", "result", "observedAt", "inputs", "artifacts"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "subject": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["contract"],
+          "properties": {
+            "contract": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+            "component": { "$ref": "common.schema.json#/$defs/itemId" }
+          }
+        },
+        "obligation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "statement", "source"],
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/itemId" },
+            "statement": { "$ref": "common.schema.json#/$defs/text" },
+            "source": { "$ref": "common.schema.json#/$defs/contractRef" }
+          }
+        },
+        "checker": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version", "mode"],
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/id" },
+            "version": { "type": "string", "minLength": 1, "maxLength": 64 },
+            "mode": { "enum": ["AUTOMATED", "HUMAN_REVIEW"] }
+          }
+        },
+        "producedBy": { "$ref": "common.schema.json#/$defs/actor" },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "kind"],
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/id" },
+            "kind": { "enum": ["LOCAL", "CI", "STAGING", "PRODUCTION"] },
+            "attributes": { "type": "object", "additionalProperties": { "type": "string", "maxLength": 200 } }
+          }
+        },
+        "result": { "enum": ["PASS", "FAIL", "INCONCLUSIVE", "NOT_APPLICABLE", "UNSUPPORTED", "ERROR"] },
+        "summary": { "$ref": "common.schema.json#/$defs/text" },
+        "observedAt": { "$ref": "common.schema.json#/$defs/dateTime" },
+        "expiresAt": { "$ref": "common.schema.json#/$defs/dateTime" },
+        "inputs": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/pinnedContractRef" } },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["uri", "mediaType"],
+            "properties": {
+              "uri": { "type": "string", "minLength": 1, "maxLength": 2000 },
+              "mediaType": { "type": "string", "minLength": 1, "maxLength": 120 },
+              "digest": { "$ref": "common.schema.json#/$defs/digest" }
+            }
+          }
+        },
+        "waiver": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["context", "waiver"],
+          "properties": {
+            "context": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+            "waiver": { "$ref": "common.schema.json#/$defs/itemId" }
+          }
+        },
+        "invalidation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reason", "by"],
+          "properties": {
+            "reason": { "$ref": "common.schema.json#/$defs/text" },
+            "by": { "$ref": "common.schema.json#/$defs/contractRef" }
+          }
+        }
+      }
+    }
+  }
+}

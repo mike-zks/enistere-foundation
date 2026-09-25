@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/domain-contract.schema.json",
+  "title": "A5 — Domain Contract",
+  "description": "Minimal business contract of one bounded context: types, operations with I/O and authorization intent, invariants, events, acceptance scenarios and versioned facets (FR-DOM-01/02). It is not a universal business DSL: what cannot be determined stays owner work.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "DomainContract" },
+    "metadata": {
+      "properties": { "status": { "enum": ["DRAFT", "PROPOSED", "ACCEPTED", "REJECTED", "SUPERSEDED"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "boundedContext", "requirementBaseline", "types", "operations", "invariants", "events", "acceptance", "facets"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "boundedContext": { "$ref": "common.schema.json#/$defs/id" },
+        "requirementBaseline": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind"],
+            "properties": {
+              "id": { "$ref": "#/$defs/typeName" },
+              "kind": { "enum": ["ENTITY", "VALUE", "ENUM"] },
+              "description": { "$ref": "common.schema.json#/$defs/text" },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["name", "type", "required"],
+                  "properties": {
+                    "name": { "type": "string", "pattern": "^[a-z][A-Za-z0-9]*$", "maxLength": 80 },
+                    "type": { "$ref": "#/$defs/typeExpr" },
+                    "required": { "type": "boolean" },
+                    "sensitive": { "type": "boolean" },
+                    "description": { "$ref": "common.schema.json#/$defs/text" }
+                  }
+                }
+              },
+              "values": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" } }
+            }
+          }
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "summary", "authorization"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "kind": { "enum": ["COMMAND", "QUERY"] },
+              "summary": { "$ref": "common.schema.json#/$defs/text" },
+              "input": { "$ref": "#/$defs/typeExpr" },
+              "output": { "$ref": "#/$defs/typeExpr" },
+              "errors": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" } },
+              "authorization": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["intent"],
+                "properties": {
+                  "intent": { "$ref": "common.schema.json#/$defs/text" },
+                  "roles": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } }
+                }
+              },
+              "emits": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "invariants": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "idempotent": { "type": "boolean" }
+            }
+          }
+        },
+        "invariants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "statement", "appliesTo", "enforcement"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "statement": { "$ref": "common.schema.json#/$defs/text" },
+              "appliesTo": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/typeName" } },
+              "enforcement": { "enum": ["DETERMINISTIC", "OWNER_WORK"] }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "version", "payload"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "version": { "type": "integer", "minimum": 1 },
+              "payload": { "$ref": "#/$defs/typeExpr" },
+              "description": { "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "scenario", "operations", "requirements"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "scenario": { "$ref": "common.schema.json#/$defs/text" },
+              "operations": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "requirements": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/itemId" } }
+            }
+          }
+        },
+        "facets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "version", "appliesTo"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/id" },
+              "version": { "type": "string", "minLength": 1, "maxLength": 64 },
+              "appliesTo": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "configuration": { "type": "object" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "typeName": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9]*$", "maxLength": 80 },
+    "typeExpr": {
+      "description": "A primitive (string, text, integer, decimal, boolean, date, datetime, uuid, file-ref), a declared type name, or list<...> of one of them.",
+      "type": "string",
+      "pattern": "^(?:list<(?:[a-z][a-z-]*|[A-Z][A-Za-z0-9]*)>|[a-z][a-z-]*|[A-Z][A-Za-z0-9]*)$",
+      "maxLength": 90
+    }
+  }
+}

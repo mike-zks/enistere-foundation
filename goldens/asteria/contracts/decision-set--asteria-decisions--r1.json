@@ -1,0 +1,226 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "DecisionSet",
+  "metadata": {
+    "id": "asteria-decisions",
+    "revision": 1,
+    "title": "Asteria — architecture decisions",
+    "status": "ACCEPTED",
+    "owner": {
+      "team": "asteria-architecture"
+    },
+    "provenance": {
+      "origin": "HUMAN",
+      "actor": {
+        "type": "HUMAN",
+        "id": "architect@asteria.example",
+        "role": "architect"
+      },
+      "derivedFrom": [
+        {
+          "kind": "RequirementBaseline",
+          "id": "asteria-requirements",
+          "revision": 1,
+          "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+        }
+      ]
+    },
+    "acceptance": {
+      "decision": "ACCEPTED",
+      "authority": "DECIDE",
+      "actor": {
+        "type": "HUMAN",
+        "id": "architect@asteria.example",
+        "role": "architect"
+      },
+      "at": "2026-09-16T10:00:00Z"
+    }
+  },
+  "spec": {
+    "system": "asteria",
+    "requirementBaseline": {
+      "kind": "RequirementBaseline",
+      "id": "asteria-requirements",
+      "revision": 1,
+      "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+    },
+    "decisions": [
+      {
+        "id": "AD-001",
+        "title": "One Authority API as modular system of record",
+        "category": "ARCHITECTURE",
+        "status": "ACCEPTED",
+        "context": "Three client applications and one worker share one business context and one data model.",
+        "drivers": [
+          "FR-001",
+          "FR-002",
+          "FR-003",
+          "FR-004",
+          "SEC-001"
+        ],
+        "options": [
+          {
+            "id": "OPT-MODULAR-API",
+            "summary": "Single modular API owning the data, consumed by every client.",
+            "satisfies": [
+              "FR-001",
+              "FR-002",
+              "FR-003",
+              "FR-004",
+              "SEC-001"
+            ],
+            "operationalComplexity": "LOW"
+          },
+          {
+            "id": "OPT-SERVICES",
+            "summary": "One service per client application with a shared database.",
+            "tradeoffs": [
+              "Duplicated authorization rules",
+              "Shared database coupling"
+            ],
+            "operationalComplexity": "HIGH"
+          }
+        ],
+        "chosenOption": "OPT-MODULAR-API",
+        "rationale": "One authority keeps authorization and state transitions in one place; nothing measured justifies distribution.",
+        "consequences": [
+          "Every client goes through the API; no client reads the database."
+        ]
+      },
+      {
+        "id": "AD-002",
+        "title": "Dedicated Async Worker fed by domain events",
+        "category": "OPERATIONS",
+        "status": "ACCEPTED",
+        "context": "Notifications, escalations and attachment analysis are slow or scheduled and must not block the API.",
+        "drivers": [
+          "NFR-001",
+          "FR-005",
+          "FR-006",
+          "SEC-002"
+        ],
+        "options": [
+          {
+            "id": "OPT-WORKER",
+            "summary": "Separate worker process consuming domain events published through a transactional outbox.",
+            "satisfies": [
+              "NFR-001",
+              "FR-005",
+              "FR-006",
+              "SEC-002"
+            ],
+            "operationalComplexity": "MEDIUM"
+          },
+          {
+            "id": "OPT-IN-PROCESS",
+            "summary": "Background jobs inside the API process.",
+            "tradeoffs": [
+              "Slow jobs compete with requests",
+              "Scaling the API scales the jobs"
+            ],
+            "risks": [
+              "NFR-001 violated under load"
+            ],
+            "operationalComplexity": "LOW"
+          }
+        ],
+        "chosenOption": "OPT-WORKER",
+        "rationale": "Isolates slow and scheduled work from the request path and lets it scale independently.",
+        "consequences": [
+          "The worker is a first-class component with its own deployment unit.",
+          "The API publishes events through an outbox, never directly to the worker."
+        ]
+      },
+      {
+        "id": "AD-003",
+        "title": "Two distinct Web applications",
+        "category": "ARCHITECTURE",
+        "status": "ACCEPTED",
+        "context": "The public portal and the internal back-office have different audiences, exposure and accessibility obligations.",
+        "drivers": [
+          "UX-001",
+          "SEC-001",
+          "FR-003"
+        ],
+        "options": [
+          {
+            "id": "OPT-TWO-APPS",
+            "summary": "A public Requester Web and an internal Ops Web.",
+            "satisfies": [
+              "UX-001",
+              "SEC-001",
+              "FR-003"
+            ]
+          },
+          {
+            "id": "OPT-ONE-APP",
+            "summary": "One Web application with role-based areas.",
+            "risks": [
+              "Internal screens reachable from the public surface"
+            ]
+          }
+        ],
+        "chosenOption": "OPT-TWO-APPS",
+        "rationale": "Separate exposure surfaces reduce the attack surface of the back-office and let each app follow its own design context."
+      },
+      {
+        "id": "AD-004",
+        "title": "Offline-first Field Mobile with idempotent synchronization",
+        "category": "DATA",
+        "status": "ACCEPTED",
+        "context": "Field agents lose connectivity during their shift (AMB-001: up to 12 hours).",
+        "drivers": [
+          "FR-004"
+        ],
+        "options": [
+          {
+            "id": "OPT-OFFLINE-SYNC",
+            "summary": "Local store on the device and idempotent replay to the API at reconnection.",
+            "satisfies": [
+              "FR-004"
+            ]
+          },
+          {
+            "id": "OPT-ONLINE-ONLY",
+            "summary": "Online-only mobile application.",
+            "risks": [
+              "FR-004 not satisfied"
+            ]
+          }
+        ],
+        "chosenOption": "OPT-OFFLINE-SYNC",
+        "rationale": "Only option that satisfies FR-004 within the resolved offline window."
+      },
+      {
+        "id": "AD-005",
+        "title": "Shared Enistere OIDC provider, realm asteria",
+        "category": "SECURITY",
+        "status": "ACCEPTED",
+        "context": "The Enistere production policy provides a shared Keycloak with one realm per project.",
+        "drivers": [
+          "CON-001",
+          "SEC-001"
+        ],
+        "options": [
+          {
+            "id": "OPT-SHARED-REALM",
+            "summary": "Dedicated realm on the shared Enistere identity provider.",
+            "satisfies": [
+              "CON-001",
+              "SEC-001"
+            ]
+          },
+          {
+            "id": "OPT-OWN-IDP",
+            "summary": "Project-specific identity provider.",
+            "risks": [
+              "Exception to the production policy requires an ADR"
+            ]
+          }
+        ],
+        "chosenOption": "OPT-SHARED-REALM",
+        "rationale": "Complies with the production policy without exception."
+      }
+    ]
+  }
+}

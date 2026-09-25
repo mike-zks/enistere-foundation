@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/system-definition.schema.json",
+  "title": "A4 — System Definition",
+  "description": "Authoritative desired state of one complete system: components and responsibilities, interactions, data responsibilities, Platform Capabilities, integrations, environments, design bindings, ownership and links to requirements and decisions (FR-SYS-01). It carries no generator internals: component kinds and runtime preferences are opaque identifiers resolved later by extensions, never an enumeration hardcoded in the kernel.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "SystemDefinition" },
+    "metadata": {
+      "properties": { "status": { "enum": ["DRAFT", "PROPOSED", "ACCEPTED", "REJECTED", "SUPERSEDED"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "purpose", "inputs", "components", "integrations", "environments"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "purpose": { "$ref": "common.schema.json#/$defs/text" },
+        "inputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requirementBaseline", "decisionSet", "organizationContext", "domainContracts"],
+          "properties": {
+            "requirementBaseline": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+            "decisionSet": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+            "organizationContext": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+            "domainContracts": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/pinnedContractRef" } }
+          }
+        },
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "name", "kind", "responsibilities", "ownership"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "name": { "$ref": "common.schema.json#/$defs/text" },
+              "kind": {
+                "description": "Open component kind (e.g. web-application, mobile-application, api-service, async-worker, datastore). Resolved by extensions, not by the kernel.",
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+                "maxLength": 80
+              },
+              "responsibilities": { "type": "array", "minItems": 1, "items": { "$ref": "common.schema.json#/$defs/text" } },
+              "audience": { "enum": ["PUBLIC", "INTERNAL", "FIELD", "PARTNER", "SYSTEM"] },
+              "requirements": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "decisions": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "implements": { "type": "array", "items": { "$ref": "#/$defs/domainItemRef" } },
+              "publishes": { "type": "array", "items": { "$ref": "#/$defs/domainItemRef" } },
+              "subscribes": { "type": "array", "items": { "$ref": "#/$defs/domainItemRef" } },
+              "consumes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["component", "interaction"],
+                  "properties": {
+                    "component": { "$ref": "common.schema.json#/$defs/itemId" },
+                    "interaction": { "enum": ["SYNC_REQUEST", "ASYNC_MESSAGE", "EVENT_STREAM", "DATA_ACCESS", "OBJECT_ACCESS"] },
+                    "operations": { "type": "array", "items": { "$ref": "#/$defs/domainItemRef" } }
+                  }
+                }
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["store", "access"],
+                  "properties": {
+                    "store": { "$ref": "common.schema.json#/$defs/itemId" },
+                    "access": { "enum": ["OWNER", "READ_WRITE", "READ"] }
+                  }
+                }
+              },
+              "platformCapabilities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["id"],
+                  "properties": {
+                    "id": { "$ref": "common.schema.json#/$defs/id" },
+                    "version": { "type": "string", "minLength": 1, "maxLength": 64 }
+                  }
+                }
+              },
+              "integrations": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } },
+              "runtime": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "preferences": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/id" } },
+                  "constraints": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/text" } }
+                }
+              },
+              "experience": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["designContext"],
+                "properties": {
+                  "designContext": { "$ref": "common.schema.json#/$defs/id" },
+                  "designSystem": { "$ref": "common.schema.json#/$defs/externalRef" },
+                  "accessibilityProfile": { "$ref": "common.schema.json#/$defs/id" },
+                  "offline": { "type": "boolean" }
+                }
+              },
+              "ownership": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["class", "team"],
+                "properties": {
+                  "class": { "enum": ["COMPILER_OWNED", "OWNER_MANAGED", "SHARED_CONTROLLED", "EXTERNAL"] },
+                  "team": { "type": "string", "minLength": 1, "maxLength": 120 }
+                }
+              },
+              "environments": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/itemId" } }
+            }
+          }
+        },
+        "integrations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "direction", "purpose"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "kind": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 80 },
+              "direction": { "enum": ["OUTBOUND", "INBOUND", "BIDIRECTIONAL"] },
+              "purpose": { "$ref": "common.schema.json#/$defs/text" },
+              "provider": { "type": "string", "minLength": 1, "maxLength": 120 }
+            }
+          }
+        },
+        "environments": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "kind", "deploymentMode"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/itemId" },
+              "kind": { "enum": ["LOCAL", "CI", "STAGING", "PRODUCTION"] },
+              "deploymentMode": { "enum": ["LOCAL", "SAAS", "DEDICATED", "SELF_HOSTED", "AIR_GAPPED"] }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "domainItemRef": {
+      "description": "'<domain contract id>#<item id>' — an operation or event of a Domain Contract listed in inputs.domainContracts.",
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[-.][a-z0-9]+)*#[A-Za-z][A-Za-z0-9]*(?:[-_.][A-Za-z0-9]+)*$",
+      "maxLength": 240
+    }
+  }
+}
