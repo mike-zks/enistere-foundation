@@ -20,8 +20,9 @@
 
 | Mission | Horizon | Objectif | Gate de sortie | État |
 |---|---|---|---|---|
-| E0 | R0 | Contract Foundation — 7 contrats A1–A7 | P1–P10 PASS ; seule suite : E1 | **Livré, PASS proposé** — P1–P10 à valider (ADR-092) |
-| E1 | R0 | Kernel Façade headless | CLI/test via validate-resolve-plan ; legacy déterministe identique | Prochaine mission |
+| E0 | R0 | Contract Foundation — 7 contrats A1–A7 | P1–P10 PASS ; seule suite : E1 | **PASS** (P1–P10 validés, ADR-093) |
+| R0-C | R0 | Repository Realignment — niveaux 1 et 2 (ADR-093) | Laboratoire vert, rien de prouvé supprimé, dépôt sans actif mort ni non conforme | **Livré** |
+| E1 | R0 | Kernel Façade headless | CLI/test via validate-resolve-plan ; legacy déterministe identique | Prochaine mission (+ niveau 3 du nettoyage pour ce qu'elle enveloppe) |
 | E2 | R0 | Adapter Protocol v0 + premier wrapper | Discovery/resolve/plan/materialize/verify par manifest | — |
 | E3 | R0 | System Definition → Internal IR bridge | IR déterministe ; unsupported explicite | — |
 | E4 | V1 | Ownership & Evidence extraction | Owner change survit ; proof chain exportable | — |

@@ -11,10 +11,10 @@ du propriétaire d'un système tiers.
 
 ## Ownership and authorization
 
-Le mainteneur déclare contrôler Enistere OS Foundation et autorise, à des fins défensives, les analyses
+Le mainteneur déclare contrôler Enistere Foundation (anciennement Enistere OS Foundation) et autorise, à des fins défensives, les analyses
 portant sur :
 
-- le dépôt Enistere OS Foundation et son historique Git ;
+- le dépôt Enistere Foundation (anciennement Enistere OS Foundation) et son historique Git ;
 - ses dépendances et sa chaîne d'approvisionnement logicielle ;
 - les applications générées à partir du projet ;
 - les conteneurs créés localement pour les tests ;

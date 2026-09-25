@@ -1,5 +1,10 @@
 # Deployment Specification
 
+> **Statut (2026-09-25)** : spécification du **laboratoire**, subordonnée à la production Enistere
+> ([`docs/Server Prod/`](../docs/Server%20Prod/POLITIQUE.md)) et à
+> [`PRODUCTION_READINESS.md`](../docs/governance/PRODUCTION_READINESS.md) (ADR-091, ADR-093). Elle ne constitue
+> plus « la spécification canonique de la livraison opérationnelle ».
+
 ## 1. Autorité et portée
 
 Ce document est la spécification canonique de la livraison opérationnelle. La

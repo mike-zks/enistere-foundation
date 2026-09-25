@@ -1,6 +1,6 @@
 # ADR-092 — E0 Contract Foundation : sept contrats de première classe et primitives partagées
 
-- Statut : Accepté (implémentation) — décomposition P1–P10 : **proposition, validation humaine requise**
+- Statut : Accepté — décomposition P1–P10 validée le 2026-09-25 ([ADR-093](ADR-093-r0c-repository-realignment.md), ARB-01)
 - Date : 2026-09-25
 - Décideur : Responsable technique (document 03) ; rédigé par l'agent de la mission E0
 - Sources : document 05 §8.1, document 06 §6.8, document 02 (FR-*, NFR-*, SEC-*), document 03 §6.9–6.18
@@ -69,7 +69,7 @@ l'Async Worker y est **UNSUPPORTED**, rapporté comme tel.
 Le critère opposable est celui du document 05 §8.1 : contrats versionnés, testés, sérialisés de manière
 déterministe, reliés aux diagnostics et utilisables dans le golden sans source de vérité concurrente.
 Le document 06 exige « P1–P10 PASS » sans définir P1–P10 dans le dossier (le brief E0 n° 28 de l'étude
-n'y figure pas). Décomposition **proposée** (validation humaine requise, document 05 §2F) :
+n'y figure pas). Décomposition proposée puis **validée** par le responsable du projet (ARB-01) :
 
 | Critère | Énoncé |
 |---|---|

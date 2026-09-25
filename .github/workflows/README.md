@@ -8,7 +8,7 @@ Workflows CI, **lecture seule** (`permissions: contents: read`), **sans secret G
 | [`api-runtime-ci.yml`](api-runtime-ci.yml) | Runtime de l'**API NestJS** : PostgreSQL + MinIO **jetables**, migrations Prisma, unit + e2e, OpenAPI check, build, audit | Niveau 2 |
 | [`web-e2e-ci.yml`](web-e2e-ci.yml) | **E2E navigateur** : stack réelle (PostgreSQL + MinIO + API + Web) + Playwright/Chromium ; parcours Health, Auth, Files | Niveau 3 |
 | [`registry-ci.yml`](registry-ci.yml) | **Registry GHCR** : build images API/Web ; **push sur `main` seulement** (tags immuables, pas de `latest`) — **sans déploiement** | Niveau 4 (partiel) |
-| [`api-spring-ci.yml`](api-spring-ci.yml) | **API Spring Boot** : Maven Wrapper + Java 21 + Testcontainers PostgreSQL | Niveau 5 |
+| ~~`api-spring-ci.yml`~~ | **Absent du dépôt** (entrée historique corrigée par R0-C) : Spring Boot est exercé par les compositions `spring-*` de [`factory-golden-runtime.yml`](factory-golden-runtime.yml) | — |
 | [`web-angular-ci.yml`](web-angular-ci.yml) | **Web Angular** : Karma/ChromeHeadless + build production + audit npm local | Niveau 6 |
 
 ## `ci.yml` — CI minimale V1 (ADR-013)
@@ -148,8 +148,7 @@ Construit les **images Docker** API/Web et les **pousse vers GHCR sur `main` uni
   connexion = moteur chargé = OK ; « query engine could not be located » = **FAIL**) + non-root + openssl +
   moteur présent. Le job **`images` est `needs: api-smoke`** → **le push GHCR n'a lieu que si le smoke est vert**.
   *(Recommandé : rendre `api-smoke` un check requis sur `main` — action humaine.)*
-- **`permissions: contents: read` + `packages: write`** ; login GHCR **conditionnel** (`push` + `main`).
-- **PR → build SANS push** (vérifie la constructibilité) ; **push `main` → build + push** (gate `api-smoke`).
+- **Publication GHCR suspendue** ([ADR-093](../../docs/adr/ADR-093-r0c-repository-realignment.md)) : le déclencheur `push` sur `main` est retiré, `permissions: contents: read`. Le workflow ne fait plus que **construire et tester en PR** (gate `api-smoke`) ; la publication reviendra avec le premier service Foundation, selon `docs/Server Prod/`.
 - **Images** : `ghcr.io/<owner>/<repo>/api-nestjs` (Dockerfile `starters/nestjs/`, contexte `starters/nestjs/`)
   et `/web-nextjs` (Dockerfile `starters/nextjs/`, contexte **racine**, Next.js **standalone**). Multi-stage,
   **non-root**, **aucun `.env` copié**.
@@ -157,22 +156,25 @@ Construit les **images Docker** API/Web et les **pousse vers GHCR sur `main` uni
   `main`), `pr-<n>` (build PR, non poussé). **`latest` jamais généré.** Labels OCI (source/revision/created/
   title/description).
 - Actions Docker officielles (`setup-buildx`/`login`/`metadata`/`build-push`), épinglées par **majeure** (SHA
-  futur). Détail : [`REGISTRY_POLICY.md`](../../deployment/docs/REGISTRY_POLICY.md) · guide :
-  [`GHCR_REGISTRY_GUIDE.md`](../../deployment/docs/GHCR_REGISTRY_GUIDE.md).
+  futur). Détail : [`REGISTRY_POLICY.md`](../../docs/archive/laboratory/deployment/docs/REGISTRY_POLICY.md) · guide :
+  [`GHCR_REGISTRY_GUIDE.md`](../../docs/archive/laboratory/deployment/docs/GHCR_REGISTRY_GUIDE.md).
 
 ### Niveau CI actuel & progression (Deployment 1 → 5)
 
+> Historique du laboratoire : la progression « Deployment 1 → 5 » et ses documents sont archivés ; la
+> livraison de production relève désormais de `docs/Server Prod/` et de `docs/governance/PRODUCTION_READINESS.md`.
+
 Le **Deployment 1** gouverne cette CI sans l'étendre vers le déploiement. La progression est cadrée dans
-[`deployment/docs/CLOUD_CORE_V1_EXECUTION_BASELINE.md`](../../deployment/docs/CLOUD_CORE_V1_EXECUTION_BASELINE.md) :
+[`deployment/docs/CLOUD_CORE_V1_EXECUTION_BASELINE.md`](../../docs/archive/laboratory/deployment/docs/CLOUD_CORE_V1_EXECUTION_BASELINE.md) :
 
 - **Niveau 1 (présent — `ci.yml`)** : contrats, client API, UI Kit, Web Core (build sans API), audit,
   gardes Axios/Zustand.
 - **Niveau 2 (présent — `api-runtime-ci.yml`)** : CI runtime API NestJS (PostgreSQL + MinIO jetables) +
-  migrations + unit + e2e + OpenAPI check — [`API_RUNTIME_CI_PLAN.md`](../../deployment/docs/API_RUNTIME_CI_PLAN.md).
+  migrations + unit + e2e + OpenAPI check — [`API_RUNTIME_CI_PLAN.md`](../../docs/archive/laboratory/deployment/docs/API_RUNTIME_CI_PLAN.md).
 - **Niveau 3 (présent — `web-e2e-ci.yml`)** : E2E navigateur Web (Health/Auth/Files) sur stack réelle —
-  [`WEB_E2E_CI_PLAN.md`](../../deployment/docs/WEB_E2E_CI_PLAN.md).
-- **Niveau 4 (partiel — `registry-ci.yml`)** : **registry GHCR** (build + push images, sans déploiement) —
-  [`REGISTRY_POLICY.md`](../../deployment/docs/REGISTRY_POLICY.md). **Reste** : déploiement par environnement
+  [`WEB_E2E_CI_PLAN.md`](../../docs/archive/laboratory/deployment/docs/WEB_E2E_CI_PLAN.md).
+- **Niveau 4 (suspendu — `registry-ci.yml`)** : build d'images en PR uniquement, publication GHCR suspendue (ADR-093) —
+  [`REGISTRY_POLICY.md`](../../docs/archive/laboratory/deployment/docs/REGISTRY_POLICY.md). **Reste** : déploiement par environnement
   protégé + rollback (futur).
 
 ### Checks requis pour la protection de `main` (Deployment 4 / Factory Quality 3)

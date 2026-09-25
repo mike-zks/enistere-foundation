@@ -2,7 +2,7 @@
 
 > Couverture **prouvée** (document 05 §2E). Un contrat ou une capacité n'est VERIFIED que si une preuve
 > adaptée existe (test automatisé, golden, conformance, audit) — jamais sur déclaration. Mise à jour :
-> 2026-09-25, fin de E0. Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
+> 2026-09-25, fin de E0 et de R0-C (aucun statut changé par R0-C). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
 > CONFORMANT · VERIFIED (document 02 annexe B).
 
 ## Contrats E0 (A1–A7)
@@ -36,7 +36,7 @@ Légende « Lab » : actif du laboratoire observé et testé aujourd'hui (`npm r
 | CAP-08 Platform Capabilities | System Compilation / Capability Adapters | Lab | Lab | Non | Lab : `capabilities/{auth,rbac,files}`, `factory/conformance/reports/*.json` | E2+ | À réexprimer via manifests d'extension |
 | CAP-09 Design System & Experience Governance | Knowledge & Decision / Compilation | Lab | Lab | Non | Lab : `contracts/design`, `npm run design:check` | E6 | `design-tokens.json` du doc 04 absent (CONTEXT D-5) |
 | CAP-10 System Compiler | System Compilation / Kernel, Engine | Lab | Lab | Non | Lab : `canonical-pipeline.test.mjs`, `reproducibility.test.mjs`, fitness functions FF6–FF8 | E1, E3, E10 | System Closure absente ; pipeline historique seul chemin de génération |
-| CAP-11 AI Engineering Assistant | Transversal / AI Gateway | Lab (runtime de prompts) | Lab | Non | Lab : `factory/ai/runtime/test/*` ; invariants d'autorité IA dans A1–A7 | V1+ | Pas d'AI Gateway ni d'AgentActionRecord |
+| CAP-11 AI Engineering Assistant | Transversal / AI Gateway | Lab (primitives : contexte, rédaction, citations, évaluation) | Lab | Non | Lab : `factory/ai/runtime/test/*` ; invariants d'autorité IA dans A1–A7 | V1+ | Prompts et registre du laboratoire archivés (ADR-093) ; pas d'AI Gateway ni d'AgentActionRecord |
 | CAP-12 Conformance, Evidence & Assurance | Assurance & Evolution / Kernel Evidence, Checkers | Partiel (contrat A7 + checker du golden) | Oui | Non | A7, `golden-asteria.test.ts` ; Lab : conformance baseline/capabilities | E4 | Pas d'Evidence Graph ni de proof profiles |
 | CAP-13 Lifecycle & System Evolution | Assurance & Evolution / Engine, Workers | Partiel (contrat A6) | Oui (contrat) | Non | A6, cohérence et péremption ; Lab : `regenerate.test.mjs`, `migrations.test.mjs` | E7 | Pas de calcul d'impact |
 | CAP-14 Brownfield / Existing System Adoption | Assurance & Evolution / Workers, Observers | Non | Non | Non | — | V3 | Hors périmètre R0 |

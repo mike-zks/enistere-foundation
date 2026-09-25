@@ -1,6 +1,6 @@
 # QUALITY_GATES_MATRIX.md — Matrice des gates qualité
 
-> Gates qualité réels du monorepo Enistere OS Foundation.
+> Gates qualité réels du monorepo Enistere Foundation.
 > Dernière mise à jour : 2026-08-09 (contrat design/expérience — ADR-090).
 >
 > **Script de sélection locale** : `node factory/quality/scripts/quality-gates.mjs plan <scope>`

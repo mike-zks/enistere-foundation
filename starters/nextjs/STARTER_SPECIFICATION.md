@@ -1029,6 +1029,6 @@ La version finale sera acceptable si :
 
 ## 61. Conclusion
 
-Le starter Next.js doit devenir le socle web standard d'Enistere OS Foundation pour construire rapidement des interfaces publiques, SaaS, dashboards et backoffices sécurisés, cohérents et maintenables.
+Le starter Next.js doit devenir le socle web standard d'Enistere Foundation pour construire rapidement des interfaces publiques, SaaS, dashboards et backoffices sécurisés, cohérents et maintenables.
 
 Cette spécification définit le périmètre final attendu sans créer de projet Next.js ni de code. Les choix structurants, notamment stratégie server state, client HTTP, auth/session, observabilité, E2E, charts, maps web et génération client OpenAPI, devront être validés avant implémentation et documentés par ADR si leur impact est structurant.

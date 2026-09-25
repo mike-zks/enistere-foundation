@@ -18,24 +18,24 @@ Le code, les tests et les fichiers de statut courant priment.
 
 ## 2. Lecture obligatoire avant une mission
 
-1. [`../governance/SOURCE_OF_TRUTH.md`](../governance/SOURCE_OF_TRUTH.md)
-2. [`../project-status/FOUNDATION_CURRENT_STATE.md`](../archive/laboratory/project-status/FOUNDATION_CURRENT_STATE.md)
-3. [`../project-status/IMPLEMENTATION_MATRIX.md`](../archive/laboratory/project-status/IMPLEMENTATION_MATRIX.md)
-4. [`../project-status/NEXT_ACTIONS.md`](../archive/laboratory/project-status/NEXT_ACTIONS.md)
-5. [`../project-status/DECISIONS_REGISTER.md`](../archive/laboratory/project-status/DECISIONS_REGISTER.md)
-6. La spécification applicable dans [`../specifications/`](../specifications/)
-7. Les ADR applicables dans [`../adr/`](../adr/)
+1. [`../governance/SOURCE_OF_TRUTH.md`](../../../governance/SOURCE_OF_TRUTH.md)
+2. [`../project-status/FOUNDATION_CURRENT_STATE.md`](../project-status/FOUNDATION_CURRENT_STATE.md)
+3. [`../project-status/IMPLEMENTATION_MATRIX.md`](../project-status/IMPLEMENTATION_MATRIX.md)
+4. [`../project-status/NEXT_ACTIONS.md`](../project-status/NEXT_ACTIONS.md)
+5. [`../project-status/DECISIONS_REGISTER.md`](../project-status/DECISIONS_REGISTER.md)
+6. La spécification applicable dans [`../specifications/`](../../../specifications/)
+7. Les ADR applicables dans [`../adr/`](../../../adr/)
 
 Guides transverses utiles :
 
-- [`../guides/DOCUMENTATION_MAINTENANCE_GUIDE.md`](../guides/DOCUMENTATION_MAINTENANCE_GUIDE.md)
-- [`../governance/ARCHITECTURE_GOVERNANCE.md`](../governance/ARCHITECTURE_GOVERNANCE.md)
+- [`../guides/DOCUMENTATION_MAINTENANCE_GUIDE.md`](../../../guides/DOCUMENTATION_MAINTENANCE_GUIDE.md)
+- [`../governance/ARCHITECTURE_GOVERNANCE.md`](../../../governance/ARCHITECTURE_GOVERNANCE.md)
 
 Pour une mission IA, lire aussi :
 
-- [`../../factory/quality/AI_PROMPT_GOVERNANCE.md`](../../factory/quality/AI_PROMPT_GOVERNANCE.md)
-- [`../../factory/ai/prompts/README.md`](../../factory/ai/prompts/README.md)
-- [`../../factory/ai/prompts/global/mission-brief-template.md`](../../factory/ai/prompts/global/mission-brief-template.md)
+- [`../../factory/quality/AI_PROMPT_GOVERNANCE.md`](../ai-runtime/AI_PROMPT_GOVERNANCE.md)
+- [`../../factory/ai/prompts/README.md`](../ai-prompts/README.md)
+- [`../../factory/ai/prompts/global/mission-brief-template.md`](../ai-prompts/global/mission-brief-template.md)
 
 ## 3. Parcours par role
 
@@ -101,9 +101,9 @@ Objectif : decider une promotion ou une release sans confondre merge et publicat
 
 Lire :
 
-1. [`../../factory/quality/RELEASE_PROCESS_RUNBOOK.md`](../../factory/quality/RELEASE_PROCESS_RUNBOOK.md)
-2. [`../specifications/CONFORMANCE_MODEL.md`](../specifications/CONFORMANCE_MODEL.md)
-3. [`../checklists/RELEASE_READINESS_CHECKLIST.md`](../checklists/RELEASE_READINESS_CHECKLIST.md)
+1. [`../../factory/quality/RELEASE_PROCESS_RUNBOOK.md`](../../../../factory/quality/RELEASE_PROCESS_RUNBOOK.md)
+2. [`../specifications/CONFORMANCE_MODEL.md`](../../../specifications/CONFORMANCE_MODEL.md)
+3. [`../checklists/RELEASE_READINESS_CHECKLIST.md`](../../../checklists/RELEASE_READINESS_CHECKLIST.md)
 4. preuves de conformite du composant concerne.
 
 Livrable attendu : decision de statut/release, notes, tag ou prochaine action.
@@ -150,8 +150,8 @@ npm audit
 
 Pour une mission runtime, utiliser la matrice :
 
-- [`../../factory/quality/QUALITY_GATES_MATRIX.md`](../../factory/quality/QUALITY_GATES_MATRIX.md)
-- [`../checklists/PR_QUALITY_CHECKLIST.md`](../checklists/PR_QUALITY_CHECKLIST.md)
+- [`../../factory/quality/QUALITY_GATES_MATRIX.md`](../../../../factory/quality/QUALITY_GATES_MATRIX.md)
+- [`../checklists/PR_QUALITY_CHECKLIST.md`](../../../checklists/PR_QUALITY_CHECKLIST.md)
 
 ## 7. Rapport final attendu
 

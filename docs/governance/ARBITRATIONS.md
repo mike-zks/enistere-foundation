@@ -3,18 +3,19 @@
 > Points qui exigent une validation humaine (document 05 §2F). Pour chacun : le constat prouvé, les
 > options (méthode KEEP / ADAPT / EXTRACT / REPLACE / RETIRE, document 05 §7.3), la recommandation et
 > ce qu'elle débloque. Une décision prise est reportée dans un ADR et dans [`DECISIONS.md`](../../DECISIONS.md),
-> puis la ligne passe en « Tranché ». Ouvert le 2026-09-25, après E0.
+> puis la ligne passe en « Tranché ». Ouvert le 2026-09-25, après E0 ; ARB-01 à ARB-06 tranchés le même
+> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). **Restent ouverts : ARB-07 à ARB-10.**
 
 ## Synthèse
 
 | # | Sujet | Recommandation | Propriétaire | Statut |
 |---|---|---|---|---|
-| ARB-01 | Validation du gate E0 (P1–P10) | Accepter la décomposition d'ADR-092 | Produit / Pilotage | Ouvert |
-| ARB-02 | Place de la mission de nettoyage dans la séquence | Insérer **R0-C — Realignment** entre E0 et E1 | Produit / Pilotage | Ouvert |
-| ARB-03 | Profondeur du nettoyage | Retrait/archivage des actifs morts ou non conformes + réorganisation progressive par mission ; pas de suppression du code prouvé avant E10 | Technique | Ouvert |
-| ARB-04 | Nommage : dépôt, packages, domaines | Renommer le dépôt maintenant ; packages au fil des migrations ; domaines par ADR au 1er déploiement | Direction + plateforme | Ouvert |
-| ARB-05 | Staging et publication d'images du laboratoire (`deployment/`, `registry-ci.yml`) | Archiver le staging non conforme ; suspendre la publication GHCR | Plateforme | Ouvert |
-| ARB-06 | Runtime IA du laboratoire (`factory/ai`) | Archiver prompts et registre ; conserver les primitives testées (rédaction, citations) comme candidates à l'AI Gateway | Technique | Ouvert |
+| ARB-01 | Validation du gate E0 (P1–P10) | Accepter la décomposition d'ADR-092 | Produit / Pilotage | Tranché — accepté (ADR-093) |
+| ARB-02 | Place de la mission de nettoyage dans la séquence | Insérer **R0-C — Realignment** entre E0 et E1 | Produit / Pilotage | Tranché — R0-C avant E1 (ADR-093) |
+| ARB-03 | Profondeur du nettoyage | Retrait/archivage des actifs morts ou non conformes + réorganisation progressive par mission ; pas de suppression du code prouvé avant E10 | Technique | Tranché — niveaux 1+2 (ADR-093) |
+| ARB-04 | Nommage : dépôt, packages, domaines | Renommer le dépôt maintenant ; packages au fil des migrations ; domaines par ADR au 1er déploiement | Direction + plateforme | Tranché — proposition complète (ADR-093) |
+| ARB-05 | Staging et publication d'images du laboratoire (`deployment/`, `registry-ci.yml`) | Archiver le staging non conforme ; suspendre la publication GHCR | Plateforme | Réalisé dans R0-C (ADR-093) |
+| ARB-06 | Runtime IA du laboratoire (`factory/ai`) | Archiver prompts et registre ; conserver les primitives testées (rédaction, citations) comme candidates à l'AI Gateway | Technique | Réalisé dans R0-C (ADR-093) |
 | ARB-07 | Sept starters dans la CI | Conserver les sept comme *reference extensions* ; aucune nouvelle capacité par runtime avant E2 | Produit | Ouvert |
 | ARB-08 | Corrections du document 05 (Ubuntu, RabbitMQ) | Document 05 renvoie à Server Prod pour les faits d'infrastructure | Gouvernance | Ouvert |
 | ARB-09 | Livrables manquants du document 04 (`design-tokens.json`, maquettes) | Les fournir avant toute mission Workbench/design (E6, V1) | Design UX UI | Ouvert |

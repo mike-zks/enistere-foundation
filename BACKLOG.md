@@ -4,7 +4,8 @@
 
 ## Mission active
 
-**Aucune.** E0 — Contract Foundation est terminée (rapport : [`CURRENT_STATE.md`](CURRENT_STATE.md)).
+**Aucune.** E0 — Contract Foundation (PASS) et R0-C — Repository Realignment (ADR-093) sont terminées ;
+rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## Prochaine mission unique
 
@@ -20,16 +21,15 @@
 - **Out of scope** : Adapter Protocol (E2), IR interne (E3), Control Plane, Workbench, suppression du
   pipeline historique, cutover.
 - **Critères de PASS (document 06)** : CLI/test via validate-resolve-plan ; legacy déterministe identique.
-- **Préalable** : validation humaine de la décomposition P1–P10 proposée dans
-  [ADR-092](docs/adr/ADR-092-e0-contract-foundation.md) (non bloquante pour le préflight E1).
+- **Nettoyage de niveau 3 (ADR-093)** : ce que la façade enveloppe (point d'entrée CLI et composition du
+  pipeline historique) est extrait vers `kernel/` avec son seam et ses preuves ; rien n'est supprimé.
+- **Préalable levé** : P1–P10 validés (ARB-01).
 
 ## En attente de validation humaine
 
-Registre détaillé avec options et recommandations :
-[`docs/governance/ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md) (ARB-01 à ARB-10). Le point
-structurant est ARB-02 : insérer une mission **R0-C — Repository Realignment** (retrait/archivage des
-actifs morts ou non conformes, alignement du nommage) avant E1. Tant qu'il n'est pas tranché, la
-prochaine mission reste E1, conformément au document 06.
+ARB-07 à ARB-10 (starters en CI, corrections du document 05, livrables du document 04, validation
+d'`AGENTS.md`) : propositions dans [`docs/governance/ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
+Action de votre part décidée (ARB-04) : renommer le dépôt GitHub en `enistere-foundation`.
 
 ## Dettes identifiées (non planifiées)
 

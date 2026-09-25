@@ -33,11 +33,16 @@ observabilité ou déploiement.
 
 Décrivent l'implémentation **historique** — pipeline Blueprint → CSM → ResolvedSystem →
 GenerationPlan, runtimes, capabilities, baseline — et non la cible produit :
-[`specifications/`](specifications/README.md), [`architecture/`](architecture/README.md), `glossary/`,
-`guides/`, `onboarding/`, `checklists/`, `project-factory/`, `examples/`.
+[`specifications/`](specifications/README.md), [`architecture/`](architecture/README.md), `guides/`,
+`checklists/`, `project-factory/`.
+
+## Prise en main
+
+[`onboarding/ONBOARDING.md`](onboarding/ONBOARDING.md) · [`glossary/GLOSSARY.md`](glossary/GLOSSARY.md)
+(termes de la cible Foundation).
 
 ## Archives
 
-[`archive/`](archive/README.md) — documents de pilotage du laboratoire remplacés par la gouvernance du
-dossier (mandat, état, roadmap, stratégie, audits). Non autoritaires ; conservés comme preuves
+[`archive/`](archive/README.md) — documents du laboratoire remplacés ou non conformes (mandat, état,
+roadmap, stratégie, audits, prompts IA, staging, glossaire, onboarding, exemples de profils). Non autoritaires ; conservés comme preuves
 historiques.

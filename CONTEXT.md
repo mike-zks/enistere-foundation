@@ -50,7 +50,7 @@ transversal. Dans le dépôt :
 |---|---|
 | Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) |
 | Goldens | [`goldens/asteria/`](goldens/asteria/README.md) — golden de transition Asteria |
-| Engine (compilation) | `factory/` — pipeline du **laboratoire** Blueprint → CSM → ResolvedSystem → GenerationPlan (couche de compatibilité, ADR-091) |
+| Engine (compilation) | `factory/` — pipeline du **laboratoire** (prompts IA archivés, primitives IA conservées) Blueprint → CSM → ResolvedSystem → GenerationPlan (couche de compatibilité, ADR-091) |
 | Extensions (runtimes, capabilities) | `starters/` (7 runtimes), `capabilities/` (auth, rbac, files) — actifs du laboratoire, futures *reference extensions* |
 | Contrats externes | `contracts/`, `packages/` — contrats polyglottes et UI kit du laboratoire |
 | Control Plane, Workers, Registry, Workbench, AI Gateway | Absents (missions ultérieures) |
@@ -70,13 +70,12 @@ en compatibilité, archivage sans suppression) et ADR-092 (E0 Contract Foundatio
 
 ## Mission
 
-- **Mission terminée** : E0 — Contract Foundation (horizon R0). Résultat : voir
-  [`CURRENT_STATE.md`](CURRENT_STATE.md).
+- **Missions terminées** : E0 — Contract Foundation (PASS, P1–P10 validés) et R0-C — Repository
+  Realignment (ADR-093). Résultats : [`CURRENT_STATE.md`](CURRENT_STATE.md).
 - **Périmètre retenu** : greenfield, modèle de contrats ; brownfield et lifecycle complet hors périmètre.
 - **Hors périmètre E0** : cutover, suppression des modèles historiques, Control Plane, Workbench, refonte
   CLI, brownfield, agents avancés, migration globale des runtimes.
-- **Prochaine mission unique** : **E1 — Kernel Façade** (document 06 §6.8), sous réserve de la validation
-  humaine de la décomposition P1–P10 (ADR-092).
+- **Prochaine mission unique** : **E1 — Kernel Façade** (document 06 §6.8).
 
 ## Divergences documentaires ouvertes
 
@@ -84,10 +83,11 @@ Arbitrages associés et propositions : [`ARBITRATIONS.md`](docs/governance/ARBIT
 
 | # | Divergence | Proposition | Arbitrage |
 |---|---|---|---|
-| D-1 | Doc 06 exige « P1–P10 PASS » pour E0 sans les définir ; le brief E0 (n° 28) est absent du dossier. | Décomposition proposée dans ADR-092 ; critère opposable retenu : doc 05 §8.1. | Validation humaine requise (Produit / Pilotage) |
+| D-1 | Doc 06 exige « P1–P10 PASS » pour E0 sans les définir ; le brief E0 (n° 28) est absent du dossier. | Décomposition d'ADR-092. | Clos — validée (ADR-093, ARB-01) |
 | D-2 | Doc 05 §2B : VPS Ubuntu 24.04 ; `Server Prod/ARCHITECTURE.md` : Ubuntu 26.04.1 LTS. | La documentation de production décrit l'état réel de l'hôte ; corriger doc 05 à la prochaine révision. | Gouvernance |
 | D-3 | Doc 05 §2B mentionne une instance RabbitMQ partagée ; absente de `Server Prod/ARCHITECTURE.md`. | Ne pas supposer RabbitMQ disponible ; ADR requis avant usage (Workers, E4+). | Technique + plateforme |
 | D-4 | Doc 03 : object store S3/MinIO ; production : Cloudflare R2. | Compatible (abstraction S3) ; R2 en production Enistere, MinIO en self-hosted. | Aucun (compatible) |
 | D-5 | Doc 04 cite `design-tokens.json` et un dossier `mockups`, absents du dépôt. | À fournir avant tout travail Workbench/design ; non bloquant pour E0–E3. | Design UX UI |
-| D-6 | Convention §2G (`enistere-foundation`, `@enistere/foundation-*`) vs dépôt `enistere-os-foundation` et packages existants. | Appliquée aux nouveaux artefacts ; renommages existants au fil des migrations (ADR-091). | Validation humaine pour le renommage GitHub/DNS |
+| D-6 | Convention §2G (`enistere-foundation`, `@enistere/foundation-*`) vs dépôt `enistere-os-foundation` et packages existants. | Dépôt renommé par le responsable ; packages à la migration ; domaines par ADR au 1er déploiement. | Tranché (ADR-093, ARB-04) — renommage GitHub à effectuer |
 | D-7 | Doc 03 : Control Plane NestJS + Temporal ; `MANDAT.md` (archivé) : pipeline factory unique. | Résolu par ADR-091. | Clos |
+| D-8 | Doc 06 §6.8 : seule suite de E0 = E1 ; demande de nettoyage complet après E0. | Mission R0-C insérée, limitée aux niveaux 1–2. | Clos (ADR-093) |
