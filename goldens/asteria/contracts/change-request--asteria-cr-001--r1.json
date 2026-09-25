@@ -153,12 +153,6 @@
           "id": "asteria-sd1-worker-extensibility",
           "revision": 1,
           "digest": "sha256:6019125d8521f483f126fb3b1e6af1c2a89868e4374b749333660e7e0494f674"
-        },
-        {
-          "kind": "EvidenceRecord",
-          "id": "asteria-sd1-legacy-materialization",
-          "revision": 1,
-          "digest": "sha256:cb18b46033bc052ecb2e66574c5b19914b0620056d8dabd5c3b64b78ebb9a8d1"
         }
       ],
       "ownerWork": [

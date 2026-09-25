@@ -3,16 +3,15 @@
  *
  * The committed golden must be exactly what the kernel and the checker produce
  * from the authoring source; it must describe the five surfaces including the
- * Async Worker; and it must not feed, nor be fed by, the legacy factory.
+ * Async Worker; and it depends on nothing outside the kernel and the goldens.
  */
 
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { buildAsteriaGolden, probeLegacy, SURFACES } from '../../../goldens/asteria/harness.ts';
-import { validateContractSet, type EvidenceRecord, type SystemDefinition } from '../src/index.ts';
+import { buildAsteriaGolden, SURFACES } from '../../../goldens/asteria/harness.ts';
+import { fileDigest, validateContractSet, type EvidenceRecord, type SystemDefinition } from '../src/index.ts';
 import { GOLDEN_ROOT, golden, loadGolden, readGoldenFile } from './fixtures.ts';
 
 const REPO_ROOT = fileURLToPath(new URL('../../../', import.meta.url));
@@ -29,7 +28,7 @@ test('the build is deterministic', () => {
 });
 
 test('the source brief is pinned by its byte digest', () => {
-  const digest = `sha256:${createHash('sha256').update(readFileSync(`${GOLDEN_ROOT}sources/brief.md`)).digest('hex')}`;
+  const digest = fileDigest(readFileSync(`${GOLDEN_ROOT}sources/brief.md`));
   const baseline = golden('RequirementBaseline', 'asteria-requirements');
   assert.equal(baseline.kind === 'RequirementBaseline' && baseline.spec.sources[0]?.digest, digest);
 });
@@ -66,20 +65,16 @@ test('every accepted functional requirement is traced to decisions, components a
   assert.deepEqual(deferred?.components, []);
 });
 
-test('current evidence passes, and the legacy gap of the worker is explicit (UNSUPPORTED), not hidden', () => {
+test('current evidence passes and is produced by a checker', () => {
   const current = loadGolden().filter(
     (document): document is EvidenceRecord => document.kind === 'EvidenceRecord' && document.metadata.id.startsWith('asteria-sd2-'),
   );
   const results = Object.fromEntries(current.map((record) => [record.spec.obligation.id, record.spec.result]));
-  assert.deepEqual(results, { closure: 'PASS', 'legacy-materialization': 'UNSUPPORTED', 'requirement-allocation': 'PASS', 'worker-extensibility': 'PASS' });
+  assert.deepEqual(results, { closure: 'PASS', 'requirement-allocation': 'PASS', 'worker-extensibility': 'PASS' });
   for (const record of current) {
     assert.equal(record.metadata.status, 'VALID');
     assert.equal(record.spec.producedBy.type, 'CHECKER');
   }
-  const probes = probeLegacy(golden<SystemDefinition>('SystemDefinition', 'asteria', 2));
-  const representable = probes.filter((probe) => probe.representable).map((probe) => probe.component);
-  assert.deepEqual(representable, ['requester-web', 'ops-web', 'field-mobile', 'authority-api']);
-  assert.match(probes.find((probe) => probe.component === 'async-worker')!.reason, /^UNSUPPORTED/);
 });
 
 test('the Day-2 change is governed: pinned base, consistent changes, invalidated evidence', () => {
@@ -88,22 +83,31 @@ test('the Day-2 change is governed: pinned base, consistent changes, invalidated
   const change = golden('ChangeRequest', 'asteria-cr-001');
   assert.equal(change.metadata.status, 'APPLIED');
   const invalidated = loadGolden().filter((document) => document.kind === 'EvidenceRecord' && document.metadata.status === 'INVALIDATED');
-  assert.equal(invalidated.length, 4);
+  assert.equal(invalidated.length, 3);
   const proposal = golden('ChangeRequest', 'asteria-cr-002');
   assert.equal(proposal.kind === 'ChangeRequest' && proposal.spec.classification, 'UNSUPPORTED');
   assert.equal(proposal.metadata.status, 'PROPOSED');
   assert.equal(proposal.metadata.acceptance, undefined, 'an AI proposal is never self-accepted');
 });
 
-test('no competing source of truth: the legacy factory neither imports the kernel nor the golden', () => {
+test('the kernel and the goldens import nothing outside kernel/ and goldens/', () => {
+  const IMPORT = /(?:\bfrom\s+|\bimport\s*\(\s*|\bimport\s+|new URL\(\s*)['"]([^'"]+)['"]/g;
   const offenders: string[] = [];
   const walk = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === 'node_modules') continue;
       const path = `${dir}/${entry.name}`;
       if (entry.isDirectory()) walk(path);
-      else if (/\.(mjs|js|ts)$/.test(entry.name) && /kernel\/contracts|goldens\/asteria/.test(readFileSync(path, 'utf8'))) offenders.push(path);
+      else if (/\.(mjs|js|ts)$/.test(entry.name)) {
+        for (const [, target] of readFileSync(path, 'utf8').matchAll(IMPORT)) {
+          if (!target || !target.startsWith('.') || target.endsWith('/')) continue;
+          const resolved = fileURLToPath(new URL(target, `file://${path}`));
+          if (!resolved.startsWith(`${REPO_ROOT}kernel/`) && !resolved.startsWith(`${REPO_ROOT}goldens/`)) offenders.push(`${path} -> ${target}`);
+        }
+      }
     }
   };
-  walk(`${REPO_ROOT}factory`);
+  walk(`${REPO_ROOT}kernel`);
+  walk(`${REPO_ROOT}goldens`);
   assert.deepEqual(offenders, []);
 });

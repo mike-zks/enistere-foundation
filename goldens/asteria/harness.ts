@@ -1,13 +1,9 @@
 /**
- * Asteria golden — checker, legacy compatibility probe and golden build.
+ * Asteria golden — checker and golden build.
  *
  * The checker `asteria-golden-contract-check` runs the kernel contract
  * validation on the contract set as it stood at a given (injected) instant and
  * records the outcome as EvidenceRecords (VERIFY by a CHECKER, never by an AI).
- * The legacy probe reads the laboratory factory registry (Canonical System
- * Model) and states, per component, whether the historical pipeline can
- * represent it — without ever feeding it: the golden is not a generation input
- * and creates no competing source of truth.
  *
  * `buildAsteriaGolden()` is pure and deterministic: same sources, same kernel,
  * same bytes. `goldens/asteria/update.ts` writes its output; the kernel test
@@ -48,56 +44,6 @@ export const CHECKER_ACTOR: Actor = { type: 'CHECKER', id: 'asteria-golden-harne
 /** The five mandatory surfaces of the Asteria golden (Async Worker included). */
 export const SURFACES = Object.freeze(['requester-web', 'ops-web', 'field-mobile', 'authority-api', 'async-worker']);
 
-// ── Legacy compatibility seam (read-only) ─────────────────────────────────
-interface LegacyRegistry {
-  APPLICATION_KINDS: readonly string[];
-  RUNTIMES: readonly string[];
-}
-
-const LEGACY_MODULE = new URL('../../factory/model/canonical-system.mjs', import.meta.url).href;
-const legacy = (await import(LEGACY_MODULE)) as LegacyRegistry;
-
-/**
- * Seam declaration: how a System Definition component kind reads in the
- * laboratory Canonical System Model. Absent kinds have no legacy equivalent.
- */
-export const LEGACY_KIND_SEAM: Readonly<Record<string, string>> = Object.freeze({
-  'web-application': 'web',
-  'mobile-application': 'mobile',
-  'api-service': 'api',
-});
-
-export interface LegacyProbe {
-  component: string;
-  kind: string;
-  legacyKind: string | null;
-  runtime: string | null;
-  representable: boolean;
-  reason: string;
-}
-
-export function probeLegacy(definition: SystemDefinition): LegacyProbe[] {
-  return definition.spec.components.map((component) => {
-    const legacyKind = LEGACY_KIND_SEAM[component.kind] ?? null;
-    const runtime = component.runtime?.preferences?.[0] ?? null;
-    let reason: string;
-    let representable = false;
-    if (!legacyKind) {
-      reason = component.audience
-        ? `UNSUPPORTED: kind '${component.kind}' has no equivalent among legacy application kinds [${legacy.APPLICATION_KINDS.join(', ')}]`
-        : `NOT_APPLICABLE: '${component.kind}' is infrastructure, not an application of the legacy model`;
-    } else if (!legacy.APPLICATION_KINDS.includes(legacyKind)) {
-      reason = `UNSUPPORTED: legacy kind '${legacyKind}' is not registered`;
-    } else if (!runtime || !legacy.RUNTIMES.includes(runtime)) {
-      reason = `UNSUPPORTED: runtime '${String(runtime)}' is not a legacy runtime`;
-    } else {
-      representable = true;
-      reason = `REPRESENTABLE as legacy ${legacyKind}/${runtime}`;
-    }
-    return { component: component.id, kind: component.kind, legacyKind, runtime, representable, reason };
-  });
-}
-
 // ── Checker ───────────────────────────────────────────────────────────────
 function addDays(instant: string, days: number): string {
   return new Date(Date.parse(instant) + days * 86_400_000).toISOString().replace('.000Z', 'Z');
@@ -126,7 +72,6 @@ function obligations(subject: SystemDefinition, checked: readonly AnyContract[],
   );
   // A finding on another contract makes the obligation undecidable, not failed.
   const workerOk = worker !== undefined && worker.kind === 'async-worker' && (worker.subscribes ?? []).length > 0 && workerFindings.length === 0;
-  const legacyWorker = probeLegacy(subject).find((probe) => probe.component === 'async-worker');
   return [
     {
       key: 'closure',
@@ -149,14 +94,6 @@ function obligations(subject: SystemDefinition, checked: readonly AnyContract[],
       component: 'async-worker',
       result: !workerOk ? 'FAIL' : validation.valid ? 'PASS' : 'INCONCLUSIVE',
       summary: `${(worker?.subscribes ?? []).length} subscriptions; ${workerFindings.length} errors on the worker.`,
-    },
-    {
-      key: 'legacy-materialization',
-      statement: 'The laboratory factory pipeline can materialize the Async Worker.',
-      source: pinnedRef(decisions, 'AD-002'),
-      component: 'async-worker',
-      result: legacyWorker?.representable ? 'PASS' : 'UNSUPPORTED',
-      summary: legacyWorker?.reason ?? 'async-worker absent',
     },
   ];
 }
@@ -236,7 +173,6 @@ function report(documents: AnyContract[], validation: ContractSetValidation, cur
   const domain = documents.find((document) => document.kind === 'DomainContract');
   const evidence = documents.filter((document): document is EvidenceRecord => document.kind === 'EvidenceRecord');
   const latestEvidence = evidence.filter((record) => !evidence.some((other) => other.metadata.id === record.metadata.id && other.metadata.revision > record.metadata.revision));
-  const probes = probeLegacy(current);
   const traceability = baseline?.kind === 'RequirementBaseline'
     ? baseline.spec.requirements.map((requirement) => ({
         requirement: requirement.id,
@@ -262,14 +198,12 @@ function report(documents: AnyContract[], validation: ContractSetValidation, cur
     })),
     surfaces: SURFACES.map((id) => {
       const component = current.spec.components.find((candidate) => candidate.id === id);
-      const probe = probes.find((candidate) => candidate.component === id);
       return {
         component: id,
         name: component?.name ?? null,
         kind: component?.kind ?? null,
         audience: component?.audience ?? null,
         runtimePreferences: component?.runtime?.preferences ?? [],
-        legacy: probe ? { representable: probe.representable, reason: probe.reason } : null,
       };
     }),
     traceability,

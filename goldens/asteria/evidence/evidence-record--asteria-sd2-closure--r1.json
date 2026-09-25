@@ -55,7 +55,7 @@
       }
     },
     "result": "PASS",
-    "summary": "15 contracts checked; 0 errors; 0 warnings.",
+    "summary": "13 contracts checked; 0 errors; 0 warnings.",
     "observedAt": "2026-09-22T12:00:00Z",
     "expiresAt": "2026-12-21T12:00:00Z",
     "inputs": [
@@ -63,7 +63,7 @@
         "kind": "ChangeRequest",
         "id": "asteria-cr-001",
         "revision": 1,
-        "digest": "sha256:c3fd02ba1d71a48b7cb7d9ec75befd6f29598ecc761db085adaaa7e8eaddbc1e"
+        "digest": "sha256:96cb84e570627926fa80ace646281a76e031137fa096c8c233e060e17ce9edce"
       },
       {
         "kind": "DecisionSet",
@@ -93,19 +93,7 @@
         "kind": "EvidenceRecord",
         "id": "asteria-sd1-closure",
         "revision": 2,
-        "digest": "sha256:bf08cb1d7a0d7d22dfda8f8fe1a8c15890a9805a7eaa1176b23cb3d9a1eb45b0"
-      },
-      {
-        "kind": "EvidenceRecord",
-        "id": "asteria-sd1-legacy-materialization",
-        "revision": 1,
-        "digest": "sha256:cb18b46033bc052ecb2e66574c5b19914b0620056d8dabd5c3b64b78ebb9a8d1"
-      },
-      {
-        "kind": "EvidenceRecord",
-        "id": "asteria-sd1-legacy-materialization",
-        "revision": 2,
-        "digest": "sha256:66be932bdc999e59cd4f6d2d77f54d89c6f879eabaa906e06cb6cfd6b5e49b88"
+        "digest": "sha256:2da09ea7876fdd77d46c7e91720b29fe246d324960fe49e7f41e4f3f8de875d8"
       },
       {
         "kind": "EvidenceRecord",
@@ -117,7 +105,7 @@
         "kind": "EvidenceRecord",
         "id": "asteria-sd1-requirement-allocation",
         "revision": 2,
-        "digest": "sha256:1fa70edd055cbc8084b42b0e4b9032d3b66644aac099bc4f857a7854ccc07983"
+        "digest": "sha256:36b2cd1b1aba5ef61412c245740af0c4940d8fdafbd287bb37daabedaf012cc0"
       },
       {
         "kind": "EvidenceRecord",
@@ -129,7 +117,7 @@
         "kind": "EvidenceRecord",
         "id": "asteria-sd1-worker-extensibility",
         "revision": 2,
-        "digest": "sha256:dbe3b0f1cde995ad1a045b21358ce4e95d22c3d62803de7579c6b4230ce34c5d"
+        "digest": "sha256:cc2533f17e5963cdc81c1cd9d52d40abc1bd3ac358b4cb9ccf0b93692a81b6e2"
       },
       {
         "kind": "RequirementBaseline",

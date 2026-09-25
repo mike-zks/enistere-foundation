@@ -14,12 +14,12 @@
  * Every person, organization and address is fictitious (`.example`, RFC 2606).
  */
 
-import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import {
   CURRENT_API_VERSION,
   DERIVATION,
   deriveEffectiveRules,
+  fileDigest,
   pinnedRef,
   type Actor,
   type AnyContract,
@@ -51,7 +51,7 @@ export const ACTORS = Object.freeze({
 const KERNEL_TOOL = { name: '@enistere/foundation-kernel-contracts', version: '0.1.0' };
 
 export function briefDigest(): Digest {
-  return `sha256:${createHash('sha256').update(readFileSync(BRIEF_URL)).digest('hex')}`;
+  return fileDigest(readFileSync(BRIEF_URL));
 }
 
 const item = (document: AnyContract, id: string): ContractRef => pinnedRef(document, id);
