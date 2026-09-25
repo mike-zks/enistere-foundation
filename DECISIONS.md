@@ -18,7 +18,7 @@ régissaient ([`docs/archive/laboratory/adr/`](docs/archive/laboratory/adr/), AD
 
 ## Arbitrages encore ouverts
 
-ARB-08, ARB-09 et ARB-12 (dossier) : [`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
+ARB-08 et ARB-09 : [`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
 
 ## Divergences documentaires signalées
 

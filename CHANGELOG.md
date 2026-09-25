@@ -4,6 +4,13 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### Document 03 v1.1 — 2026-09-25
+
+- Document 03 (Architecture technique) révisé en v1.1 par modifications suivies : le repository
+  expérimental est retiré et ses primitives réimplémentées, non réutilisées (§3, justification Node.js,
+  §7.8, conclusion) ; §6.11 : chaque runtime est écrit comme adapter du protocole, les starters ne sont pas
+  repris (ADR-094). ARB-12 et D-9 clos.
+
 ### Document 06 v1.1 — 2026-09-25
 
 - Document 06 (Versions et feuille de route) révisé en v1.1 par modifications suivies : retrait du

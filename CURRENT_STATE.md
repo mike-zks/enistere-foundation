@@ -59,7 +59,7 @@ le job `secret-scan`).
 - Pas de Domain IR (E3) ; les items de domaine sont seulement épinglés dans l'IR.
 - Pas de record d'exécution persistant (closure, plan) ni d'Evidence de compilation : E4.
 - Aucun Control Plane, Workbench, Worker, Registry ni AI Gateway.
-- Document 06 révisé en v1.1 (modifications suivies à accepter) ; document 03 §6.11 encore à réviser (ARB-12) ; divergences D-2 à D-5.
+- Documents 03 et 06 révisés en v1.1 (modifications suivies à accepter) ; divergences D-2 à D-5.
 
 ## Decisions
 

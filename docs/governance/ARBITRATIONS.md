@@ -4,7 +4,7 @@
 > options (méthode KEEP / ADAPT / EXTRACT / REPLACE / RETIRE, document 05 §7.3), la recommandation et
 > ce qu'elle débloque. Une décision prise est reportée dans un ADR et dans [`DECISIONS.md`](../../DECISIONS.md),
 > puis la ligne passe en « Tranché ». Ouvert le 2026-09-25, après E0 ; ARB-01 à ARB-06 tranchés le même
-> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). ARB-07 et ARB-10 tranchés par la mission R0-D ([ADR-094](../adr/ADR-094-clean-slate.md)). ARB-11 tranché le même jour (ruleset mis à jour, PR #254 mergée). **Restent ouverts : ARB-08, ARB-09 et ARB-12.**
+> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). ARB-07 et ARB-10 tranchés par la mission R0-D ([ADR-094](../adr/ADR-094-clean-slate.md)). ARB-11 tranché le même jour (ruleset mis à jour, PR #254 mergée). ARB-12 tranché ensuite (documents 03 et 06 v1.1). **Restent ouverts : ARB-08 et ARB-09.**
 
 ## Synthèse
 
@@ -21,7 +21,7 @@
 | ARB-09 | Livrables manquants du document 04 (`design-tokens.json`, maquettes) | Les fournir avant toute mission Workbench/design (E6, V1) | Design UX UI | Ouvert |
 | ARB-10 | Réécriture d'`AGENTS.md` et archivage de `MANDAT.md` | Valider par la revue de la PR de la mission E0 | Gouvernance | Tranché — PR #252 mergée ; règle du laboratoire remplacée par ADR-094 |
 | ARB-11 | Checks requis du ruleset `protect-main` | Remplacer les huit checks de l'ancienne CI par `kernel`, `secret-scan`, `docs`, `audit` | Responsable (GitHub) | Tranché — ruleset mis à jour (PR #254 mergée avec les quatre checks) |
-| ARB-12 | Passages du dossier contredits par ADR-094 | Réviser 03 §6.11 et 06 §4.6, §4.7, §6.8 (E1, E10), gate R0 | Gouvernance | Partiel — 06 révisé en v1.1 (à accepter) ; 03 §6.11 restant |
+| ARB-12 | Passages du dossier contredits par ADR-094 | Réviser 03 §6.11 et 06 §4.6, §4.7, §6.8 (E1, E10), gate R0 | Gouvernance | Tranché — 03 et 06 révisés en v1.1 (modifications suivies à accepter) |
 
 ---
 
@@ -140,4 +140,6 @@ docs du laboratoire ≈ 45 · 58 fichiers portant encore « Enistere OS ».
   suivies (auteur « Claude ») : fiche de contrôle, §2 (financement, repository expérimental, plan de
   transition, règle de transition), §4.6 (« Pas de couche de compatibilité »), §4.7, définition du
   cutover, scénario A, horizon R0, tableau 2 (E1, E2, E3, E10) et tableau 4 (gate R0). À relire et
-  accepter dans Word. Reste : document 03 §6.11.
+  accepter dans Word. Document 03 révisé en **v1.1** de la même façon : fiche de contrôle, §3 (TypeScript,
+  repository expérimental), justification Node.js, §6.11 (runtimes écrits comme adapters, starters non
+  repris), §7.8 (concepts réimplémentés, non migrés), conclusion.
