@@ -73,8 +73,14 @@ function typescript(registry, digest) {
 
 function dart(registry, digest) {
   const document = { experience: registry.experience, themePacks: registry.packs };
+  const json = JSON.stringify(document);
+  if (json.includes("'''")) throw new Error('Dart binding JSON cannot contain a triple single quote');
   return `// GENERATED FROM contracts/design/. DO NOT EDIT. design-sha256: ${digest}\n`
-    + `const Map<String, Object?> enistereDesignContract = <String, Object?>${JSON.stringify(document, null, 2)};\n`;
+    + `import 'dart:convert';\n\n`
+    + `final Map<String, Object?> enistereDesignContract =\n`
+    + `    (jsonDecode(_enistereDesignContractJson) as Map<String, Object?>);\n\n`
+    + `const String _enistereDesignContractJson =\n`
+    + `    r'''${json}''';\n`;
 }
 
 export function renderDesignBindings(registry) {

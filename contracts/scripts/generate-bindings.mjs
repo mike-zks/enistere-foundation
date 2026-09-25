@@ -189,7 +189,9 @@ function dart(digest) {
           details: map['details'],
           path: path,
           timestamp: parsedTimestamp.toUtc(),
-          requestId: map['requestId'] is String ? map['requestId']! as String : null,
+          requestId: map['requestId'] is String
+              ? map['requestId']! as String
+              : null,
         );
       }
     }

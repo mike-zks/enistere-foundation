@@ -62,7 +62,8 @@ abstract final class EnistereTokens {
         if (contexts.contains('default')) institutionalDefault = pack;
       }
     }
-    final pack = byId(selection.requestedId) ??
+    final pack =
+        byId(selection.requestedId) ??
         contextual ??
         institutionalDefault ??
         byId('enistere-default');
@@ -103,7 +104,8 @@ abstract final class EnistereTokens {
   static Color get lightPrimary => _light.colors['action.primary']!;
   static Color get lightBackground => _light.colors['background.default']!;
   static Color get lightSurface => _light.colors['background.muted']!;
-  static Color get lightSurfaceElevated => _light.colors['background.elevated']!;
+  static Color get lightSurfaceElevated =>
+      _light.colors['background.elevated']!;
   static Color get lightBorder => _light.colors['border.default']!;
   static Color get lightText => _light.colors['foreground.default']!;
   static Color get lightTextMuted => _light.colors['foreground.muted']!;

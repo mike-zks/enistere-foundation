@@ -4,13 +4,18 @@ import 'enistere_theme_extension.dart';
 import 'enistere_tokens.dart';
 
 abstract final class EnistereTheme {
-  static ThemeData light({EnistereThemeSelection selection = const EnistereThemeSelection()}) =>
-      _build(Brightness.light, selection);
+  static ThemeData light({
+    EnistereThemeSelection selection = const EnistereThemeSelection(),
+  }) => _build(Brightness.light, selection);
 
-  static ThemeData dark({EnistereThemeSelection selection = const EnistereThemeSelection()}) =>
-      _build(Brightness.dark, selection);
+  static ThemeData dark({
+    EnistereThemeSelection selection = const EnistereThemeSelection(),
+  }) => _build(Brightness.dark, selection);
 
-  static ThemeData _build(Brightness brightness, EnistereThemeSelection selection) {
+  static ThemeData _build(
+    Brightness brightness,
+    EnistereThemeSelection selection,
+  ) {
     final resolved = EnistereTokens.resolve(brightness, selection: selection);
     Color color(String key) => resolved.colors[key]!;
     final colorScheme = ColorScheme(

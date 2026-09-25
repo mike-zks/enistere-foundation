@@ -42,7 +42,7 @@ class MinioStorageIntegrationTest extends AbstractIntegrationTest {
     static final String MINIO_SECRET_KEY = "minio-tc-secret";
     static final String TEST_BUCKET = "enistere-tc-test";
 
-    static final GenericContainer<?> MINIO = new GenericContainer<>("minio/minio:RELEASE.2024-01-16T16-07-38Z")
+    static final GenericContainer<?> MINIO = new GenericContainer<>("quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z")
         .withExposedPorts(9000)
         .withEnv("MINIO_ROOT_USER", MINIO_ACCESS_KEY)
         .withEnv("MINIO_ROOT_PASSWORD", MINIO_SECRET_KEY)

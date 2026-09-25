@@ -73,7 +73,7 @@ est un projet npm **autonome** (lockfile propre, hors workspaces racine) : `work
 ### Services
 
 - **PostgreSQL** (`postgres:16`) en conteneur `services:` avec healthcheck `pg_isready`.
-- **MinIO** (`minio/minio`) démarré via **`docker run`** (un conteneur `services:` **ne peut pas** recevoir la
+- **MinIO** (`quay.io/minio/minio`) démarré via **`docker run`** (un conteneur `services:` **ne peut pas** recevoir la
   commande `server /data` requise par MinIO), attente de `…/minio/health/live`, puis **bucket de test** créé
   (`enistere-test-files`) — l'API ne crée pas le bucket automatiquement.
 
