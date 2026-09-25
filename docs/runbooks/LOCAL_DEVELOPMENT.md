@@ -32,8 +32,18 @@ node surfaces/cli/src/cli.ts plan goldens/asteria/contracts goldens/asteria/evid
   --catalog goldens/asteria/sources/catalog.json   # PARTIAL (code 2) : 2 éléments UNSUPPORTED listés
 ```
 
-Sans `--catalog`, le catalogue est vide et chaque composant est UNSUPPORTED : aucun adapter réel n'existe
-avant E2. Codes de sortie : [`surfaces/cli/README.md`](../../surfaces/cli/README.md).
+Sans `--catalog`, le catalogue est vide et chaque composant est UNSUPPORTED. Avec les extensions réelles
+(E2) :
+
+```sh
+node surfaces/cli/src/cli.ts materialize goldens/asteria/contracts goldens/asteria/evidence \
+  --extensions extensions --out /tmp/asteria-ws        # PARTIAL (code 2) : authority-api matérialisée
+node surfaces/cli/src/cli.ts verify /tmp/asteria-ws --extensions extensions --toolchain \
+  --evidence-out /tmp/evidence                         # structure, install, build, boot, audit
+```
+
+`--toolchain` exige Node.js, npm et l'accès au registre npm. Codes de sortie :
+[`surfaces/cli/README.md`](../../surfaces/cli/README.md).
 
 ## Outillage du dépôt
 

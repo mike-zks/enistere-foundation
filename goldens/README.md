@@ -5,4 +5,4 @@ Systèmes de référence utilisés pour prouver un comportement bout en bout de 
 
 | Golden | Mission | Contenu |
 |---|---|---|
-| [`asteria/`](asteria/README.md) | E0 → R0 | Golden technique de transition : cinq surfaces dont l'Async Worker |
+| [`asteria/`](asteria/README.md) | E0 → E2 | Golden technique de transition : cinq surfaces dont l'Async Worker |

@@ -20,10 +20,11 @@ Ajout libre ; suppression ou réécriture d'un ADR accepté = validation humaine
 | [ADR-093](ADR-093-r0c-repository-realignment.md) | Mission R0-C « Repository Realignment » entre E0 et E1, et nommage | Accepté ; amendé par ADR-094 |
 | [ADR-094](ADR-094-clean-slate.md) | Repartir propre : suppression de l'itération précédente | Accepté |
 | [ADR-095](ADR-095-e1-kernel-facade.md) | E1 Kernel Façade : chaîne de compilation native, catalogue d'extensions en données | Accepté |
+| [ADR-096](ADR-096-adapter-protocol-v0.md) | Adapter Protocol v0 et premier adapter NestJS | Accepté |
 
 Les ADR 001–090 de l'itération précédente (sauf ADR-073) sont archivés dans
 [`archive/laboratory/adr/`](../archive/laboratory/adr/) : histoire, sans autorité (ADR-094). La
-numérotation continue à partir d'ADR-096.
+numérotation continue à partir d'ADR-097.
 
 ## Gabarit
 

@@ -15,6 +15,9 @@ Point d'entrée : [`CONTEXT.md`](CONTEXT.md) — vision, sources de vérité, mi
 |---|---|
 | `kernel/contracts/` | Foundation Kernel — contrats A1–A7 et primitives partagées (mission E0) |
 | `kernel/compiler/` | Kernel Façade — validate → System Closure → System IR → résolution → plan (mission E1) |
+| `kernel/extensions/` | Adapter Protocol v0 : manifest, contrat d'adapter, règle d'ownership (mission E2) |
+| `engine/materializer/` | Hôte d'extensions, MATERIALIZE, VERIFY → EvidenceRecords (mission E2) |
+| `extensions/runtimes/nestjs/` | Premier Runtime Adapter (NestJS, `api-service`) |
 | `surfaces/cli/` | CLI headless `enistere-foundation` (validate, resolve, plan) |
 | `goldens/asteria/` | Golden de transition Asteria (Requester Web, Internal Ops Web, Field Mobile, Authority API, Async Worker) |
 | `tools/quality/` | Outillage du dépôt : discipline de l'allowlist gitleaks, liens de documentation |
