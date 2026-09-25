@@ -26,9 +26,9 @@ rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## En attente de validation humaine
 
-- ARB-08, ARB-09, ARB-12 (document 06 révisé ; reste le document 03 §6.11) : propositions dans
+- ARB-08, ARB-09 : propositions dans
   [`docs/governance/ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
-- Document 06 v1.1 : relire et accepter les modifications suivies (auteur « Claude ») dans Word.
+- Documents 03 et 06 v1.1 : relire et accepter les modifications suivies (auteur « Claude ») dans Word.
 
 ## Dettes identifiées (non planifiées)
 

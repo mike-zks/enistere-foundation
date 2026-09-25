@@ -60,8 +60,8 @@ EvidenceRecord.
 - **Action humaine requise** : dans le ruleset `protect-main`, remplacer les huit checks requis
   (`api-contracts`, `api-client-fetch`, `ui-kit`, `web-nextjs`, `audit`, `api-runtime`, `web-e2e`,
   `api-smoke`) par `kernel`, `secret-scan`, `docs`, `audit`. Sans cela, aucune PR ne peut être mergée.
-- **Mise à jour du dossier** (document 06 révisé en v1.1 par modifications suivies, à accepter par le
-  responsable ; document 03 restant) : document 03 §6.11 (les
+- **Mise à jour du dossier** (documents 03 et 06 révisés en v1.1 par modifications suivies, à accepter
+  par le responsable) : document 03 §6.11 (les
   starters ne deviennent plus des reference extensions) ; document 06 §4.6 (plus de couche de
   compatibilité), §4.7 (les sept runtimes seront réintégrés comme nouveaux adapters), §6.8 E1 (gate
   « legacy déterministe identique ») et E10 (plus de legacy à basculer), gate R0 (« goldens legacy
