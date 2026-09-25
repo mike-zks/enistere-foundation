@@ -4,26 +4,25 @@
 
 | Champ | Valeur |
 |---|---|
-| Commit / branche | Base `f2590a8` (`main`, fusion de la PR #252) ; travail sur `claude/r0-d-clean-slate` |
+| Commit / branche | Base `83aa8e1` (`main`, fusion de la PR #254) ; travail sur `claude/e1-kernel-facade` |
 | Date | 2026-09-25 |
-| Mission | R0-D — repartir propre (ADR-094), après E0 et R0-C |
-| Résultat | R0-D **PASS** localement (voir *Tests*) ; CI de la PR bloquée par le ruleset tant qu'ARB-11 n'est pas traité |
+| Mission | E1 — Kernel Façade (ADR-095), après E0, R0-C et R0-D |
+| Résultat | E1 **PASS** localement sur la gate redéfinie (voir *Tests*) ; CI de la PR à confirmer |
 
 ## Completed
 
-- **Kernel** `kernel/contracts` (`@enistere/foundation-kernel-contracts`, E0) : sept contrats A1–A7 en
-  JSON Schema 2020-12, validation structurelle (Ajv strict) et sémantique, primitives partagées
-  (apiVersion + seam de migration, références épinglées, provenance, acceptance/status, diagnostics,
-  digest sha256/JCS, `fileDigest`), ensemble fermé, A3 dérivé, A6 cohérent, A7 append-only et péremption.
-- **Golden Asteria** (`goldens/asteria/`) : cinq surfaces dont l'Async Worker ; 8 contrats et 9
-  EvidenceRecords générés depuis `source.ts` ; scénario Day-2 (CR-001 appliqué, 3 preuves invalidées puis
-  revérifiées) et proposition IA UNSUPPORTED (CR-002). Ne dépend que du Kernel (test d'imports).
-- **R0-D** (ADR-094) : itération précédente supprimée (`factory/`, `starters/`, `capabilities/`,
-  `packages/`, `contracts/`, `deployment/`, `examples/`, cinq workflows) ; outillage du dépôt dans
-  `tools/quality/` ; racine npm réduite au Kernel ; CI à quatre jobs (`kernel`, `secret-scan`, `docs`,
-  `audit`) ; ADR 001–090 (sauf 073) et documentation de l'itération précédente archivés ; gouvernance à
-  jour ; travaux E1 non commités abandonnés (reposaient sur la factory).
-- Missions antérieures : E0 (PASS, ADR-092/093) et R0-C (ADR-093) — rapports ci-dessous.
+- **Kernel contracts** `kernel/contracts` (E0) : sept contrats A1–A7, primitives partagées, ensemble
+  fermé ; registre unique de diagnostics étendu (`CATALOG_*`, `RESOLVE_*`, `FACADE_*` ; couches
+  `kernel.compiler`, `kernel.facade`).
+- **Kernel compiler** `kernel/compiler` (E1) : System Closure, System IR, catalogue d'extensions en
+  données, résolution (ResolvedSystem), ExecutionPlan agnostique (`MATERIALIZE`, `CONNECT_EXTERNAL`,
+  `BIND_CAPABILITY`, `ownerWork`, obligations de preuve) et façade `validate` / `resolve` / `plan`.
+- **CLI** `surfaces/cli` (`enistere-foundation`) : surface sans logique, codes 0 / 1 / 2 / 64.
+- **Golden Asteria** : 8 contrats, 9 EvidenceRecords ; compilé de bout en bout contre le catalogue
+  synthétique `sources/catalog.json` → `expected/compilation.json` : **PARTIAL**, 5 composants
+  matérialisés (dont l'Async Worker), `asteria-db` connecté (EXTERNAL), 2 éléments UNSUPPORTED listés
+  (`asteria-objects` sans adapter, capability `notifications` sans fournisseur), 16 obligations de preuve.
+- Missions antérieures : E0 (PASS), R0-C, R0-D — rapports ci-dessous.
 
 ## In progress
 
@@ -31,48 +30,78 @@ Aucun.
 
 ## Blocked
 
-- **Merge de la PR R0-D** : le ruleset `protect-main` exige huit checks de l'ancienne CI qui ne
-  s'exécutent plus (ARB-11, action du responsable).
-- Tag `laboratory-final` (commit `f2590a8`) créé localement mais non poussé : le proxy de session refuse
-  les tags. À pousser par le responsable (`git tag laboratory-final f2590a8 && git push origin laboratory-final`).
+Aucun. Le tag `laboratory-final` (commit `f2590a8`) n'est toujours pas sur le dépôt distant (le proxy de
+session refuse les tags) : `git tag laboratory-final f2590a8 && git push origin laboratory-final`.
 
-## Tests (exécutés le 2026-09-25 sur `claude/r0-d-clean-slate`)
+## Tests (exécutés le 2026-09-25 sur `claude/e1-kernel-facade`)
 
 | Commande | Résultat |
 |---|---|
-| `npm ci` (lockfile régénéré) | OK — 9 paquets |
-| `npm run foundation:typecheck` | OK (0 erreur) |
-| `npm run foundation:test` | 56/56 PASS |
-| `npm run golden:asteria:update` (deux exécutions) puis `git status --porcelain goldens/` | Aucun écart ; 17 documents, 0 diagnostic |
-| Test d'imports sur la version précédente du harness | Détecte l'import `../../factory/model/canonical-system.mjs` (garde-fou effectif) |
+| `npm ci` | OK |
+| `npm run foundation:typecheck` (3 workspaces + golden) | OK (0 erreur) |
+| `npm run foundation:test` | 74/74 PASS — contracts 56, compiler 13, CLI 5 |
+| `npm run golden:asteria:update` (deux exécutions) puis `git status --porcelain goldens/` | Aucun écart ; 19 fichiers, 0 diagnostic |
+| CLI `plan` sur le golden avec catalogue | Code 2 (PARTIAL), sortie octet pour octet égale à `expected/compilation.json` |
+| CLI `plan` sans catalogue · ensemble altéré · usage invalide | Code 2 (tout UNSUPPORTED) · code 1 (INVALID) · code 64 |
 | `npm run tools:test` | 10/10 PASS |
-| `npm run secrets:allowlist` | 2 exceptions justifiées et non expirées |
-| `npm run docs:links` | OK — 52 fichiers, 0 lien mort (`docs/archive/` exclu) |
+| `npm run docs:links` | OK |
 | `npm audit --audit-level=high` | 0 vulnérabilité |
-| gitleaks 8.30.1 (binaire vérifié), `--log-opts=--all` | no leaks found — **10 commits seulement** : clone local superficiel ; l'historique complet est analysé par le job `secret-scan` (`fetch-depth: 0`) |
 | actionlint 1.7.7 sur `ci.yml` | OK |
 
-**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture ; merge bloqué par ARB-11).
+**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture) ; gitleaks sur tout l'historique (fait par
+le job `secret-scan`).
 
 ## Known gaps
 
-- Pas de Kernel Façade ni de résolution : aucun chemin `validate → resolve → plan` (E1, à redéfinir).
-- Aucune génération de code possible : pas d'Adapter Protocol ni d'adapter (E2), pas d'IR (E3).
-- Entity Profile, Policy Pack, Design System, Approval Policy : références externes seulement (E6).
-- Evidence : pas d'Evidence Graph ni d'export de proof chain (E4) ; pas de calcul d'impact (E7).
-- Aucun Control Plane, Workbench, Worker d'exécution, Registry ni AI Gateway.
-- Passages du dossier contredits par ADR-094, à réviser (ARB-12) ; divergences D-2 à D-5 et D-9
-  ([`CONTEXT.md`](CONTEXT.md)).
+- Aucun adapter réel ni matérialisation : le plan ne produit aucun fichier (E2).
+- Le contexte d'organisation effectif (A3) n'est pas appliqué à la résolution (runtimes autorisés,
+  politiques) : E6. Pas de compatibilité de versions entre extensions : E2.
+- Pas de Domain IR (E3) ; les items de domaine sont seulement épinglés dans l'IR.
+- Pas de record d'exécution persistant (closure, plan) ni d'Evidence de compilation : E4.
+- Aucun Control Plane, Workbench, Worker, Registry ni AI Gateway.
+- Passages du dossier contredits par ADR-094/095, à réviser (ARB-12) ; divergences D-2 à D-5 et D-9.
 
 ## Decisions
 
-ADR-091, ADR-092, ADR-093, **ADR-094** (repartir propre ; amende ADR-073, 091, 092 et 093) — voir
-[`DECISIONS.md`](DECISIONS.md).
+ADR-091, ADR-092, ADR-093, ADR-094, **ADR-095** (E1 : chaîne native, catalogue en données, gate
+redéfinie) — voir [`DECISIONS.md`](DECISIONS.md).
 
 ## Next single action
 
-**Redéfinir puis lancer E1 — Kernel Façade** sur une résolution native (proposition dans
-[`BACKLOG.md`](BACKLOG.md)), une fois le ruleset mis à jour (ARB-11).
+**E2 — Adapter Protocol v0 et premier adapter** ([`BACKLOG.md`](BACKLOG.md)) ; choisir d'abord le runtime
+du premier adapter.
+
+---
+
+## Rapport de mission E1 — Kernel Façade (document 05 §11, Annexe A §16)
+
+- **Mission** : E1 — Kernel Façade, redéfinie par ADR-095 après ADR-094.
+- **Date** : 2026-09-25.
+- **Branch / HEAD** : `claude/e1-kernel-facade`, base `83aa8e1`.
+- **Objectif** : une façade headless unique `validate → resolve → plan`, utilisable par CLI et tests, sur
+  la chaîne du document 03 (closure → IR → ResolvedSystem → ExecutionPlan), sans framework dans le Kernel.
+- **Scope** : `kernel/compiler`, `surfaces/cli`, codes de diagnostic, golden Asteria compilé, gouvernance.
+- **Out of scope** : adapters et matérialisation (E2), Domain IR (E3), Evidence de compilation (E4),
+  politiques d'organisation (E6), Control Plane, Workbench.
+- **État initial** : Kernel E0 seul, aucun chemin de compilation, aucune CLI (après R0-D).
+- **Changements réalisés** : voir *Completed*.
+- **Fichiers touchés** : `kernel/compiler/**`, `surfaces/cli/**` (nouveaux) ;
+  `kernel/contracts/src/primitives/diagnostics.ts` et deux tests ; `goldens/asteria/{harness.ts,README.md,sources/catalog.json,expected/*}` ;
+  `package.json`, `package-lock.json` (workspaces) ; `.github/workflows/{ci.yml,README.md}` (libellés) ;
+  documentation et gouvernance.
+- **Contrats impactés** : aucun schéma A1–A7 modifié ; golden contrats/preuves inchangés.
+- **Migrations** : aucune.
+- **Tests exécutés / résultats** : voir *Tests*.
+- **Preuves** : `goldens/asteria/expected/compilation.json` (digests closure, IR, resolved, plan) ; tests
+  `kernel/compiler/test/`, `surfaces/cli/test/`.
+- **Risques résiduels** : R-11 (parité des runtimes), R-16 (dossier) —
+  [`RISK_REGISTER.md`](docs/governance/RISK_REGISTER.md).
+- **Décisions** : ADR-095.
+- **Documentation** : README, CONTEXT, ROADMAP, BACKLOG, CURRENT_STATE, IMPLEMENTATION_MATRIX, DECISIONS,
+  CHANGELOG, ARBITRATIONS, RISK_REGISTER, registre ADR, runbook local, READMEs des packages et du golden,
+  workflows.
+- **Statut** : PASS (gate ADR-095) localement.
+- **Prochaine action unique** : E2 — Adapter Protocol v0 et premier adapter.
 
 ---
 

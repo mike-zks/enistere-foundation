@@ -1,7 +1,7 @@
 # CONTEXT — Enistere Foundation
 
 > Reflet vivant du projet (document 05 §2E). Ne recopie pas les documents sources : il y renvoie.
-> Dernière mise à jour : 2026-09-25, fin de la mission R0-D (repartir propre, ADR-094).
+> Dernière mise à jour : 2026-09-25, fin de la mission E1 (Kernel Façade, ADR-095).
 
 ## Vision
 
@@ -48,9 +48,10 @@ transversal. Dans le dépôt :
 
 | Zone cible | Présent aujourd'hui |
 |---|---|
-| Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) |
+| Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) ; [`kernel/compiler/`](kernel/compiler/README.md) — Kernel Façade et chaîne closure → IR → résolution → plan (E1) |
+| Surfaces | [`surfaces/cli/`](surfaces/cli/README.md) — CLI headless `enistere-foundation` (E1) |
 | Goldens | [`goldens/asteria/`](goldens/asteria/README.md) — golden de transition Asteria |
-| Engine, Extensions (adapters de runtime), Control Plane, Workers, Registry, Workbench, AI Gateway | Absents (missions ultérieures) |
+| Extensions (adapters de runtime), Control Plane, Workers, Registry, Workbench, AI Gateway | Absents : les extensions ne sont encore que des descripteurs de catalogue en données (E2) |
 | Outillage du dépôt (hors produit) | [`tools/quality/`](tools/quality/) — gates CI (allowlist gitleaks, liens de documentation) |
 
 L'itération précédente (générateur `factory/`, 7 starters, capabilities, packages), jamais mise en
@@ -68,16 +69,16 @@ déployé à ce jour.
 ## Décisions validées
 
 Voir [`DECISIONS.md`](DECISIONS.md). Décisions de la reprise : ADR-091 (autorité du dossier), ADR-092 (E0
-Contract Foundation), ADR-093 (R0-C) et ADR-094 (suppression de l'itération précédente, qui prévaut sur
-les passages du dossier supposant une couche de compatibilité).
+Contract Foundation), ADR-093 (R0-C), ADR-094 (suppression de l'itération précédente, qui prévaut sur les passages
+du dossier supposant une couche de compatibilité) et ADR-095 (E1, chaîne de compilation native).
 
 ## Mission
 
 - **Missions terminées** : E0 — Contract Foundation (PASS, P1–P10 validés), R0-C — Repository
-  Realignment (ADR-093) et R0-D — repartir propre (ADR-094). Résultats : [`CURRENT_STATE.md`](CURRENT_STATE.md).
+  Realignment (ADR-093), R0-D — repartir propre (ADR-094) et E1 — Kernel Façade (ADR-095). Résultats :
+  [`CURRENT_STATE.md`](CURRENT_STATE.md).
 - **Périmètre retenu** : greenfield, modèle de contrats ; brownfield et lifecycle complet hors périmètre.
-- **Prochaine mission unique** : **E1 — Kernel Façade**, à redéfinir sans pipeline historique : façade
-  validate → resolve → plan sur une résolution native du Kernel (proposition dans [`BACKLOG.md`](BACKLOG.md)).
+- **Prochaine mission unique** : **E2 — Adapter Protocol v0 et premier adapter** ([`BACKLOG.md`](BACKLOG.md)).
 
 ## Divergences documentaires ouvertes
 

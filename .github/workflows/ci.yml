@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Kernel contracts A1–A7 et golden Asteria (preuve E0).
+  # Kernel (contrats A1–A7, compiler E1), CLI et golden Asteria.
   kernel:
     name: kernel
     runs-on: ubuntu-latest
@@ -31,9 +31,9 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: typecheck (Kernel contracts + golden Asteria)
+      - name: typecheck (workspaces kernel/* et surfaces/*, golden Asteria)
         run: npm run foundation:typecheck
-      - name: tests (primitives, A1–A7, ensemble fermé, golden Asteria octet pour octet)
+      - name: tests (A1–A7, compiler, CLI, golden Asteria octet pour octet)
         run: npm run foundation:test
       - name: golden Asteria régénéré à l'identique (anti-dérive)
         run: |

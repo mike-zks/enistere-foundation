@@ -6,7 +6,7 @@ secret GitHub, sans déploiement, sans registry ni publication. Déclenché sur 
 
 | Job (check requis) | Vérifie |
 |---|---|
-| `kernel` | `npm ci` · typecheck du Kernel et du golden · tests `kernel/contracts` · golden Asteria régénéré à l'identique |
+| `kernel` | `npm ci` · typecheck de tous les workspaces (`kernel/*`, `surfaces/*`) et du golden · tests des contrats, du compiler et de la CLI · golden Asteria régénéré à l'identique |
 | `secret-scan` | tests de `tools/quality/` · allowlist gitleaks justifiée et non expirée · gitleaks 8.30.1 (checksum vérifié) sur tout l'historique, sortie censurée |
 | `docs` | aucun lien interne mort dans la documentation vivante (`docs/archive/` exclu) |
 | `audit` | `npm audit --audit-level=high` |
