@@ -88,6 +88,6 @@ Arbitrages associés et propositions : [`ARBITRATIONS.md`](docs/governance/ARBIT
 | D-3 | Doc 05 §2B mentionne une instance RabbitMQ partagée ; absente de `Server Prod/ARCHITECTURE.md`. | Ne pas supposer RabbitMQ disponible ; ADR requis avant usage (Workers, E4+). | Technique + plateforme |
 | D-4 | Doc 03 : object store S3/MinIO ; production : Cloudflare R2. | Compatible (abstraction S3) ; R2 en production Enistere, MinIO en self-hosted. | Aucun (compatible) |
 | D-5 | Doc 04 cite `design-tokens.json` et un dossier `mockups`, absents du dépôt. | À fournir avant tout travail Workbench/design ; non bloquant pour E0–E3. | Design UX UI |
-| D-6 | Convention §2G (`enistere-foundation`, `@enistere/foundation-*`) vs dépôt `enistere-os-foundation` et packages existants. | Dépôt renommé par le responsable ; packages à la migration ; domaines par ADR au 1er déploiement. | Tranché (ADR-093, ARB-04) — renommage GitHub à effectuer |
+| D-6 | Convention §2G (`enistere-foundation`, `@enistere/foundation-*`) vs dépôt `enistere-os-foundation` et packages existants. | Dépôt renommé par le responsable ; packages à la migration ; domaines par ADR au 1er déploiement. | Tranché (ADR-093, ARB-04) — dépôt GitHub renommé `enistere-foundation` (constaté le 2026-09-25) |
 | D-7 | Doc 03 : Control Plane NestJS + Temporal ; `MANDAT.md` (archivé) : pipeline factory unique. | Résolu par ADR-091. | Clos |
 | D-8 | Doc 06 §6.8 : seule suite de E0 = E1 ; demande de nettoyage complet après E0. | Mission R0-C insérée, limitée aux niveaux 1–2. | Clos (ADR-093) |

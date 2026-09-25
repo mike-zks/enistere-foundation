@@ -10,6 +10,7 @@
 | 2026-09-25 | Décomposition P1–P10 du gate E0 validée : E0 PASS. | [ADR-092](docs/adr/ADR-092-e0-contract-foundation.md), [ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md) | Accepté (ARB-01) | Produit / Pilotage |
 | 2026-09-25 | Mission R0-C « Repository Realignment » insérée entre E0 et E1 (dérogation à l'ordre du document 06 §6.8) ; nettoyage des niveaux 1 (mort/trompeur) et 2 (non conforme à la production) ; niveau 3 mission par mission, niveau 4 après E10 ; publication GHCR suspendue. | [ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md) | Accepté (ARB-02, 03, 05, 06) | Responsable du projet |
 | 2026-09-25 | Nommage : dépôt `enistere-foundation` (renommage par le responsable), packages `@enistere/foundation-*` à la migration, domaines par ADR au 1er déploiement, realm Keycloak `foundation`. | [ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md) | Accepté (ARB-04) | Direction + plateforme |
+| 2026-09-25 | CI par périmètre : jobs sautés hors de leur périmètre (noms de checks requis inchangés), golden runtime réduit à 10 compositions sur PR et complet sur `main`/nuit/manuel ; 47 → 8 à 29 jobs par PR selon le contenu. | [ADR-094](docs/adr/ADR-094-ci-scoped-execution.md) | Accepté | Responsable du projet |
 
 Décisions antérieures (laboratoire, ADR-001 → ADR-090) : valides pour la couche de compatibilité ; voir
 le registre ADR.

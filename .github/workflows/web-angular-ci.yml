@@ -4,8 +4,16 @@ name: Web Angular CI
 # Projet npm autonome (hors workspaces racine), sans secret, sans backend, sans déploiement.
 # Valide l'adapter Angular Common/Web v2 : tests Karma, build production et audit npm local.
 
+# Périmètre (ADR-094) : check non requis par le ruleset, donc filtre au niveau du workflow.
 on:
   pull_request:
+    paths:
+      - "starters/angular/**"
+      - "capabilities/**"
+      - "contracts/**"
+      - "factory/quality/scripts/audit-check.mjs"
+      - "factory/quality/audit-exceptions.json"
+      - ".github/workflows/web-angular-ci.yml"
   push:
     branches:
       - main

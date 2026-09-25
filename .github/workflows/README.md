@@ -177,6 +177,15 @@ Le **Deployment 1** gouverne cette CI sans l'étendre vers le déploiement. La p
   [`REGISTRY_POLICY.md`](../../docs/archive/laboratory/deployment/docs/REGISTRY_POLICY.md). **Reste** : déploiement par environnement
   protégé + rollback (futur).
 
+### Exécution par périmètre (ADR-094)
+
+Sur une PR, chaque job n'est exécuté que si un fichier modifié appartient à son périmètre
+(`factory/quality/ci-scopes.json`, évalué par `factory/quality/scripts/ci-scope.mjs`) ; sinon il est
+**sauté**, ce qui vaut succès pour un check requis — les noms ci-dessous ne changent pas. `factory`,
+`secret-scan` et `audit` s'exécutent toujours ; tout s'exécute sur push `main`. Le golden runtime lit sa
+matrice dans `factory/quality/golden-runtime-matrix.json` : 10 compositions sur PR, les 32 sur `main`,
+chaque nuit et à la demande (`workflow_dispatch`).
+
 ### Checks requis pour la protection de `main` (Deployment 4 / Factory Quality 3)
 
 Le nom d'un status check **est le `name:` du job** (jamais le nom du workflow). Protection `main`

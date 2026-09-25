@@ -4,6 +4,11 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### CI par périmètre — 2026-09-25
+
+- [ADR-094](docs/adr/ADR-094-ci-scoped-execution.md) : jobs sautés hors de leur périmètre (checks requis
+  inchangés), golden runtime à 10 compositions sur PR et complet sur `main`, la nuit et à la demande.
+
 ### R0-C — Repository Realignment — 2026-09-25
 
 - Arbitrages ARB-01 à ARB-06 tranchés ([ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md)) : E0 PASS

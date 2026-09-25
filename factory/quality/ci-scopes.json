@@ -1,0 +1,12 @@
+{
+  "$comment": "Périmètres de la CI (ADR-094). Chaque périmètre liste des préfixes de chemins ; un job n'est exécuté sur une pull request que si un fichier modifié commence par l'un d'eux. Sur push main, planification et déclenchement manuel, tous les périmètres sont actifs. Tout changement de la CI elle-même active tous les périmètres.",
+  "always": [".github/workflows/", "factory/quality/ci-scopes.json", "factory/quality/scripts/ci-scope.mjs", "factory/quality/golden-runtime-matrix.json", "package.json", "package-lock.json"],
+  "scopes": {
+    "kernel": ["kernel/", "goldens/", "factory/model/canonical-system.mjs"],
+    "packagesWeb": ["packages/", "starters/nextjs/", "contracts/"],
+    "apiRuntime": ["starters/nestjs/", "packages/api-contracts/", "contracts/", "factory/quality/scripts/audit-check.mjs", "factory/quality/audit-exceptions.json"],
+    "webE2e": ["starters/nextjs/", "starters/nestjs/", "packages/", "contracts/"],
+    "registry": ["starters/nestjs/", "starters/nextjs/", "packages/"],
+    "goldenRuntime": ["factory/", "starters/", "capabilities/", "contracts/", "packages/", "examples/"]
+  }
+}

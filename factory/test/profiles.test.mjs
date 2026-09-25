@@ -390,12 +390,14 @@ describe('goldens named elsewhere actually exist and actually run', () => {
   it('runs every declared composition in the CI matrix', async () => {
     // A composition absent from the matrix is a golden that never runs — the
     // same silence, one layer further out.
+    // ADR-094 : la matrice vit dans golden-runtime-matrix.json ; `full` s'exécute sur
+    // push main, chaque nuit et à la demande. Le workflow doit la consommer.
     const workflow = await readFile(
       resolve(root, '.github/workflows/factory-golden-runtime.yml'), 'utf8',
     );
-    const scheduled = new Set(
-      [...workflow.matchAll(/^\s+- ([a-z0-9-]+)\s*$/gm)].map((match) => match[1]),
-    );
+    assert.match(workflow, /fromJSON\(needs\.plan\.outputs\.goldenMatrix\)/, 'the workflow must run the declared matrix');
+    const matrix = JSON.parse(await readFile(resolve(root, 'factory/quality/golden-runtime-matrix.json'), 'utf8'));
+    const scheduled = new Set(matrix.full);
     for (const composition of Object.keys(COMPOSITIONS)) {
       assert.ok(scheduled.has(composition), `${composition} is never run by the CI matrix`);
     }

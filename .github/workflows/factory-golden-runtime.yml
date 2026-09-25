@@ -8,11 +8,17 @@ name: Factory Golden Runtime
 # Aucune infrastructure persistante : PostgreSQL jetable en service. Aucune valeur ci-dessous
 # n'est un secret réel — ce sont des VALEURS DE TEST JETABLES. Aucun déploiement, registry ni publication.
 
+# ADR-094 : sur PR, un sous-ensemble représentatif (factory/quality/golden-runtime-matrix.json,
+# `pullRequest`) et seulement si le laboratoire est touché ; sur push main, chaque nuit et à la
+# demande, la matrice complète (`full`). La liste des compositions vit dans ce fichier JSON, testé.
 on:
   pull_request:
   push:
     branches:
       - main
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -22,11 +28,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  plan:
+    name: plan
+    runs-on: ubuntu-latest
+    outputs:
+      goldenRuntime: ${{ steps.scope.outputs.goldenRuntime }}
+      goldenMatrix: ${{ steps.scope.outputs.goldenMatrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: scope
+        run: node factory/quality/scripts/ci-scope.mjs "${{ github.event_name }}" --golden-matrix
+
   # Contrat de dépendances (moitié réseau) : `generate --install` produit réellement le lock,
   # `npm ci` fonctionne immédiatement, et une même Foundation + un même blueprint résolvent
   # au même lock et au même digest. Opt-in via ENISTERE_NETWORK_TESTS — jamais silencieusement ignoré ici.
   dependency-contract:
     name: dependency-contract
+    needs: plan
+    if: needs.plan.outputs.goldenRuntime == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -41,43 +62,13 @@ jobs:
 
   golden-runtime:
     name: golden-runtime (${{ matrix.composition }})
+    needs: plan
+    if: needs.plan.outputs.goldenRuntime == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        composition:
-          - nestjs-base
-          - nestjs-auth
-          - nest-next-auth
-          - triple-auth
-          - nestjs-auth-rbac
-          - nest-next-auth-rbac
-          - triple-auth-rbac
-          - nestjs-files
-          - nest-next-files
-          - triple-files
-          - spring-base
-          - fastapi-base
-          - spring-auth
-          - spring-auth-rbac
-          - spring-files
-          - spring-next-base
-          - spring-react-native-base
-          - spring-angular-base
-          - spring-flutter-base
-          - nestjs-next-base
-          - nestjs-react-native-base
-          - nestjs-angular-base
-          - nestjs-flutter-base
-          - nestjs-angular-auth
-          - nestjs-angular-auth-rbac
-          - fastapi-angular-files
-          - nestjs-flutter-auth
-          - fastapi-flutter-files
-          - fastapi-auth
-          - fastapi-rbac
-          - fastapi-files
-          - distributed-spring-nestjs
+        composition: ${{ fromJSON(needs.plan.outputs.goldenMatrix) }}
 
     services:
       postgres:

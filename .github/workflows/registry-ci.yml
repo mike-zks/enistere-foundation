@@ -22,6 +22,20 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Périmètre (ADR-094) : sur PR, le job est SAUTÉ si son périmètre n'est pas touché
+  # (sauté = succès pour un check requis ; le nom du check reste stable). Push main : exécuté.
+  scope:
+    name: scope
+    runs-on: ubuntu-latest
+    outputs:
+      registry: ${{ steps.scope.outputs.registry }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: scope
+        run: node factory/quality/scripts/ci-scope.mjs "${{ github.event_name }}"
+
   # Deployment 8 — ferme l'angle mort CI : l'image API était buildée mais JAMAIS exécutée, ce qui a laissé
   # passer un défaut runtime (moteur Prisma incompatible OpenSSL → crash-loop, cf. docs/archive/laboratory/deployment/docs/STAGING_DRY_RUN_REPORT.md).
   # Ce job construit l'image API, la LANCE, et vérifie que le moteur de requête Prisma se charge au runtime
@@ -29,6 +43,8 @@ jobs:
   # introuvable » fait ÉCHOUER le job). Le push (job `images`) est conditionné à la réussite de ce smoke.
   api-smoke:
     name: api-smoke
+    needs: scope
+    if: needs.scope.outputs.registry == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

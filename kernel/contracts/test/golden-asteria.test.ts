@@ -95,13 +95,16 @@ test('the Day-2 change is governed: pinned base, consistent changes, invalidated
   assert.equal(proposal.metadata.acceptance, undefined, 'an AI proposal is never self-accepted');
 });
 
+/** A static or dynamic import whose specifier reaches the kernel contracts or the golden. */
+const IMPORTS_KERNEL = /(?:\bfrom\s*|\bimport\s*\(\s*)['"`][^'"`]*(?:kernel\/contracts|goldens\/asteria)/;
+
 test('no competing source of truth: the legacy factory neither imports the kernel nor the golden', () => {
   const offenders: string[] = [];
   const walk = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       const path = `${dir}/${entry.name}`;
       if (entry.isDirectory()) walk(path);
-      else if (/\.(mjs|js|ts)$/.test(entry.name) && /kernel\/contracts|goldens\/asteria/.test(readFileSync(path, 'utf8'))) offenders.push(path);
+      else if (/\.(mjs|js|ts)$/.test(entry.name) && IMPORTS_KERNEL.test(readFileSync(path, 'utf8'))) offenders.push(path);
     }
   };
   walk(`${REPO_ROOT}factory`);

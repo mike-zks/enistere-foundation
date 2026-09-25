@@ -24,8 +24,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Périmètre (ADR-094) : sur PR, le job est SAUTÉ si son périmètre n'est pas touché
+  # (sauté = succès pour un check requis ; le nom du check reste stable). Push main : exécuté.
+  scope:
+    name: scope
+    runs-on: ubuntu-latest
+    outputs:
+      webE2e: ${{ steps.scope.outputs.webE2e }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: scope
+        run: node factory/quality/scripts/ci-scope.mjs "${{ github.event_name }}"
+
   web-e2e:
     name: web-e2e
+    needs: scope
+    if: needs.scope.outputs.webE2e == 'true'
     runs-on: ubuntu-latest
 
     services:

@@ -25,6 +25,7 @@ Ajout libre ; suppression ou réécriture d'un ADR accepté = validation humaine
 | [ADR-091](ADR-091-foundation-dossier-authority-and-laboratory-status.md) | Le dossier 01–07 fait autorité ; le laboratoire devient couche de compatibilité | Accepté |
 | [ADR-092](ADR-092-e0-contract-foundation.md) | E0 Contract Foundation : sept contrats et primitives partagées | Accepté ; P1–P10 validés |
 | [ADR-093](ADR-093-r0c-repository-realignment.md) | Mission R0-C « Repository Realignment » entre E0 et E1, et nommage | Accepté |
+| [ADR-094](ADR-094-ci-scoped-execution.md) | CI par périmètre : exécuter sur une PR ce que la PR peut casser | Accepté |
 
 Backlog historique des ADR du laboratoire : [`ADR_BACKLOG.md`](ADR_BACKLOG.md).
 

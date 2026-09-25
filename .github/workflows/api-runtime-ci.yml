@@ -28,8 +28,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Périmètre (ADR-094) : sur PR, le job est SAUTÉ si son périmètre n'est pas touché
+  # (sauté = succès pour un check requis ; le nom du check reste stable). Push main : exécuté.
+  scope:
+    name: scope
+    runs-on: ubuntu-latest
+    outputs:
+      apiRuntime: ${{ steps.scope.outputs.apiRuntime }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: scope
+        run: node factory/quality/scripts/ci-scope.mjs "${{ github.event_name }}"
+
   api-runtime:
     name: api-runtime
+    needs: scope
+    if: needs.scope.outputs.apiRuntime == 'true'
     runs-on: ubuntu-latest
 
     # PostgreSQL en service (image officielle, pas de commande custom).

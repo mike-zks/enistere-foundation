@@ -33,6 +33,11 @@
   publication GHCR suspendue (`registry-ci.yml` en PR uniquement, lecture seule) ;
   `DEPLOYMENT_SPECIFICATION.md` subordonnée à la production Enistere.
 
+- CI par périmètre (ADR-094) : jobs sautés hors de leur périmètre, noms des checks requis inchangés ;
+  golden runtime à 10 compositions sur PR, 32 sur `main`, chaque nuit et à la demande ; source unique
+  `factory/quality/ci-scopes.json` et `golden-runtime-matrix.json`, 10 tests ; `actionlint` 1.7.7 sans
+  constat.
+
 ## In progress
 
 Aucun.
@@ -40,8 +45,8 @@ Aucun.
 ## Blocked
 
 Aucun. Arbitrages encore ouverts, non bloquants pour E1 : ARB-07 à ARB-10
-([`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md)). Action attendue du responsable : renommer le dépôt
-GitHub en `enistere-foundation` (ARB-04).
+([`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md)). Dépôt GitHub renommé `enistere-foundation` (ARB-04,
+constaté via la PR #252).
 
 ## Tests (exécutés le 2026-09-25 ; relancés intégralement après R0-C avec les mêmes résultats)
 
@@ -78,6 +83,10 @@ couverts par la CI de la PR ; aucun déploiement (aucun service déployable).
 - 8 liens relatifs cassés **préexistants** dans les README de `starters/nextjs` (présents à la baseline
   `56c8113`, hors périmètre du contrôleur de liens) — R-14 ; le 9e (index des workflows) est corrigé.
 - Niveau 3 du nettoyage (structure cible `extensions/`, `engine/`) : à faire mission par mission (E1 → E3).
+- **CI rouge préexistante sur `main`** (`factory-golden-runtime`, 21/32 compositions, identique sur la
+  PR #252) : image `quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z` refusée (`unauthorized`,
+  8 compositions `*-files`) ; audit npm des projets NestJS générés : `prisma`, `@prisma/config`,
+  `deepmerge-ts` en *high* sans exception documentée (13 compositions). Non causée par E0/R0-C.
 
 ## Decisions
 

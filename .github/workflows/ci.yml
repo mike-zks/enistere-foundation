@@ -21,9 +21,27 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # 0) Périmètre (ADR-094) : sur PR, les jobs dont le périmètre n'est pas touché sont SAUTÉS
+  #    (un job sauté vaut succès pour un check requis : les noms du ruleset restent stables).
+  #    Sur push main, tout s'exécute. `factory`, `secret-scan` et `audit` s'exécutent toujours.
+  scope:
+    name: scope
+    runs-on: ubuntu-latest
+    outputs:
+      kernel: ${{ steps.scope.outputs.kernel }}
+      packagesWeb: ${{ steps.scope.outputs.packagesWeb }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: scope
+        run: node factory/quality/scripts/ci-scope.mjs "${{ github.event_name }}"
+
   # 1) Contrats : schéma neutre, bindings polyglottes et transport NestJS restent synchronisés.
   api-contracts:
     name: api-contracts
+    needs: scope
+    if: needs.scope.outputs.packagesWeb == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -134,6 +152,8 @@ jobs:
   #     Asteria. Indépendant du pipeline historique : le golden ne l'alimente pas.
   kernel-contracts:
     name: kernel-contracts
+    needs: scope
+    if: needs.scope.outputs.kernel == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -190,9 +210,9 @@ jobs:
             --exit-code 1
 
   # 7) Audit & gardes de dépendances (ADR-011 Fetch / ADR-012 TanStack Query).
+  #    Toujours exécuté (ADR-094) : l'ancien `needs: web-nextjs` n'imposait qu'un ordre.
   audit:
     name: audit
-    needs: web-nextjs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
