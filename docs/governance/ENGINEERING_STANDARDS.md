@@ -21,7 +21,8 @@ sans redéfinir le modèle de conformité.
 > Un test de génération doit prouver aussi l'**absence** des capabilities non sélectionnées.
 
 Cette règle d'absence est ce qui distingue une composition exacte d'une copie de baseline. Elle
-conditionne le niveau `Generatable` du [modèle de conformité](../specifications/CONFORMANCE_MODEL.md).
+conditionnera le niveau GENERATABLE (vocabulaire de maturité du document 06 §5) dès la première
+matérialisation (E2).
 
 ## Documentation
 

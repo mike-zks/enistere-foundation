@@ -9,15 +9,16 @@
 | 2026-09-25 | E0 : sept contrats A1–A7 dans `kernel/contracts` (TypeScript natif Node, JSON Schema 2020-12 + Ajv), digest sha256/JCS hors statut de cycle de vie, références épinglées sans « latest », ensemble fermé, A3 dérivé reproductible, A6 cohérent et borné par sa classification, A7 append-only ; golden Asteria à cinq surfaces. | [ADR-092](docs/adr/ADR-092-e0-contract-foundation.md) | Accepté | Responsable technique |
 | 2026-09-25 | Décomposition P1–P10 du gate E0 validée : E0 PASS. | [ADR-092](docs/adr/ADR-092-e0-contract-foundation.md), [ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md) | Accepté (ARB-01) | Produit / Pilotage |
 | 2026-09-25 | Mission R0-C « Repository Realignment » insérée entre E0 et E1 (dérogation à l'ordre du document 06 §6.8) ; nettoyage des niveaux 1 (mort/trompeur) et 2 (non conforme à la production) ; niveau 3 mission par mission, niveau 4 après E10 ; publication GHCR suspendue. | [ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md) | Accepté (ARB-02, 03, 05, 06) | Responsable du projet |
+| 2026-09-25 | Repartir propre : l'itération précédente (jamais en production) est supprimée, starters compris ; une implémentation par concept, dans le Kernel ; golden Asteria découplé ; CI réduite à `kernel`, `secret-scan`, `docs`, `audit` ; ADR 001–090 archivés (sauf ADR-073) ; E1 à redéfinir. Prévaut sur 03 §6.11 et 06 §4.6, §4.7, E1, E10, R0. | [ADR-094](docs/adr/ADR-094-clean-slate.md) | Accepté | Responsable du projet |
 | 2026-09-25 | Nommage : dépôt `enistere-foundation` (renommage par le responsable), packages `@enistere/foundation-*` à la migration, domaines par ADR au 1er déploiement, realm Keycloak `foundation`. | [ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md) | Accepté (ARB-04) | Direction + plateforme |
 
-Décisions antérieures (laboratoire, ADR-001 → ADR-090) : valides pour la couche de compatibilité ; voir
-le registre ADR.
+Décisions antérieures (ADR-001 → ADR-090, sauf ADR-073) : archivées sans autorité avec le code qu'elles
+régissaient ([`docs/archive/laboratory/adr/`](docs/archive/laboratory/adr/), ADR-094).
 
 ## Arbitrages encore ouverts
 
-ARB-07 à ARB-10 : [`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
+ARB-08, ARB-09, ARB-11 (ruleset, bloquant) et ARB-12 (dossier) : [`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
 
 ## Divergences documentaires signalées
 
-Tenues dans [`CONTEXT.md`](CONTEXT.md#divergences-documentaires-ouvertes) (D-1 à D-7).
+Tenues dans [`CONTEXT.md`](CONTEXT.md#divergences-documentaires-ouvertes) (D-1 à D-9).

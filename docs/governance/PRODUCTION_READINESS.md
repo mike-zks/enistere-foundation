@@ -8,8 +8,8 @@ production** (document 05 §2F).
 
 Aucun service Enistere Foundation n'est déployable ni déployé à la date du 2026-09-25 : le Kernel E0 est
 une bibliothèque, sans processus long. Cette checklist s'appliquera dès qu'un processus Foundation
-(API du Control Plane, Workbench, worker, registry) visera l'hôte partagé. Les artefacts de staging du
-laboratoire (`deployment/`) ne valent pas admission.
+(API du Control Plane, Workbench, worker, registry) visera l'hôte partagé. Les artefacts de staging de
+l'itération précédente (supprimés, ADR-094) ne valent pas admission.
 
 ## Déclarations à fournir dès la création d'un service (POLITIQUE « À créer au début d'un projet »)
 

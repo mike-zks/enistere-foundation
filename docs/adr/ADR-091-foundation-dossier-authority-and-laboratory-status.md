@@ -1,6 +1,7 @@
 # ADR-091 — Le dossier Enistere Foundation (01–07) fait autorité ; le laboratoire devient couche de compatibilité
 
 - Statut : Accepté
+- Amendé par : [ADR-094](ADR-094-clean-slate.md) — le laboratoire n'est plus une couche de compatibilité : il est supprimé (dernier état au commit `f2590a8`)
 - Date : 2026-09-25
 - Décideur : Responsable du projet (instruction explicite de reprise du 2026-09-25) ; rédigé par l'agent de la mission E0
 - Supersède : l'autorité de `MANDAT.md` (archivé) et la hiérarchie de l'ancien `SOURCE_OF_TRUTH.md`

@@ -1,7 +1,7 @@
 # CONTEXT — Enistere Foundation
 
 > Reflet vivant du projet (document 05 §2E). Ne recopie pas les documents sources : il y renvoie.
-> Dernière mise à jour : 2026-09-25, fin de la mission E0.
+> Dernière mise à jour : 2026-09-25, fin de la mission R0-D (repartir propre, ADR-094).
 
 ## Vision
 
@@ -50,10 +50,12 @@ transversal. Dans le dépôt :
 |---|---|
 | Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) |
 | Goldens | [`goldens/asteria/`](goldens/asteria/README.md) — golden de transition Asteria |
-| Engine (compilation) | `factory/` — pipeline du **laboratoire** (prompts IA archivés, primitives IA conservées) Blueprint → CSM → ResolvedSystem → GenerationPlan (couche de compatibilité, ADR-091) |
-| Extensions (runtimes, capabilities) | `starters/` (7 runtimes), `capabilities/` (auth, rbac, files) — actifs du laboratoire, futures *reference extensions* |
-| Contrats externes | `contracts/`, `packages/` — contrats polyglottes et UI kit du laboratoire |
-| Control Plane, Workers, Registry, Workbench, AI Gateway | Absents (missions ultérieures) |
+| Engine, Extensions (adapters de runtime), Control Plane, Workers, Registry, Workbench, AI Gateway | Absents (missions ultérieures) |
+| Outillage du dépôt (hors produit) | [`tools/quality/`](tools/quality/) — gates CI (allowlist gitleaks, liens de documentation) |
+
+L'itération précédente (générateur `factory/`, 7 starters, capabilities, packages), jamais mise en
+production, a été supprimée : une seule implémentation par concept, dans le Kernel
+([ADR-094](docs/adr/ADR-094-clean-slate.md) ; dernier état au commit `f2590a8`).
 
 ## Production Enistere
 
@@ -65,17 +67,17 @@ déployé à ce jour.
 
 ## Décisions validées
 
-Voir [`DECISIONS.md`](DECISIONS.md). Décisions de la reprise : ADR-091 (autorité du dossier, laboratoire
-en compatibilité, archivage sans suppression) et ADR-092 (E0 Contract Foundation).
+Voir [`DECISIONS.md`](DECISIONS.md). Décisions de la reprise : ADR-091 (autorité du dossier), ADR-092 (E0
+Contract Foundation), ADR-093 (R0-C) et ADR-094 (suppression de l'itération précédente, qui prévaut sur
+les passages du dossier supposant une couche de compatibilité).
 
 ## Mission
 
-- **Missions terminées** : E0 — Contract Foundation (PASS, P1–P10 validés) et R0-C — Repository
-  Realignment (ADR-093). Résultats : [`CURRENT_STATE.md`](CURRENT_STATE.md).
+- **Missions terminées** : E0 — Contract Foundation (PASS, P1–P10 validés), R0-C — Repository
+  Realignment (ADR-093) et R0-D — repartir propre (ADR-094). Résultats : [`CURRENT_STATE.md`](CURRENT_STATE.md).
 - **Périmètre retenu** : greenfield, modèle de contrats ; brownfield et lifecycle complet hors périmètre.
-- **Hors périmètre E0** : cutover, suppression des modèles historiques, Control Plane, Workbench, refonte
-  CLI, brownfield, agents avancés, migration globale des runtimes.
-- **Prochaine mission unique** : **E1 — Kernel Façade** (document 06 §6.8).
+- **Prochaine mission unique** : **E1 — Kernel Façade**, à redéfinir sans pipeline historique : façade
+  validate → resolve → plan sur une résolution native du Kernel (proposition dans [`BACKLOG.md`](BACKLOG.md)).
 
 ## Divergences documentaires ouvertes
 
@@ -91,3 +93,4 @@ Arbitrages associés et propositions : [`ARBITRATIONS.md`](docs/governance/ARBIT
 | D-6 | Convention §2G (`enistere-foundation`, `@enistere/foundation-*`) vs dépôt `enistere-os-foundation` et packages existants. | Dépôt renommé par le responsable ; packages à la migration ; domaines par ADR au 1er déploiement. | Tranché (ADR-093, ARB-04) — renommage GitHub à effectuer |
 | D-7 | Doc 03 : Control Plane NestJS + Temporal ; `MANDAT.md` (archivé) : pipeline factory unique. | Résolu par ADR-091. | Clos |
 | D-8 | Doc 06 §6.8 : seule suite de E0 = E1 ; demande de nettoyage complet après E0. | Mission R0-C insérée, limitée aux niveaux 1–2. | Clos (ADR-093) |
+| D-9 | Doc 03 §6.11, doc 06 §4.6, §4.7, E1, E10, R0 : laboratoire en couche de compatibilité, starters en reference extensions, « legacy identique ». Décision du responsable : repartir propre. | ADR-094 prévaut ; mise à jour des `.docx` par le responsable. | Tranché (ADR-094) — mise à jour du dossier à faire |

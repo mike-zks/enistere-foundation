@@ -20,6 +20,14 @@ export function digestOf(value: unknown): Digest {
   return `sha256:${createHash('sha256').update(canonicalize(value), 'utf8').digest('hex')}`;
 }
 
+/**
+ * sha256 digest of raw bytes (a source artifact such as a brief). Unlike
+ * `digestOf`, no canonicalization happens: the bytes are the identity.
+ */
+export function fileDigest(bytes: Uint8Array | string): Digest {
+  return `sha256:${createHash('sha256').update(bytes).digest('hex')}`;
+}
+
 export function isDigest(value: unknown): value is Digest {
   return typeof value === 'string' && DIGEST_PATTERN.test(value);
 }

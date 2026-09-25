@@ -1,1 +1,0 @@
-"""Enistere FastAPI Platform Baseline."""

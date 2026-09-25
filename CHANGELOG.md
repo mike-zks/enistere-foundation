@@ -4,6 +4,21 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### R0-D — Repartir propre — 2026-09-25
+
+- Suppression de l'itération précédente, jamais mise en production ni utilisée
+  ([ADR-094](docs/adr/ADR-094-clean-slate.md)) : `factory/`, `starters/`, `capabilities/`, `packages/`,
+  `contracts/`, `deployment/`, `examples/`, `.dockerignore` et cinq workflows (≈ 1 570 fichiers). Dernier
+  état au commit `f2590a8`.
+- Golden Asteria découplé : sonde `probeLegacy` et obligation `legacy-materialization` retirées ;
+  17 documents (8 contrats, 9 EvidenceRecords) ; test interdisant tout import hors de `kernel/` et
+  `goldens/`. Primitive `fileDigest` (doublon supprimé).
+- Outillage du dépôt déplacé dans `tools/quality/` ; racine npm réduite au Kernel (lockfile : 9 paquets,
+  0 vulnérabilité).
+- CI minimale : `kernel`, `secret-scan`, `docs`, `audit`. La PR #253 (CI par périmètre) est fermée.
+- ADR 001–090 (sauf ADR-073), spécifications, architecture, checklists, guides et `project-factory`
+  archivés sous `docs/archive/laboratory/`. Le contrôle des liens couvre tout le dépôt hors archives.
+
 ### R0-C — Repository Realignment — 2026-09-25
 
 - Arbitrages ARB-01 à ARB-06 tranchés ([ADR-093](docs/adr/ADR-093-r0c-repository-realignment.md)) : E0 PASS
@@ -34,7 +49,7 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 - Adoption du corpus documentaire Enistere Foundation V2 comme base canonique : `docs/strategy/`,
   `docs/architecture/`, `docs/specifications/`, `docs/governance/`, `docs/roadmap/`.
 - `docs/governance/SOURCE_OF_TRUTH.md` devient la référence officielle d'autorité documentaire.
-- Ajout d'[ADR-044](docs/adr/ADR-044-enistere-foundation-v2-architecture-reset.md) : l'unité centrale
+- Ajout d'[ADR-044](docs/archive/laboratory/adr/ADR-044-enistere-foundation-v2-architecture-reset.md) : l'unité centrale
   d'Enistere devient le système défini par un blueprint, non le starter autonome. ADR-042 est supersédé.
 - Portage des règles opérationnelles actives sans équivalent dans le corpus vers
   `docs/governance/{DEPENDENCY_POLICY,ENGINEERING_STANDARDS,GIT_STRATEGY}.md` et la section

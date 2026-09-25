@@ -1,6 +1,7 @@
 # ADR-093 — Mission R0-C « Repository Realignment » entre E0 et E1, et nommage
 
 - Statut : Accepté
+- Amendé par : [ADR-094](ADR-094-clean-slate.md) — le niveau 4 (suppression) est réalisé dès R0-D, sans attendre E10
 - Date : 2026-09-25
 - Décideur : Responsable du projet (arbitrages ARB-01 à ARB-04 du 2026-09-25)
 - Sources : [`ARBITRATIONS.md`](../governance/ARBITRATIONS.md), document 05 §7, document 06 §4.6 et §6.8

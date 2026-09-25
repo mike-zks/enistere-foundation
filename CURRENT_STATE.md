@@ -4,34 +4,26 @@
 
 | Champ | Valeur |
 |---|---|
-| Commit / branche | Base `56c8113` (`main`, fusion de la PR #251) ; travail sur `claude/hopeful-wozniak-z6g3wd` (missions E0 puis R0-C au-dessus de la base) |
+| Commit / branche | Base `f2590a8` (`main`, fusion de la PR #252) ; travail sur `claude/r0-d-clean-slate` |
 | Date | 2026-09-25 |
-| Missions | E0 — Contract Foundation ; R0-C — Repository Realignment (horizon R0) |
-| Résultat | E0 **PASS** (gate document 05 §8.1 et P1–P10 validés, ADR-093) ; R0-C **PASS** (niveaux 1–2 réalisés, laboratoire vert) |
+| Mission | R0-D — repartir propre (ADR-094), après E0 et R0-C |
+| Résultat | R0-D **PASS** localement (voir *Tests*) ; CI de la PR bloquée par le ruleset tant qu'ARB-11 n'est pas traité |
 
 ## Completed
 
-- Package `kernel/contracts` (`@enistere/foundation-kernel-contracts`) : sept contrats A1–A7 publiés en
-  JSON Schema 2020-12 (`schemas/v1alpha1/`), registre unique, validation structurelle (Ajv strict) et
-  sémantique, primitives partagées (apiVersion + seam de migration, références stables épinglées,
-  provenance, acceptance/status par classe d'état, diagnostics à codes stables et classes d'échec,
-  digest sha256/JCS), validation d'ensemble fermé, dérivation reproductible de A3, cohérence et
-  classification de A6, péremption et historique append-only de A7.
-- Golden Asteria (`goldens/asteria/`) : cinq surfaces dont l'Async Worker ; 8 contrats et 12
-  EvidenceRecords générés depuis `source.ts` par le Kernel et le checker `asteria-golden-contract-check@0.1.0` ;
-  scénario Day-2 (CR-001 appliqué, preuves invalidées puis revérifiées) et proposition IA UNSUPPORTED
-  (CR-002) ; sonde en lecture seule du pipeline historique.
-- CI : job `kernel-contracts` (typecheck, tests, régénération du golden sans diff).
-- Réalignement du dépôt (ADR-091) : pilotage du laboratoire archivé sans suppression
-  (`docs/archive/laboratory/`), fichiers de gouvernance du document 05 §2D créés, source de vérité
-  réécrite, gabarits PR/issue alignés, package racine renommé `enistere-foundation`.
-- R0-C (ADR-093), niveau 1 : archivage des prompts IA du laboratoire, de leur registre (12 références
-  mortes), de leur gouvernance et de leur guide ; de `factory/templates/` ; des exemples de profils
-  `docs/examples/reference-systems/` ; glossaire et onboarding remplacés par des versions Foundation ;
-  « Enistere OS » retiré de la documentation active (ADR historiques et CHANGELOG inchangés).
-- R0-C, niveau 2 : `deployment/staging/` et `deployment/docs/` archivés (non conformes à Server Prod) ;
-  publication GHCR suspendue (`registry-ci.yml` en PR uniquement, lecture seule) ;
-  `DEPLOYMENT_SPECIFICATION.md` subordonnée à la production Enistere.
+- **Kernel** `kernel/contracts` (`@enistere/foundation-kernel-contracts`, E0) : sept contrats A1–A7 en
+  JSON Schema 2020-12, validation structurelle (Ajv strict) et sémantique, primitives partagées
+  (apiVersion + seam de migration, références épinglées, provenance, acceptance/status, diagnostics,
+  digest sha256/JCS, `fileDigest`), ensemble fermé, A3 dérivé, A6 cohérent, A7 append-only et péremption.
+- **Golden Asteria** (`goldens/asteria/`) : cinq surfaces dont l'Async Worker ; 8 contrats et 9
+  EvidenceRecords générés depuis `source.ts` ; scénario Day-2 (CR-001 appliqué, 3 preuves invalidées puis
+  revérifiées) et proposition IA UNSUPPORTED (CR-002). Ne dépend que du Kernel (test d'imports).
+- **R0-D** (ADR-094) : itération précédente supprimée (`factory/`, `starters/`, `capabilities/`,
+  `packages/`, `contracts/`, `deployment/`, `examples/`, cinq workflows) ; outillage du dépôt dans
+  `tools/quality/` ; racine npm réduite au Kernel ; CI à quatre jobs (`kernel`, `secret-scan`, `docs`,
+  `audit`) ; ADR 001–090 (sauf 073) et documentation de l'itération précédente archivés ; gouvernance à
+  jour ; travaux E1 non commités abandonnés (reposaient sur la factory).
+- Missions antérieures : E0 (PASS, ADR-092/093) et R0-C (ADR-093) — rapports ci-dessous.
 
 ## In progress
 
@@ -39,54 +31,82 @@ Aucun.
 
 ## Blocked
 
-Aucun. Arbitrages encore ouverts, non bloquants pour E1 : ARB-07 à ARB-10
-([`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md)). Action attendue du responsable : renommer le dépôt
-GitHub en `enistere-foundation` (ARB-04).
+- **Merge de la PR R0-D** : le ruleset `protect-main` exige huit checks de l'ancienne CI qui ne
+  s'exécutent plus (ARB-11, action du responsable).
+- Tag `laboratory-final` (commit `f2590a8`) créé localement mais non poussé : le proxy de session refuse
+  les tags. À pousser par le responsable (`git tag laboratory-final f2590a8 && git push origin laboratory-final`).
 
-## Tests (exécutés le 2026-09-25 ; relancés intégralement après R0-C avec les mêmes résultats)
+## Tests (exécutés le 2026-09-25 sur `claude/r0-d-clean-slate`)
 
 | Commande | Résultat |
 |---|---|
+| `npm ci` (lockfile régénéré) | OK — 9 paquets |
 | `npm run foundation:typecheck` | OK (0 erreur) |
 | `npm run foundation:test` | 56/56 PASS |
-| `npm run golden:asteria:update` puis `git status --porcelain goldens/` | Aucun écart ; ensemble 20 contrats, 0 erreur, 0 avertissement |
-| Mutation manuelle (règle IA-DECIDE désactivée ; contrôle de digest désactivé) | Chaque mutation fait échouer la suite ; code restauré |
-| `npm run factory:test` | 554/554 PASS (identique à la baseline) |
-| `npm run factory:capability-conformance` · `npm run factory:baseline-gap` | OK ; rapports committés inchangés |
-| `node factory/quality/scripts/fitness-functions.mjs` | passed, 0 finding |
-| `npm test` · `npm run typecheck` · `contracts:check` · `design:check` · `generate:check` | OK |
-| `node factory/quality/scripts/docs-link-check.mjs` (défaut + fichiers racine, kernel, goldens) | OK |
-| `node factory/quality/scripts/audit-check.mjs . --targets nestjs,nextjs` | 0 advisory non couvert |
-| `node factory/quality/scripts/secret-allowlist-check.mjs` | OK |
-| gitleaks 8.30.1 (binaire épinglé, checksum vérifié), historique complet (`--log-opts=--all`) | 128 commits, **no leaks found** |
+| `npm run golden:asteria:update` (deux exécutions) puis `git status --porcelain goldens/` | Aucun écart ; 17 documents, 0 diagnostic |
+| Test d'imports sur la version précédente du harness | Détecte l'import `../../factory/model/canonical-system.mjs` (garde-fou effectif) |
+| `npm run tools:test` | 10/10 PASS |
+| `npm run secrets:allowlist` | 2 exceptions justifiées et non expirées |
+| `npm run docs:links` | OK — 52 fichiers, 0 lien mort (`docs/archive/` exclu) |
+| `npm audit --audit-level=high` | 0 vulnérabilité |
+| gitleaks 8.30.1 (binaire vérifié), `--log-opts=--all` | no leaks found — **10 commits seulement** : clone local superficiel ; l'historique complet est analysé par le job `secret-scan` (`fetch-depth: 0`) |
+| actionlint 1.7.7 sur `ci.yml` | OK |
 
-**NOT RUN** : builds/lint/tests `ui-kit` et `web-nextjs`, workflows runtime (`api-runtime-ci`,
-`web-angular-ci`, `web-e2e-ci`, `factory-golden-runtime`, `registry-ci`) — non touchés par la mission,
-couverts par la CI de la PR ; aucun déploiement (aucun service déployable).
+**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture ; merge bloqué par ARB-11).
 
 ## Known gaps
 
-- Pas de Kernel Façade : aucun chemin `validate → resolve → plan` ne consomme encore les contrats (E1).
-- Pas d'IR interne ni de System Closure : le pipeline Blueprint → CSM reste le seul chemin de génération (E3, E10).
-- Pas d'Adapter Protocol ; runtimes et capabilities codés dans le catalogue du laboratoire (E2).
+- Pas de Kernel Façade ni de résolution : aucun chemin `validate → resolve → plan` (E1, à redéfinir).
+- Aucune génération de code possible : pas d'Adapter Protocol ni d'adapter (E2), pas d'IR (E3).
 - Entity Profile, Policy Pack, Design System, Approval Policy : références externes seulement (E6).
-- Évidence : pas d'Evidence Graph ni d'export de proof chain (E4) ; pas de calcul d'impact (E7).
-- Pipeline historique : l'Async Worker n'y est pas représentable (UNSUPPORTED, prouvé par le golden).
+- Evidence : pas d'Evidence Graph ni d'export de proof chain (E4) ; pas de calcul d'impact (E7).
 - Aucun Control Plane, Workbench, Worker d'exécution, Registry ni AI Gateway.
-- `deployment/` du laboratoire non aligné sur la production Enistere (R-07).
-- Divergences documentaires D-2 à D-5 ([`CONTEXT.md`](CONTEXT.md)).
-- 8 liens relatifs cassés **préexistants** dans les README de `starters/nextjs` (présents à la baseline
-  `56c8113`, hors périmètre du contrôleur de liens) — R-14 ; le 9e (index des workflows) est corrigé.
-- Niveau 3 du nettoyage (structure cible `extensions/`, `engine/`) : à faire mission par mission (E1 → E3).
+- Passages du dossier contredits par ADR-094, à réviser (ARB-12) ; divergences D-2 à D-5 et D-9
+  ([`CONTEXT.md`](CONTEXT.md)).
 
 ## Decisions
 
-ADR-091 (autorité du dossier, laboratoire en compatibilité, archivage), ADR-092 (Contract Foundation),
-ADR-093 (P1–P10 validés, mission R0-C, nommage) — voir [`DECISIONS.md`](DECISIONS.md).
+ADR-091, ADR-092, ADR-093, **ADR-094** (repartir propre ; amende ADR-073, 091, 092 et 093) — voir
+[`DECISIONS.md`](DECISIONS.md).
 
 ## Next single action
 
-**E1 — Kernel Façade** ([`BACKLOG.md`](BACKLOG.md)).
+**Redéfinir puis lancer E1 — Kernel Façade** sur une résolution native (proposition dans
+[`BACKLOG.md`](BACKLOG.md)), une fois le ruleset mis à jour (ARB-11).
+
+---
+
+## Rapport de mission R0-D — repartir propre (document 05 §11, Annexe A §16)
+
+- **Mission** : R0-D — suppression de l'itération précédente (décision du responsable, ADR-094).
+- **Date** : 2026-09-25.
+- **Branch / HEAD** : `claude/r0-d-clean-slate`, base `f2590a8`.
+- **Objectif** : repartir sur une base unique, sans code ni vocabulaire hérité d'une itération jamais
+  mise en production, et sans logique dupliquée.
+- **Scope** : suppression du code, de la CI et des dépendances de l'itération précédente ; découplage du
+  golden ; outillage du dépôt ; archivage documentaire ; gouvernance.
+- **Out of scope** : E1 (redéfinie séparément), modification des documents 01–07, ruleset GitHub.
+- **État initial** : Kernel E0 et golden sur `main` ; 1 570 fichiers de l'itération précédente ; golden
+  couplé à `factory/model/canonical-system.mjs` ; 8 checks requis tous issus de l'ancienne CI ; lockfile
+  de 7 649 lignes.
+- **Changements réalisés** : voir *Completed*.
+- **Fichiers touchés** : suppressions ci-dessus ; `goldens/**`, `kernel/contracts/src/primitives/digest.ts`
+  et deux tests ; `tools/quality/**` (déplacés) ; `package.json`, `package-lock.json` ; `.github/**` ;
+  `.gitleaks.toml` (commentaires) ; `docs/**` (archivage, liens, ADR-094, amendements) ; fichiers de
+  gouvernance racine.
+- **Contrats impactés** : aucun schéma modifié ; golden régénéré (CR-001 et EvidenceRecords changent de
+  digest car une obligation disparaît).
+- **Migrations** : aucune.
+- **Tests exécutés / résultats** : voir *Tests*.
+- **Preuves** : golden régénéré à l'identique ; test d'imports ; contrôle de liens ; audit ; gitleaks.
+- **Risques résiduels** : R-15 (ruleset, bloquant), R-16 (dossier) —
+  [`RISK_REGISTER.md`](docs/governance/RISK_REGISTER.md).
+- **Décisions** : ADR-094.
+- **Documentation** : README, CONTEXT, AGENTS, ROADMAP, BACKLOG, CURRENT_STATE, IMPLEMENTATION_MATRIX,
+  DECISIONS, SECURITY, CONTRIBUTING, CHANGELOG ; ARBITRATIONS, RISK_REGISTER, SOURCE_OF_TRUTH et
+  politiques ; registre ADR, archives, glossaire, onboarding, runbook local, workflows.
+- **Statut** : PASS localement ; merge soumis à ARB-11.
+- **Prochaine action unique** : redéfinir et lancer E1 — Kernel Façade.
 
 ---
 

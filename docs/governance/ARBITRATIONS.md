@@ -4,7 +4,7 @@
 > options (méthode KEEP / ADAPT / EXTRACT / REPLACE / RETIRE, document 05 §7.3), la recommandation et
 > ce qu'elle débloque. Une décision prise est reportée dans un ADR et dans [`DECISIONS.md`](../../DECISIONS.md),
 > puis la ligne passe en « Tranché ». Ouvert le 2026-09-25, après E0 ; ARB-01 à ARB-06 tranchés le même
-> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). **Restent ouverts : ARB-07 à ARB-10.**
+> jour ([ADR-093](../adr/ADR-093-r0c-repository-realignment.md)). ARB-07 et ARB-10 tranchés par la mission R0-D ([ADR-094](../adr/ADR-094-clean-slate.md)). **Restent ouverts : ARB-08, ARB-09, ARB-11 et ARB-12.**
 
 ## Synthèse
 
@@ -15,11 +15,13 @@
 | ARB-03 | Profondeur du nettoyage | Retrait/archivage des actifs morts ou non conformes + réorganisation progressive par mission ; pas de suppression du code prouvé avant E10 | Technique | Tranché — niveaux 1+2 (ADR-093) |
 | ARB-04 | Nommage : dépôt, packages, domaines | Renommer le dépôt maintenant ; packages au fil des migrations ; domaines par ADR au 1er déploiement | Direction + plateforme | Tranché — proposition complète (ADR-093) |
 | ARB-05 | Staging et publication d'images du laboratoire (`deployment/`, `registry-ci.yml`) | Archiver le staging non conforme ; suspendre la publication GHCR | Plateforme | Réalisé dans R0-C (ADR-093) |
-| ARB-06 | Runtime IA du laboratoire (`factory/ai`) | Archiver prompts et registre ; conserver les primitives testées (rédaction, citations) comme candidates à l'AI Gateway | Technique | Réalisé dans R0-C (ADR-093) |
-| ARB-07 | Sept starters dans la CI | Conserver les sept comme *reference extensions* ; aucune nouvelle capacité par runtime avant E2 | Produit | Ouvert |
+| ARB-06 | Runtime IA du laboratoire (`factory/ai`) | Archiver prompts et registre ; conserver les primitives testées (rédaction, citations) comme candidates à l'AI Gateway | Technique | Réalisé dans R0-C (ADR-093) ; primitives supprimées avec l'itération précédente (ADR-094) |
+| ARB-07 | Sept starters dans la CI | Conserver les sept comme *reference extensions* ; aucune nouvelle capacité par runtime avant E2 | Produit | Tranché autrement — starters supprimés, runtimes réécrits comme adapters (ADR-094) |
 | ARB-08 | Corrections du document 05 (Ubuntu, RabbitMQ) | Document 05 renvoie à Server Prod pour les faits d'infrastructure | Gouvernance | Ouvert |
 | ARB-09 | Livrables manquants du document 04 (`design-tokens.json`, maquettes) | Les fournir avant toute mission Workbench/design (E6, V1) | Design UX UI | Ouvert |
-| ARB-10 | Réécriture d'`AGENTS.md` et archivage de `MANDAT.md` | Valider par la revue de la PR de la mission E0 | Gouvernance | Ouvert |
+| ARB-10 | Réécriture d'`AGENTS.md` et archivage de `MANDAT.md` | Valider par la revue de la PR de la mission E0 | Gouvernance | Tranché — PR #252 mergée ; règle du laboratoire remplacée par ADR-094 |
+| ARB-11 | Checks requis du ruleset `protect-main` | Remplacer les huit checks de l'ancienne CI par `kernel`, `secret-scan`, `docs`, `audit` | Responsable (GitHub) | Ouvert — bloque tout merge |
+| ARB-12 | Passages du dossier contredits par ADR-094 | Réviser 03 §6.11 et 06 §4.6, §4.7, §6.8 (E1, E10), gate R0 | Gouvernance | Ouvert |
 
 ---
 
@@ -97,6 +99,8 @@ docs du laboratoire ≈ 45 · 58 fichiers portant encore « Enistere OS ».
   sept runtimes en premier ; ils deviennent des *reference extensions*.
 - **Recommandation** : les conserver tous, testés, sans nouvelle fonctionnalité par runtime avant E2 ;
   E2 enveloppe NestJS, E8 prouve la substitution.
+- **Résolution** (ADR-094) : l'itération précédente n'ayant jamais été en production, les starters sont
+  supprimés ; E2 écrira un premier adapter sur le nouveau protocole, sans héritage.
 
 ## ARB-08 — Document 05
 
@@ -114,3 +118,21 @@ docs du laboratoire ≈ 45 · 58 fichiers portant encore « Enistere OS ».
 
 - **Constat** : `AGENTS.md` a été réécrit et `MANDAT.md` archivé à votre demande (ADR-091).
 - **Recommandation** : valider par la revue de la PR E0.
+- **Résolution** : PR #252 mergée ; la règle « laboratoire = couche de compatibilité » d'`AGENTS.md` est
+  remplacée par « une implémentation par concept, dans le Kernel » (ADR-094, plan R0-D approuvé).
+
+## ARB-11 — Ruleset `protect-main`
+
+- **Constat** : les huit checks requis (`api-contracts`, `api-client-fetch`, `ui-kit`, `web-nextjs`,
+  `audit`, `api-runtime`, `web-e2e`, `api-smoke`) venaient de workflows supprimés par l'ADR-094. Seul
+  `audit` existe encore, sous le même nom. Une PR attend les autres indéfiniment.
+- **Recommandation** : dans *Settings → Rules → protect-main*, exiger `kernel`, `secret-scan`, `docs` et
+  `audit` (noms des jobs de `ci.yml`). Aucun agent n'a les droits pour le faire.
+
+## ARB-12 — Dossier 03 et 06
+
+- **Constat** : ADR-094 (repartir propre) contredit document 03 §6.11 (starters en reference
+  extensions) et document 06 §4.6, §4.7, §6.8 (gate E1 « legacy déterministe identique », E10
+  « legacy → compatibility/import ») et la gate R0 (« goldens legacy préservés »).
+- **Recommandation** : réviser ces passages dans les `.docx` ; d'ici là, ADR-094 prévaut par décision
+  explicite du responsable.

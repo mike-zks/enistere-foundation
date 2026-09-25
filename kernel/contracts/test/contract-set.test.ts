@@ -21,7 +21,7 @@ test('the committed Asteria set is closed, pinned and valid with no warning', ()
   assert.deepEqual(validation.diagnostics, []);
   assert.equal(validation.valid, true);
   assert.equal(validation.system, 'asteria');
-  assert.equal(validation.entries.length, 20);
+  assert.equal(validation.entries.length, 17);
 });
 
 test('the set is closed under references: a missing revision is reported, never assumed', () => {
@@ -132,7 +132,6 @@ test('Evidence about a revision that is no longer in force is reported stale', (
   const found = validateContractSet(documents).diagnostics.filter((item) => item.code === 'EVIDENCE_STALE');
   assert.deepEqual(found.map((item) => item.ref).sort(), [
     'EvidenceRecord/asteria-sd1-closure@1',
-    'EvidenceRecord/asteria-sd1-legacy-materialization@1',
     'EvidenceRecord/asteria-sd1-requirement-allocation@1',
     'EvidenceRecord/asteria-sd1-worker-extensibility@1',
   ]);

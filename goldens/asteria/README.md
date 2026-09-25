@@ -38,7 +38,7 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
 | `source.ts` | Source d'autorat des contrats A1–A6 (aucun digest saisi à la main) |
 | `harness.ts` | Checker, sonde de compatibilité historique (lecture seule), construction du golden |
 | `update.ts` | Régénération (`npm run golden:asteria:update`) ; refuse un ensemble invalide |
-| `contracts/*.json`, `evidence/*.json` | **Générés** — 8 contrats et 12 EvidenceRecords |
+| `contracts/*.json`, `evidence/*.json` | **Générés** — 8 contrats et 9 EvidenceRecords |
 | `expected/report.json` | **Généré** — digests, surfaces, traçabilité, changements, preuves, diagnostics |
 
 Les tests du Kernel reconstruisent le golden et exigent une égalité **octet pour octet** avec les fichiers
@@ -46,5 +46,5 @@ commités ; l'ensemble doit être valide sans erreur ni avertissement.
 
 ## Ce que le golden n'est pas
 
-Il n'alimente pas la génération historique (`factory/`) et n'en est pas alimenté : aucune source de vérité
-concurrente (vérifié par test). Il ne matérialise aucun code : la matérialisation relève des missions E2–E3.
+Il ne dépend que du Kernel (`kernel/contracts`) : aucun import hors de `kernel/` et `goldens/` (vérifié par
+test). Il ne matérialise aucun code : la matérialisation relève des missions suivantes (Adapter Protocol).

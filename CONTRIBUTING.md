@@ -31,8 +31,8 @@ concernés.
 | Zone | Commandes |
 |---|---|
 | Kernel E0 et goldens | `npm run foundation:typecheck` · `npm run foundation:test` · `npm run golden:asteria:update` puis diff vide |
-| Laboratoire | `npm run factory:test` · `npm run contracts:check` · `npm run design:check` · `npm test` · `npm run typecheck` |
-| Documentation | `node factory/quality/scripts/docs-link-check.mjs` |
+| Outillage du dépôt | `npm run tools:test` · `npm run secrets:allowlist` · `npm audit --audit-level=high` |
+| Documentation | `npm run docs:links` |
 
 Aucune capacité n'est déclarée VERIFIED sans preuve ; aucun golden ni migration n'est supprimé pour faire
 passer une suite.

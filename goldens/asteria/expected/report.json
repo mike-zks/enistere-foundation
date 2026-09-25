@@ -18,7 +18,7 @@
       "code": "A6",
       "plane": "DESIRED",
       "status": "APPLIED",
-      "digest": "sha256:c3fd02ba1d71a48b7cb7d9ec75befd6f29598ecc761db085adaaa7e8eaddbc1e",
+      "digest": "sha256:96cb84e570627926fa80ace646281a76e031137fa096c8c233e060e17ce9edce",
       "file": "contracts/change-request--asteria-cr-001--r1.json"
     },
     {
@@ -66,24 +66,8 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "INVALIDATED",
-      "digest": "sha256:bf08cb1d7a0d7d22dfda8f8fe1a8c15890a9805a7eaa1176b23cb3d9a1eb45b0",
+      "digest": "sha256:2da09ea7876fdd77d46c7e91720b29fe246d324960fe49e7f41e4f3f8de875d8",
       "file": "evidence/evidence-record--asteria-sd1-closure--r2.json"
-    },
-    {
-      "ref": "EvidenceRecord/asteria-sd1-legacy-materialization@1",
-      "code": "A7",
-      "plane": "EVIDENCE",
-      "status": "VALID",
-      "digest": "sha256:cb18b46033bc052ecb2e66574c5b19914b0620056d8dabd5c3b64b78ebb9a8d1",
-      "file": "evidence/evidence-record--asteria-sd1-legacy-materialization--r1.json"
-    },
-    {
-      "ref": "EvidenceRecord/asteria-sd1-legacy-materialization@2",
-      "code": "A7",
-      "plane": "EVIDENCE",
-      "status": "INVALIDATED",
-      "digest": "sha256:66be932bdc999e59cd4f6d2d77f54d89c6f879eabaa906e06cb6cfd6b5e49b88",
-      "file": "evidence/evidence-record--asteria-sd1-legacy-materialization--r2.json"
     },
     {
       "ref": "EvidenceRecord/asteria-sd1-requirement-allocation@1",
@@ -98,7 +82,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "INVALIDATED",
-      "digest": "sha256:1fa70edd055cbc8084b42b0e4b9032d3b66644aac099bc4f857a7854ccc07983",
+      "digest": "sha256:36b2cd1b1aba5ef61412c245740af0c4940d8fdafbd287bb37daabedaf012cc0",
       "file": "evidence/evidence-record--asteria-sd1-requirement-allocation--r2.json"
     },
     {
@@ -114,7 +98,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "INVALIDATED",
-      "digest": "sha256:dbe3b0f1cde995ad1a045b21358ce4e95d22c3d62803de7579c6b4230ce34c5d",
+      "digest": "sha256:cc2533f17e5963cdc81c1cd9d52d40abc1bd3ac358b4cb9ccf0b93692a81b6e2",
       "file": "evidence/evidence-record--asteria-sd1-worker-extensibility--r2.json"
     },
     {
@@ -122,23 +106,15 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:ed9ebcf793cf3258334b9ec4cbb63b19e1600b7ee2071670b5f3bac9dc0357f6",
+      "digest": "sha256:9392d3fc2740172a22cda4a0727c42106d4a4b89e91b2d0347b7bd58e1c83921",
       "file": "evidence/evidence-record--asteria-sd2-closure--r1.json"
-    },
-    {
-      "ref": "EvidenceRecord/asteria-sd2-legacy-materialization@1",
-      "code": "A7",
-      "plane": "EVIDENCE",
-      "status": "VALID",
-      "digest": "sha256:5757c6b4cbda15666d1e5efff2fe1147740bcf29752daf6b4c6880b356bd394c",
-      "file": "evidence/evidence-record--asteria-sd2-legacy-materialization--r1.json"
     },
     {
       "ref": "EvidenceRecord/asteria-sd2-requirement-allocation@1",
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:7837db95484461fa7c1d378b8c409be99f35415168eff10d269981fb670d17f6",
+      "digest": "sha256:f33f41911019296fdf36e7b838dabde12f5ba81693defc37b24c9eb4bbafd159",
       "file": "evidence/evidence-record--asteria-sd2-requirement-allocation--r1.json"
     },
     {
@@ -146,7 +122,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:04ee3f6e6e8e53375a8da7c16dcaa85fb8fec6f888ae353a286fe4e1c3563b0c",
+      "digest": "sha256:77c9958320e083b99909c1bf023e97293a396bbcd667cad7cead479669a6aad7",
       "file": "evidence/evidence-record--asteria-sd2-worker-extensibility--r1.json"
     },
     {
@@ -182,11 +158,7 @@
       "audience": "PUBLIC",
       "runtimePreferences": [
         "nextjs"
-      ],
-      "legacy": {
-        "representable": true,
-        "reason": "REPRESENTABLE as legacy web/nextjs"
-      }
+      ]
     },
     {
       "component": "ops-web",
@@ -195,11 +167,7 @@
       "audience": "INTERNAL",
       "runtimePreferences": [
         "angular"
-      ],
-      "legacy": {
-        "representable": true,
-        "reason": "REPRESENTABLE as legacy web/angular"
-      }
+      ]
     },
     {
       "component": "field-mobile",
@@ -208,11 +176,7 @@
       "audience": "FIELD",
       "runtimePreferences": [
         "flutter"
-      ],
-      "legacy": {
-        "representable": true,
-        "reason": "REPRESENTABLE as legacy mobile/flutter"
-      }
+      ]
     },
     {
       "component": "authority-api",
@@ -221,11 +185,7 @@
       "audience": "SYSTEM",
       "runtimePreferences": [
         "nestjs"
-      ],
-      "legacy": {
-        "representable": true,
-        "reason": "REPRESENTABLE as legacy api/nestjs"
-      }
+      ]
     },
     {
       "component": "async-worker",
@@ -234,11 +194,7 @@
       "audience": "SYSTEM",
       "runtimePreferences": [
         "nestjs"
-      ],
-      "legacy": {
-        "representable": false,
-        "reason": "UNSUPPORTED: kind 'async-worker' has no equivalent among legacy application kinds [api, web, mobile]"
-      }
+      ]
     }
   ],
   "traceability": [
@@ -432,13 +388,6 @@
       "status": "INVALIDATED"
     },
     {
-      "ref": "EvidenceRecord/asteria-sd1-legacy-materialization@2",
-      "obligation": "legacy-materialization",
-      "subject": "SystemDefinition/asteria@1#async-worker",
-      "result": "UNSUPPORTED",
-      "status": "INVALIDATED"
-    },
-    {
       "ref": "EvidenceRecord/asteria-sd1-requirement-allocation@2",
       "obligation": "requirement-allocation",
       "subject": "SystemDefinition/asteria@1",
@@ -457,13 +406,6 @@
       "obligation": "closure",
       "subject": "SystemDefinition/asteria@2",
       "result": "PASS",
-      "status": "VALID"
-    },
-    {
-      "ref": "EvidenceRecord/asteria-sd2-legacy-materialization@1",
-      "obligation": "legacy-materialization",
-      "subject": "SystemDefinition/asteria@2#async-worker",
-      "result": "UNSUPPORTED",
       "status": "VALID"
     },
     {

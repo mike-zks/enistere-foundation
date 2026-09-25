@@ -20,7 +20,7 @@ Pour un développeur ou un agent qui arrive sur Enistere Foundation.
 ## 3. Lancer
 
 [`runbooks/LOCAL_DEVELOPMENT.md`](../runbooks/LOCAL_DEVELOPMENT.md) : `npm ci`, `npm run foundation:test`,
-`npm run factory:test`.
+`npm run golden:asteria:update`.
 
 ## 4. Où coder
 
@@ -28,8 +28,10 @@ Pour un développeur ou un agent qui arrive sur Enistere Foundation.
 |---|---|
 | Contrats et invariants du Kernel | `kernel/contracts/` |
 | Scénarios de preuve | `goldens/` |
-| Pipeline de génération historique | `factory/` — uniquement via une mission qui le remplace ou l'enveloppe |
-| Runtimes et capabilities de référence | `starters/`, `capabilities/` — pas de nouvelle fonctionnalité par runtime avant E2 |
+| Outillage du dépôt (gates CI) | `tools/quality/` |
+
+Une seule implémentation par concept, dans le Kernel (ADR-094) : pas de second modèle de système, de
+diagnostic, de digest ou de schéma ailleurs.
 
 Tout déploiement suit [`docs/Server Prod/`](../Server%20Prod/README.md) et
 [`PRODUCTION_READINESS.md`](../governance/PRODUCTION_READINESS.md).

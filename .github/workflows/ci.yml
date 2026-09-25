@@ -1,9 +1,8 @@
 name: CI
 
-# CI minimale (ADR-013) — non-régression du monorepo, SANS déploiement, registry, Docker,
-# secret ni publication. Impose l'ordre de build/validation des espaces de travail :
-#   api-contracts → api-client-fetch → ui-kit → web-nextjs → audit/garde-dépendances.
-# Aucune base de données ni stockage objet : le build du Web Core est indépendant de l'API.
+# CI minimale (ADR-094) — quatre jobs aux noms stables, qui sont les checks requis
+# de la branche protégée : kernel, secret-scan, docs, audit. Aucun déploiement,
+# registry, image, secret ni publication.
 
 on:
   pull_request:
@@ -11,7 +10,7 @@ on:
     branches:
       - main
 
-# Lecture seule : la CI ne pousse rien, ne crée ni release ni image, n'utilise aucun secret.
+# Lecture seule : la CI ne pousse rien et n'utilise aucun secret.
 permissions:
   contents: read
 
@@ -21,119 +20,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # 1) Contrats : schéma neutre, bindings polyglottes et transport NestJS restent synchronisés.
-  api-contracts:
-    name: api-contracts
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: contracts:check (schéma neutre ↔ bindings TypeScript/Java/Python/Dart)
-        run: npm run contracts:check
-      - name: design:check (contrat design/expérience ↔ bindings CSS/TypeScript/Dart)
-        run: npm run design:check
-      - name: generate:check (snapshot OpenAPI ↔ types à jour)
-        run: npm run generate:check --workspace=@enistere/api-contracts
-      - run: npm run typecheck --workspace=@enistere/api-contracts
-      - run: npm run build --workspace=@enistere/api-contracts
-      - run: npm run test --workspace=@enistere/api-contracts
-
-  # 2) Client Fetch officiel : compile et reste compatible avec les contrats.
-  #    Dépend d'api-contracts (gating) ET doit builder son dist (dist non versionné).
-  api-client-fetch:
-    name: api-client-fetch
-    needs: api-contracts
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: build de la dépendance @enistere/api-contracts (dist requis)
-        run: npm run build --workspace=@enistere/api-contracts
-      - run: npm run typecheck --workspace=@enistere/api-client-fetch
-      - run: npm run build --workspace=@enistere/api-client-fetch
-      - run: npm run test --workspace=@enistere/api-client-fetch
-
-  # 3) UI Kit : tokens, build, lint, tests, pack (aucune dépendance sur les paquets API ;
-  #    `needs` impose seulement l'ordre et un échec lisible).
-  ui-kit:
-    name: ui-kit
-    needs: api-client-fetch
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: tokens:check (styles régénérés à jour)
-        run: npm run tokens:check --workspace=@enistere/ui-kit
-      - run: npm run typecheck --workspace=@enistere/ui-kit
-      - run: npm run build --workspace=@enistere/ui-kit
-      - run: npm run lint --workspace=@enistere/ui-kit
-      - run: npm run test --workspace=@enistere/ui-kit
-      - name: pack:check (contenu du tarball publiable)
-        run: npm run pack:check --workspace=@enistere/ui-kit
-
-  # 4) Web Core Next.js : build INDÉPENDANT de l'API (routes privées/BFF dynamiques).
-  #    Construit d'abord toute la chaîne de dépendances (dist non versionnés), puis valide.
-  web-nextjs:
-    name: web-nextjs
-    needs: ui-kit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: build des dépendances (api-contracts → api-client-fetch → ui-kit)
-        run: |
-          npm run build --workspace=@enistere/api-contracts
-          npm run build --workspace=@enistere/api-client-fetch
-          npm run build --workspace=@enistere/ui-kit
-      - run: npm run typecheck --workspace=@enistere/web-nextjs
-      - run: npm run lint --workspace=@enistere/web-nextjs
-      - run: npm run test --workspace=@enistere/web-nextjs
-      - name: build Web (sans API, sans base de données, sans stockage)
-        run: npm run build --workspace=@enistere/web-nextjs
-
-  # 5) Moteur Factory et conformité (ADR-068 → ADR-071). Jusqu'ici la CI validait
-  #    les applications générées mais jamais l'outil qui juge leur conformité :
-  #    une régression de l'évaluateur rendait silencieusement fausses toutes les
-  #    affirmations de conformité. Indépendant des builds workspace (pas de `needs`).
-  factory:
-    name: factory
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: factory:test (moteur, évaluateur de conformité, parité par famille)
-        run: npm run factory:test
-      - name: conformité produit des capabilities (bloquant)
-        run: npm run factory:capability-conformance
-      - name: Platform Baseline v2 (bloquant)
-        run: npm run factory:baseline-gap
-      - name: rapports de conformité committés à jour (anti-péremption)
-        run: git diff --exit-code factory/conformance/reports/
-
-  # 5b) E0 — Contract Foundation (ADR-092) : contrats A1–A7, primitives partagées et golden
-  #     Asteria. Indépendant du pipeline historique : le golden ne l'alimente pas.
-  kernel-contracts:
-    name: kernel-contracts
+  # Kernel contracts A1–A7 et golden Asteria (preuve E0).
+  kernel:
+    name: kernel
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -144,44 +33,42 @@ jobs:
       - run: npm ci
       - name: typecheck (Kernel contracts + golden Asteria)
         run: npm run foundation:typecheck
-      - name: tests (primitives, A1–A7, ensemble fermé, golden Asteria byte-identique)
+      - name: tests (primitives, A1–A7, ensemble fermé, golden Asteria octet pour octet)
         run: npm run foundation:test
       - name: golden Asteria régénéré à l'identique (anti-dérive)
         run: |
           npm run golden:asteria:update
-          git status --porcelain goldens/asteria/
-          test -z "$(git status --porcelain goldens/asteria/)"
+          git status --porcelain goldens/
+          test -z "$(git status --porcelain goldens/)"
 
-  # 6) Analyse de secrets (ADR-073). §12 confie au projet le secret scanning ;
-  #    jusqu'ici il était documenté sans jamais s'exécuter. L'historique complet
-  #    est couvert : un secret retiré du HEAD reste exposé dans les commits.
+  # Analyse de secrets (ADR-073) sur tout l'historique : un secret retiré du HEAD
+  # reste exposé dans les commits.
   secret-scan:
     name: secret-scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          # L'analyse porte sur l'historique, pas sur le diff.
           fetch-depth: 0
-
-      - name: Allowlist justifiée et non expirée
-        run: node factory/quality/scripts/secret-allowlist-check.mjs
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: outillage du dépôt (tests)
+        run: npm run tools:test
+      - name: allowlist justifiée et non expirée
+        run: npm run secrets:allowlist
       - name: gitleaks (binaire épinglé, checksum vérifié)
         env:
           GITLEAKS_VERSION: 8.30.1
           GITLEAKS_SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
         run: |
           set -euo pipefail
-          # Binaire téléchargé et vérifié plutôt qu'une action tierce : la chaîne
-          # d'approvisionnement du gate de sécurité doit être auditable (§12).
+          # Binaire vérifié plutôt qu'une action tierce : chaîne d'approvisionnement auditable.
           curl -sSfL -o gitleaks.tar.gz \
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
           echo "${GITLEAKS_SHA256}  gitleaks.tar.gz" | sha256sum -c -
           tar xzf gitleaks.tar.gz gitleaks
-
-          # --redact : une détection ne doit jamais publier le secret dans des
-          # journaux CI conservés et lisibles par tous.
+          # --redact : une détection ne publie jamais le secret dans les journaux.
           ./gitleaks detect \
             --source . \
             --config .gitleaks.toml \
@@ -189,10 +76,20 @@ jobs:
             --log-opts=--all \
             --exit-code 1
 
-  # 7) Audit & gardes de dépendances (ADR-011 Fetch / ADR-012 TanStack Query).
+  # Aucun lien interne mort dans la documentation vivante (docs/archive exclu).
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm run docs:links
+
+  # Dépendances : aucune vulnérabilité haute ou critique.
   audit:
     name: audit
-    needs: web-nextjs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -201,21 +98,4 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: npm audit (exceptions documentées, scopées et datées — sans désactivation globale)
-        run: node factory/quality/scripts/audit-check.mjs . --targets nestjs,nextjs
-      - name: dépendances interdites absentes (Axios, Zustand)
-        run: |
-          if npm ls axios >/dev/null 2>&1; then
-            echo "::error::Axios ne doit pas être installé (ADR-011 : client HTTP = Fetch)."
-            exit 1
-          else
-            echo "axios absent (OK)"
-          fi
-          if npm ls zustand >/dev/null 2>&1; then
-            echo "::error::Zustand ne doit pas être installé (ADR-012 : server state = TanStack Query)."
-            exit 1
-          else
-            echo "zustand absent (OK)"
-          fi
-      - name: dépendances clés (informatif — cohérence des versions)
-        run: npm ls react react-dom @tanstack/react-query next || true
+      - run: npm audit --audit-level=high

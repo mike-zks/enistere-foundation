@@ -28,8 +28,9 @@ signaler à nouveau le blocage.
 - Ne jamais marquer « done », « VERIFIED » ou « conforme » sans preuve (test, golden, conformance, audit).
 - Ne pas modifier le périmètre d'une mission sans ADR ; ne jamais trancher seul un arbitrage marqué
   « validation humaine requise » : documenter l'option recommandée et continuer ce qui peut l'être.
-- Le laboratoire (`factory/`, `starters/`, `capabilities/`, `packages/`, `contracts/`, `deployment/`)
-  est une couche de compatibilité : ni suppression sans seam et preuve, ni extension comme produit final.
+- Une seule implémentation par concept, dans le Kernel ([ADR-094](docs/adr/ADR-094-clean-slate.md)) :
+  ne pas réintroduire de second modèle de système, de diagnostic, de digest, de schéma ou de preuve, ni
+  restaurer du code de l'itération précédente (commit `f2590a8`) sans ADR.
 - Garder les secrets hors du dépôt, des manifestes, des images, des journaux et des Evidence.
 - Toute contrainte de réseau, secrets, données partagées, observabilité ou déploiement suit
   `docs/Server Prod/` et [`PRODUCTION_READINESS.md`](docs/governance/PRODUCTION_READINESS.md).
@@ -37,7 +38,7 @@ signaler à nouveau le blocage.
 ## Fin de mission — obligatoire
 
 1. Exécuter les tests et preuves applicables (au minimum `npm run foundation:test`,
-   `npm run foundation:typecheck`, `npm run factory:test` si le laboratoire est touché).
+   `npm run foundation:typecheck`, `npm run tools:test` et `npm run docs:links`).
 2. Mettre à jour [`CURRENT_STATE.md`](CURRENT_STATE.md) (format §2E : commit/branche, date, mission,
    Completed, In progress, Blocked, Tests, Known gaps, Decisions, Next single action).
 3. Mettre à jour [`IMPLEMENTATION_MATRIX.md`](IMPLEMENTATION_MATRIX.md) avec la preuve de chaque statut.
