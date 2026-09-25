@@ -1,5 +1,0 @@
-{
-  "$comment": "Violations CONNUES et actées de la zone métier (FF5d, ADR-079). Une capability est du code métier : elle appartient à la zone métier du runtime, jamais à celle que la Factory possède et remplace. Aucun écart : les sept runtimes placent leurs capabilities dans leur zone métier et composent par coutures. Le gate échoue sur toute violation absente de ce fichier, sur une déclaration que plus personne ne viole, et sur une échéance dépassée.",
-  "schemaVersion": "1",
-  "gaps": []
-}

@@ -1,5 +1,0 @@
-{
-  "$comment": "Écarts de parité de famille CONNUS et actés (ADR-074). Le gate échoue sur tout écart non listé ici, sur un écart plus large que déclaré, et sur une échéance dépassée. Aucune désactivation globale : un écart absent de ce fichier fait échouer la mesure. Ce socle rend la dette visible et bornée dans le temps — il ne l'excuse pas.",
-  "schemaVersion": "1",
-  "gaps": []
-}

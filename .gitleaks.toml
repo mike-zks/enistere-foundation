@@ -5,7 +5,7 @@
 # seules des exceptions nommées, justifiées et vérifiées sont ajoutées.
 #
 # Chaque exception porte une `description` au format contrôlé par
-# `factory/quality/scripts/secret-allowlist-check.mjs` :
+# `tools/quality/secret-allowlist-check.mjs` :
 #
 #   <justification> | permanent: <raison>
 #   <justification> | expires: AAAA-MM-JJ
@@ -23,13 +23,14 @@ useDefault = true
 
 [[allowlists]]
 description = "Fixtures des tests de censure : la valeur ressemblante EST le sujet du test — sans elle, la censure n'est pas vérifiée | permanent: le test perdrait tout pouvoir de détection"
+# Tous ces chemins sont historiques (ADR-094) : l'analyse couvre tout
+# l'historique Git, où ces fixtures ont vécu avant la suppression de l'ancienne
+# itération. Les retirer ferait échouer l'analyse sur des commits passés.
 paths = [
   '''factory/ai/runtime/test/redaction\.test\.mjs''',
   '''factory/ai/runtime/test/provider\.test\.mjs''',
   '''factory/ai/runtime/test/report-schema\.test\.mjs''',
   '''starters/react-native/test/logger-redaction\.test\.ts''',
-  # Chemins historiques : l'analyse couvre tout l'historique Git, où ces mêmes
-  # fixtures vivaient avant la réorganisation du dépôt.
   '''cores/ai-core/test/(redaction|provider|report-schema)\.test\.mjs''',
   '''cores/mobile-react-native/test/logger-redaction\.test\.ts''',
 ]

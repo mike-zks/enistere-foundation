@@ -10,22 +10,13 @@ Décrire brièvement le changement.
 - **Contrats / capacités** : (A1–A7, CAP-01 … CAP-16 — voir [`IMPLEMENTATION_MATRIX.md`](../IMPLEMENTATION_MATRIX.md))
 - **ADR** : (ex. ADR-092 — ou « ADR à rédiger »)
 
-## Core concerné (laboratoire)
+## Zone concernée (document 03)
 
-- [ ] kernel/contracts (E0)
-- [ ] goldens
-- [ ] api-nestjs
-- [ ] api-spring
-- [ ] mobile-react-native
-- [ ] mobile-flutter
-- [ ] web-nextjs
-- [ ] web-angular
-- [ ] cloud
-- [ ] ui-kit
-- [ ] ai-core
-- [ ] docs-core
-- [ ] quality-core
-- [ ] repo/global
+- [ ] Kernel (`kernel/`)
+- [ ] Goldens (`goldens/`)
+- [ ] Outillage du dépôt (`tools/`)
+- [ ] CI (`.github/`)
+- [ ] Documentation / gouvernance
 
 ## Type de changement
 
@@ -38,37 +29,25 @@ Décrire brièvement le changement.
 - [ ] CI/CD
 - [ ] Breaking change
 
-## Quality gates
+## Vérifications
 
-> Référence : [`docs/checklists/PR_QUALITY_CHECKLIST.md`](../docs/checklists/PR_QUALITY_CHECKLIST.md)
-> Script : `node factory/quality/scripts/quality-gates.mjs plan <scope>`
-
-### Scope applicable
-
-- [ ] `docs` — docs-only (`git diff --check`)
-- [ ] `packages` — api-contracts + api-client-fetch
-- [ ] `ui-kit` — typecheck / lint / test / build / tokens:check
-- [ ] `web` — typecheck / lint / test / build
-- [ ] `mobile-static` — typecheck / lint / test / doctor
-- [ ] `root-audit` — `npm audit`
-- [ ] `all-safe` — packages + ui-kit + web + root-audit (recommandé pré-PR)
-- [ ] autre / runtime — décrire dans "Commandes exécutées"
+> Référence : [`.github/workflows/README.md`](workflows/README.md) (les quatre checks requis).
 
 ### Commandes exécutées
 
 ```
-# Indiquer les commandes réellement exécutées et leurs résultats
-# Exemple :
-# node factory/quality/scripts/quality-gates.mjs run all-safe  → 17/17 ✓
-# git diff --check                                                  → 0 whitespace error
-# npm audit                                                         → 0 vulnérabilité
+# Indiquer les commandes réellement exécutées et leurs résultats, par exemple :
+# npm run foundation:typecheck && npm run foundation:test   → 56/56 ✓
+# npm run golden:asteria:update && git status goldens/      → aucun changement
+# npm run tools:test && npm run docs:links                  → ✓
+# npm audit --audit-level=high                              → 0 vulnérabilité
 ```
 
 ### Gates non exécutés
 
 | Gate | Raison de l'exclusion |
 |---|---|
-| (exemple : expo export -p ios) | (machine Linux — bloqué RN31) |
+| (exemple : gitleaks) | (binaire indisponible en local — exécuté en CI) |
 
 ## Hors périmètre confirmé
 
@@ -81,7 +60,7 @@ Décrire brièvement le changement.
 - [ ] Aucun secret ajouté (env, credentials, clé privée, token)
 - [ ] Pas de logs sensibles (PII, tokens, URL signées, mots de passe)
 - [ ] Dépendances justifiées si ajoutées (`npm audit` 0 vuln)
-- [ ] Impact sécurité vérifié (auth, CSRF, Origin, RBAC si applicable)
+- [ ] Impact sécurité vérifié (autorité DECIDE/VERIFY, Evidence, secrets)
 
 ## Statut / gouvernance
 
@@ -97,7 +76,7 @@ Décrire brièvement le changement.
 - [ ] README mis à jour si nécessaire
 - [ ] CHANGELOG mis à jour si nécessaire
 - [ ] ADR ajouté si nécessaire
-- [ ] Documentation du core mise à jour si nécessaire
+- [ ] Documentation de la zone mise à jour si nécessaire
 
 ## Risques
 
