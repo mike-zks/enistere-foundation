@@ -45,6 +45,7 @@
     "typescript": "~5.9.0"
   },
   "overrides": {
+    "decode-uri-component": "0.5.0",
     "expo-font": "55.0.8"
   }
 }

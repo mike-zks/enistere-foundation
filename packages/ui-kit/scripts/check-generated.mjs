@@ -15,6 +15,7 @@ import { buildStylesContent } from './styles.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const GEN = join(ROOT, 'generated');
+const CANONICAL_CSS = join(GEN, 'css', 'design-tokens.css');
 
 const result = validateDefaultTokens();
 if (!result.valid) {
@@ -23,11 +24,13 @@ if (!result.valid) {
 }
 
 const { json, typescript, css } = generateAll();
+const canonicalCss = readFileSync(CANONICAL_CSS, 'utf8');
+const combinedCss = `${css.trimEnd()}\n\n${canonicalCss}`;
 const targets = [
   ['tokens.json', json],
   [join('typescript', 'tokens.ts'), typescript],
-  [join('css', 'tokens.css'), css],
-  [join('css', 'styles.css'), buildStylesContent(css, join(ROOT, 'src', 'components'))],
+  [join('css', 'tokens.css'), combinedCss],
+  [join('css', 'styles.css'), buildStylesContent(combinedCss, join(ROOT, 'src', 'components'))],
 ];
 
 const tmp = mkdtempSync(join(tmpdir(), 'enistere-ui-gen-'));

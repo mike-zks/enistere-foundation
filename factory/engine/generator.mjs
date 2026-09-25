@@ -9,6 +9,7 @@ import { loadCapabilityManifests } from './capabilities.mjs';
 import { loadStarterManifests, modularStarterIds } from './starters.mjs';
 import { applyCapabilityOverlays } from './overlay.mjs';
 import { errors, formatDiagnostics, hasErrors } from '../model/diagnostics.mjs';
+import { materializeApplicationIdentities } from './identity-materialization.mjs';
 
 async function exists(path) {
   try { await access(path, constants.F_OK); return true; } catch { return false; }
@@ -191,6 +192,18 @@ function ownershipContract(plan) {
   };
 }
 
+function identityRecord(plan) {
+  return {
+    schemaVersion: '1',
+    project: plan.project,
+    applications: plan.applications.map((application) => ({
+      id: application.id,
+      kind: application.kind,
+      identity: application.identity,
+    })),
+  };
+}
+
 function architectureDocument(plan) {
   const applicationLines = plan.applications.map((application) => {
     const owner = application.ownership
@@ -262,7 +275,7 @@ function rootPackage(plan, sharedPackages) {
 }
 
 function localCompose(plan) {
-  return `name: ${plan.project}\nservices:\n  postgres:\n    image: postgres:17-alpine\n    environment:\n      POSTGRES_DB: \${POSTGRES_DB:-enistere}\n      POSTGRES_USER: \${POSTGRES_USER:-enistere}\n      POSTGRES_PASSWORD: \${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}\n    volumes: [postgres-data:/var/lib/postgresql/data]\n    healthcheck:\n      test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n  redis:\n    image: redis:7-alpine\n    command: [redis-server, --appendonly, 'yes']\n    volumes: [redis-data:/data]\n  minio:\n    image: minio/minio:RELEASE.2025-04-22T22-12-26Z\n    command: server /data --console-address :9001\n    environment:\n      MINIO_ROOT_USER: \${MINIO_ROOT_USER:?set MINIO_ROOT_USER}\n      MINIO_ROOT_PASSWORD: \${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}\n    volumes: [minio-data:/data]\nvolumes:\n  postgres-data:\n  redis-data:\n  minio-data:\n`;
+  return `name: ${plan.project}\nservices:\n  postgres:\n    image: postgres:17-alpine\n    environment:\n      POSTGRES_DB: \${POSTGRES_DB:-enistere}\n      POSTGRES_USER: \${POSTGRES_USER:-enistere}\n      POSTGRES_PASSWORD: \${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}\n    volumes: [postgres-data:/var/lib/postgresql/data]\n    healthcheck:\n      test: [CMD-SHELL, pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n  redis:\n    image: redis:7-alpine\n    command: [redis-server, --appendonly, 'yes']\n    volumes: [redis-data:/data]\n  minio:\n    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z\n    command: server /data --console-address :9001\n    environment:\n      MINIO_ROOT_USER: \${MINIO_ROOT_USER:?set MINIO_ROOT_USER}\n      MINIO_ROOT_PASSWORD: \${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD}\n    volumes: [minio-data:/data]\nvolumes:\n  postgres-data:\n  redis-data:\n  minio-data:\n`;
 }
 
 function stagingCompose(plan) {
@@ -495,6 +508,7 @@ export async function materializeProject(plan, output, options = {}) {
     const capabilityManifests = await loadCapabilityManifests(FOUNDATION_ROOT, plan.capabilities);
     await materializeApplications(plan, output);
     overlays = await applyCapabilityOverlays({ repoRoot: FOUNDATION_ROOT, plan, output, capabilityManifests });
+    await materializeApplicationIdentities(plan, output);
     sharedPackages = await resolveSharedPackages(plan, output);
     await materializeSharedPackages(sharedPackages, output);
     for (const app of plan.applications) {
@@ -515,6 +529,7 @@ export async function materializeProject(plan, output, options = {}) {
     lockfileVersion: null,
     runtimeLocks,
   }));
+  await writeFile(join(output, 'enistere.identity.json'), stable(identityRecord(plan)));
   await writeFile(join(output, 'README.md'), projectReadme(plan, overlays.applied, sharedPackages));
   await writeFile(join(output, 'package.json'), stable(rootPackage(plan, sharedPackages)));
   await writeFile(join(output, 'scripts/verify.mjs'), verifyScript(plan, overlays.verification));
@@ -523,6 +538,10 @@ export async function materializeProject(plan, output, options = {}) {
   await writeFile(join(output, 'packages/contracts/openapi.json'), stable(generateOpenApi({ name: plan.displayName, entities: plan.domain.entities })));
   await writeFile(join(output, 'packages/contracts/communications.json'), stable({ edges: plan.communications }));
   await writeFile(join(output, 'packages/contracts/ownership.json'), stable(ownershipContract(plan)));
+  await writeFile(join(output, 'packages/contracts/deployment-units.json'), stable({
+    schemaVersion: '1',
+    units: plan.deploymentUnits,
+  }));
   await writeFile(join(output, 'packages/contracts/capabilities.json'), stable({
     graph: plan.capabilityGraph,
     targets: plan.capabilityTargets,

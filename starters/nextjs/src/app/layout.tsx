@@ -8,7 +8,7 @@ import "@enistere/ui-kit/styles.css";
 import "./globals.css";
 
 import { appMetadata } from "../core/config/metadata.js";
-import { DEFAULT_THEME } from "../core/config/theme.js";
+import { resolveWebTheme } from "../core/config/theme.js";
 import { AppProviders } from "./providers/app-providers.js";
 
 export const metadata: Metadata = appMetadata;
@@ -19,9 +19,9 @@ export default function RootLayout({
   readonly children: ReactNode;
 }): ReactElement {
   // Layout = Server Component. Les fournisseurs client (TanStack Query) sont isolés dans
-  // `AppProviders` (Client Component). Thème clair fixé via `data-theme` (résolu par le UI Kit).
+  const theme = resolveWebTheme();
   return (
-    <html lang="fr" data-theme={DEFAULT_THEME}>
+    <html lang="fr" {...theme}>
       <body>
         <AppProviders>{children}</AppProviders>
       </body>

@@ -1152,36 +1152,244 @@ binding Java/Python/Dart n'est généré ; les Runtime Contracts et goldens
 existants restent les preuves idiomatiques sans équivalence produit ; les
 projets historiques sans inventaire restent non régénérables.
 
+## Mission achevée — Identités applicatives dérivées du CSM
+
+ADR-087 ajoute à chaque application du `GenerationPlan` une identité dérivée
+uniquement du slug projet, du `displayName` et de l'id applicatif. Les sept
+runtimes matérialisent désormais leurs manifests, coordonnées, packages/imports,
+chemins natifs et labels sans hériter de l'identité de leur starter.
+
+`enistere.identity.json` inventorie le résultat livré. La régénération refuse un
+fichier d'identité modifié/supprimé, un changement de slug projet et le retrait
+ou renommage d'un id déjà livré ; elle permet ajout et réordonnancement. Sur
+Spring + Angular + Flutter, ce registre mesure 4 005 octets et l'inventaire
+complet 27 776 octets pour 211 fichiers.
+
+Preuves : **530/530 tests Factory** ; tests dédiés des sept runtimes et overlays Spring/Flutter ; vraie
+régénération NestJS→NestJS/Next.js Auth et Flutter base→Flutter Auth avec fichiers
+propriétaire préservés ; builds API/Web et packages partagés ; FastAPI démarré et
+sondé sur trois routes Health ; Next.js démarré et sondé en HTTP 200 ; Expo Doctor
+19/19, 321 tests et export iOS ; Spring/Maven et Angular construits avec leurs
+coordonnées dérivées ; Flutter analyze, 26 tests et APK debug.
+
+### Non revendiqué
+
+- aucun cycle de renommage/retrait, transfert de bundle ou publication de package ;
+- aucun démarrage mobile, build iOS natif ou test appareil/simulateur ;
+- aucun binding Java, Python ou Dart produit depuis le contrat partagé ;
+- aucun audit exhaustif des avantages propres à chaque framework ni équivalence
+  produit/production.
+
+## Mission de formalisation achevée — Parité contractuelle et artefacts partagés
+
+[ADR-088](../adr/ADR-088-contractual-parity-and-shared-artifacts.md) retire à
+l'axe NestJS + Next.js + React Native son statut implicite de référence. La
+parité distingue désormais produit, contrat externe, client et composition. Un
+profil n'est interchangeable qu'après preuve des quatre niveaux.
+
+Les mesures ont démenti l'hypothèse d'un contrat HTTP déjà commun : le snapshot
+partagé est celui de la composition NestJS ; FastAPI change préfixes, routes et
+`operationId` ; Spring Files ne publie actuellement aucun `/v3/api-docs` et son
+catch-all transforme le `NoResourceFoundException` résultant en réponse 500.
+
+Première tranche exécutée : `ApiErrorResponse` possède une source JSON Schema
+neutre et des bindings TypeScript, Java, Python et Dart réellement consommés.
+Un gate de digest/drift lie les cinq représentations générées à cette source.
+Cette tranche ne vaut pas contrat Auth/RBAC/Files complet.
+
+Preuves : suite Factory **536/536** ; golden FastAPI Auth/RBAC/Files sur
+PostgreSQL et MinIO jetables (**52/52 tests**, Ruff, migrations, audit et
+démarrage HTTP) ; golden Spring Auth/RBAC/Files **139/139** ; fitness functions
+sans finding ; liens de **151 documents**. Le premier golden FastAPI a trouvé
+une ligne générée hors limite Ruff ; la correction a été portée dans le
+générateur puis rejouée jusqu'au golden vert.
+
+La politique d'artefacts est clarifiée : le contrat composé est la seule unité
+applicative partagée privilégiée, avec un binding par consommateur. Le client
+Fetch doit devenir une cible du binding ou un transport privé d'adapter. Le UI
+Kit React n'est pas le design commun : chaque frontend reste idiomatique contre
+un éventuel contrat neutre de tokens et règles observables.
+
+### Non revendiqué
+
+- aucune surface complète identique entre NestJS, Spring et FastAPI ;
+- aucun client HTTP complet Java, Python ou Dart ;
+- aucune suppression immédiate de `api-client-fetch` ou `ui-kit` ;
+- aucune équivalence de profil ni garantie de production ;
+- aucune décision sur l'infrastructure, le cloud ou les pipelines dans ADR-088.
+
+## Mission achevée — audit de parité opérationnelle
+
+L'[audit opérationnel du 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)
+a généré les sept variantes, parsé quatorze Compose et construit les images
+réellement livrées. Verdict : FastAPI construit ; NestJS échoue faute de
+lockfile applicatif ; Next.js cherche encore `starters/nextjs`. Les sorties sans
+capability ni primitive reçoivent pourtant PostgreSQL, Redis et MinIO ; le
+staging ne contient que le proxy ; aucune sortie ne reçoit de CI.
+
+Le nettoyage antérieur reste incomplet : caches, manifests et sources de
+capabilities ont disparu, mais les revues, roadmaps et preuves internes des
+starters NestJS/Next.js sont encore livrées.
+
+### Non revendiqué
+
+- aucun déploiement cloud ou staging externe exécuté ;
+- aucune image Spring/Angular ni release mobile signée ;
+- aucune performance, haute disponibilité, reprise après sinistre ou readiness
+  production ;
+- aucun choix de Kubernetes, cloud ou registre.
+
+## Mission achevée — contrat de livraison opérationnelle
+
+[ADR-089](../adr/ADR-089-operational-delivery-units.md) sépare désormais quatre
+plans : contrat opérationnel, adapter runtime, pack provider et pipeline dérivé.
+Le document canonique reste
+[`deployment/DEPLOYMENT_SPECIFICATION.md`](../../deployment/DEPLOYMENT_SPECIFICATION.md) ;
+le schéma exécutable est
+[`deployment-unit.schema.json`](../../factory/schema/deployment-unit.schema.json).
+
+Le premier slice refuse les secrets littéraux, les chemins hors projet, un
+artefact `ready` sans preuve, un artefact `blocked` sans blocker et une image
+serveur présentée comme release mobile. Le verdict de l'évaluateur autonome est
+croisé avec Ajv.
+
+### Non revendiqué
+
+- aucune `deploymentUnit` réelle n'est encore émise par le plan ;
+- aucun Dockerfile, Compose ou pipeline n'est corrigé par cette formalisation ;
+- aucune sélection de provider/cloud ni publication d'artefact ;
+- aucune promotion de statut opérationnel ou production.
+
+## Mission achevée — unités de livraison dans le plan
+
+Les sept adapters portent leur descripteur opérationnel versionné. Le planner
+résout une `deploymentUnit/v1` par application depuis `appDir`, les dépendances
+d'applications et primitives et l'ordre du `ResolvedSystem`, sans switch de
+framework. Chaque unité est validée avant d'entrer dans le plan.
+
+Le projet dérivé reçoit le contrat déterministe
+`packages/contracts/deployment-units.json` ; `enistere.lock` porte exactement
+les mêmes unités. Les anciennes clés `starter.manifest.json.deployment` sont
+interdites. Les variables de capabilities sont remontées par nom et traitées
+comme sensibles par défaut, car Overlay v1 ne les classifie pas encore.
+
+Les statuts restent attachés aux preuves exécutées : OCI FastAPI, JAR Spring,
+bundle Angular et export Expo prêts ; OCI NestJS/Next.js et releases Android/iOS
+bloqués. Un build rouge ne peut donc pas être promu par la conformité source.
+
+### Non revendiqué
+
+- aucune image NestJS/Next.js n'est réparée par le modèle ;
+- l'export Expo n'est ni un package natif signé ni une publication OTA gouvernée ;
+- aucune publication, signature, SBOM, provenance ou promotion ;
+- aucun pack provider, cloud, staging applicatif ou CI dérivée ;
+- la classification fine secret/non-secret des variables d'overlay reste ouverte.
+
+## Étude achevée — contrat UI/UX et thèmes multi-runtime
+
+L'[étude du 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)
+confirme que le package actuel mélange source neutre de tokens et composants
+React DOM. Next.js le consomme directement ; Angular, React Native et Flutter
+recopient ou adaptent ses valeurs. Leurs tests locaux sont verts, mais aucun
+contrat commun n'établit la parité de leurs comportements.
+
+La cible conserve les composants idiomatiques indépendants. Une source
+`contracts/design/` doit générer les seuls bindings consommés — CSS Web,
+TypeScript data RN et Dart — et un manifeste de patterns doit mesurer les
+résultats UX observables. Les thèmes institutionnels sont des `ThemePack`
+versionnés, sélectionnés par identifiant et validés ; jamais du CSS/code distant
+arbitraire.
+
+### Non revendiqué
+
+- aucune parité UX ou visuelle complète ;
+- aucun thème institutionnel ni chargement distant ;
+- aucun calcul de contraste, visual regression ou conformité réglementaire ;
+- aucun renommage/split/publication de package ;
+- aucun composant ou runtime modifié par l'étude.
+
+## Mission achevée — contrat UI/UX polyglotte et ThemePacks
+
+[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md) formalise
+`design-experience/v1` et `theme-pack/v1` sous `contracts/design/`. Deux schémas
+fermés, validés par l'évaluateur autonome et Ajv, portent 19 couleurs sémantiques,
+sept patterns UX et deux identités institutionnelles light/dark.
+
+La résolution est déterministe : pack enregistré explicite, couple
+institution/contexte, contexte institutionnel par défaut, fallback global, puis
+préférence de mode autorisée. Les collisions et cycles sont refusés. Aucun ThemePack
+n'accepte credential, URL distante, CSS, code ou chemin remontant. CSS, données
+TypeScript et Dart sont générés avec un digest commun et leur drift bloque la CI.
+
+### Non revendiqué
+
+- aucune parité UX ou visuelle, mesure de contraste, conformité réglementaire,
+  régression visuelle ou publication de package ;
+- aucun thème distant, catalogue Figma ou distribution institutionnelle.
+
+## Mission achevée — bindings design consommés par les quatre runtimes
+
+Le générateur canonique matérialise désormais chaque projection à sa frontière
+de consommation : CSS et données dans le binding Web React, CSS + resolver
+TypeScript Angular, TypeScript sans DOM React Native et Dart Flutter. Les copies
+de couleurs Angular/RN/Flutter et les anciennes palettes light/dark autoritaires
+du UI Kit sont retirées.
+
+Next.js, Angular, React Native et Flutter résolvent réellement
+institution/contexte/mode. `sunrise/learning` sélectionne `sunrise-institute` et
+une institution inconnue retombe sur `enistere-default`. Les quatre suites sont
+vertes. Quatre projets dérivés générés prouvent qu'ils ne reçoivent ni
+`contracts/design/`, ni le binding d'une autre famille.
+
+Preuves exécutées : UI Kit 26 fichiers de tests, Next.js 22, Angular 111 tests
+Chrome Headless, React Native 47 fichiers, Flutter 11 tests et analyse statique,
+builds production Next.js/Angular, suite Factory 554/554 et fitness functions
+sans finding.
+
+### Non revendiqué
+
+- les sept patterns ne sont pas encore tous disponibles dans chaque runtime ;
+- aucune parité visuelle, pixel-perfect, conformité WCAG/réglementaire ou test de
+  contraste automatisé ;
+- typographie, ombres et motion restent des extensions d'adapter ;
+- aucun thème distant, package publié, catalogue visuel ou Figma.
+
 ## Prochaine mission unique
 
-> **Dériver les identités des applications du Canonical System Model.**
+> **Exécuter la parité comportementale des sept patterns UX sur Next.js,
+> Angular, React Native et Flutter.**
 
 ### Pourquoi maintenant
 
-Le projet racine porte le slug du blueprint, mais ses applications continuent
-d'exposer des identités de socle : noms npm, package/artifact Maven, nom Python,
-nom et slug Expo, package/import Dart et identifiants Android. Les remplacer par
-une substitution globale serait incorrect : chaque écosystème impose sa propre
-grammaire et certains identifiants participent aux imports ou aux coordonnées de
-build.
+Les tokens et thèmes sont maintenant communs, mais une palette identique ne
+garantit pas une expérience équivalente. Les runtimes exposent aujourd'hui des
+ensembles différents d'états et leurs annonces, focus, actions et messages ne
+sont pas comparés au manifeste.
 
 ### Critères de sortie
 
-- inventorier les champs d'identité réellement exécutés pour les sept runtimes ;
-- définir des dérivations déterministes depuis `project`, `displayName` et l'id
-  applicatif, avec normalisation propre à npm, Maven/Java, Python, Expo/Android
-  et Dart/Flutter ;
-- modifier manifests, coordonnées, imports et labels de manière structurelle,
-  sans réécriture textuelle aveugle ;
-- prouver génération, régénération, installation, build et démarrage sur une
-  sélection représentative de chaque famille ;
-- documenter collisions, limites de longueur et identifiants immuables après
-  livraison.
+- chaque runtime implémente `loading|empty|error|success|unauthorized|forbidden|offline`
+  avec ses composants idiomatiques ;
+- chaque implémentation référence l'identifiant et la clé de message du contrat,
+  sans branchement sur le framework d'une autre famille ;
+- annonces accessibles, action requise/optionnelle, focus applicable, réduction
+  de motion et absence de détail technique sont testés selon le manifeste ;
+- `unauthorized` reste distinct de `forbidden` et aucun état visuel ne décide de
+  l'autorisation réelle ;
+- une matrice exécutable refuse un pattern absent ou une revendication plus large
+  que sa preuve ;
+- les quatre suites runtime et des dérivés représentatifs sont exécutés.
 
-### Ce qui reste ouvert après cette mission
+### Ce qui reste ouvert après cette migration
 
-- bindings polyglottes générés et classification fine des documents applicatifs ;
-- audit plus profond des avantages propres à chaque framework au-delà des
-  Runtime Contracts v2 déjà exécutés ;
-- transport cookie HttpOnly, limitation de débit distribuée, reste de §12,
-  interopérabilité Angular↔NestJS/Spring et lifecycle complet.
+- composition contractuelle complète Auth/RBAC/Files et convergence des trois
+  surfaces API ;
+- génération des clients HTTP Java, Python et Dart et migration du client Fetch ;
+- calcul de contraste, régression visuelle, zoom/font scaling et tests
+  clavier/tactile sur appareils réels ;
+- releases mobiles signées, packs providers sélectionnés, CI dérivée et
+  résolution complète des primitives selon la séquence décidée ;
+- réparation et preuve des images OCI NestJS/Next.js déjà enregistrées comme
+  blockers opérationnels ;
+- déploiement cloud réel, performance, charge, haute disponibilité, disaster
+  recovery, signatures/provenance et le reste de §12.

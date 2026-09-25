@@ -28,7 +28,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/design-tokens.generated.css", "src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -78,7 +78,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"],
+            "styles": ["src/design-tokens.generated.css", "src/styles.scss"],
             "scripts": [],
             "karmaConfig": "karma.conf.js",
             "watch": false

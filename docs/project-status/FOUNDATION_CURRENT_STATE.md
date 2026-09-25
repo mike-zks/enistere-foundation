@@ -47,6 +47,10 @@ Créance navigateur et Auth sur Angular :
 [`ADR-075`](../adr/ADR-075-browser-credential-storage.md).
 Frontière de matérialisation des projets dérivés :
 [`ADR-086`](../adr/ADR-086-derived-project-materialization-boundary.md).
+Identités applicatives dérivées du CSM :
+[`ADR-087`](../adr/ADR-087-csm-derived-application-identities.md).
+Parité contractuelle et artefacts partagés :
+[`ADR-088`](../adr/ADR-088-contractual-parity-and-shared-artifacts.md).
 
 ## Actifs existants à migrer
 
@@ -70,17 +74,36 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
 
 ## Écarts (mesurés par l'audit)
 
-- **P0** — contrats centrés TypeScript (pas de génération Java/Dart). *Partiellement adressé* : le pipeline
+- **P0** — contrats centrés TypeScript. *Partiellement adressé* : le pipeline
   canonique unique ([ADR-046](../adr/ADR-046-single-canonical-factory-pipeline.md)) et une **suite Platform
   Contract exécutable** minimale pour la famille API ([ADR-047](../adr/ADR-047-executable-platform-contract-api.md))
-  existent ; NestJS, Spring et FastAPI sont conformes sur les 28 invariants Common/API v2, avec boot et
-  contrat HTTP vérifiés (ADR-061/062). Restent **non implémentés** : Blueprint V2 complet et génération
-  polyglotte des contrats.
+  existent ; NestJS, Spring et FastAPI sont conformes sur les 28 invariants Common/API v2. ADR-088 a
+  toutefois mesuré que cette conformité ne prouve pas leur interchangeabilité HTTP : FastAPI diverge du
+  snapshot NestJS et Spring Files ne publie pas `/v3/api-docs`. `ApiErrorResponse` possède désormais des
+  bindings TypeScript/Java/Python/Dart générés. Restent **non implémentés** : Blueprint V2 complet,
+  contrat composé intégral et clients polyglottes.
 - **P1** — Lifecycle Manager absent ; distribution limitée au slice Spring +
   NestJS sync HTTP ; primitives système non encore sélectionnées dans le
   Blueprint. Le manifest Capability v2 sait désormais déclarer des besoins de
   primitives provider-neutral. Observability et Technical Audit relèvent du
   baseline.
+- **P0 opérationnel** — la livraison dérivée n'est pas exploitable de manière
+  paritaire : Dockerfiles NestJS et Next.js rouges dans leur structure livrée,
+  Compose local fixe sans rapport avec les primitives, staging sans application
+  et aucune CI dérivée. Mesures :
+  [audit opérationnel du 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md).
+  ADR-089 sépare désormais contrat, adapter, pack provider et pipeline ; le
+  schéma `deploymentUnit/v1` est exécuté et le plan émet une unité validée par
+  application. FastAPI OCI, Spring JAR, Angular bundle et Expo export sont
+  distingués des images NestJS/Next.js et releases mobiles bloquées. Cela ne
+  corrige encore aucun artefact rouge, pack provider ou pipeline dérivé.
+- **P1 UI/UX multi-runtime** — `design-experience/v1` et `theme-pack/v1` sont
+  exécutables (ADR-090) : sept patterns, deux packs institutionnels, résolution
+  institution/contexte/mode et bindings CSS/TypeScript/Dart déterministes.
+  Les quatre runtimes consomment désormais leur projection idiomatique et les
+  dérivés ne reçoivent que celle de leur famille. `@enistere/ui-kit` reste le
+  binding React DOM Web ; la parité des sept patterns UX reste ouverte. Mesure initiale :
+  [étude UI/UX du 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md).
 
 ## Statut des chantiers V2
 
@@ -96,9 +119,10 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
   validées et les alias historiques restent limités à la frontière Blueprint v1.
 - `Full Blueprint V2` : **PARTIAL** ; primitives et sections complètes restent TARGET.
 - `Platform Contract executable (API minimal v1)` : **HISTORIQUE** (ADR-047, ADR-048, ADR-049) — suite de conformité
-  calculée (`factory/conformance/`, émet `enistere.conformance.json`) ; NestJS↔Spring en **parité** sur
-  `config-validated`, `error-canonical` (enveloppe plate `ApiErrorResponse`), `correlation-id`, health,
-  `openapi`, `base-security` et `observability` ; pipeline gardé par des fitness functions (FF6–FF8).
+  calculée (`factory/conformance/`, émet `enistere.conformance.json`) ; elle mesurait des invariants
+  structurels et comportementaux (`ApiErrorResponse`, corrélation, health, sécurité, observabilité),
+  mais son marqueur `openapi` ne prouvait ni l'endpoint ni l'égalité des surfaces. ADR-088 a mesuré
+  cette limite sur FastAPI et Spring Files. Pipeline gardé par des fitness functions (FF6–FF8).
 - `Platform Contract executable (Web, socle)` : **IMPLEMENTED** (ADR-050, ADR-051) — évaluateur
   multi-familles ; invariants Web **idiomatiques** ; le **socle Angular a convergé** vers Next.js
   (`enistere.conformance.json` : Angular base `compliant` sur typed-config/typed-api-access/ui-states/
@@ -125,6 +149,14 @@ exécution des suites normatives et des goldens. Aucun runtime n’est prouvé `
 - `Derived project materialization boundary` : **IMPLEMENTED_AND_TESTED**
   (ADR-086) — aucun payload de capability, cache ou chemin machine n'est livré ;
   les packages partagés suivent la fermeture transitive de leurs consommateurs.
+- `CSM-derived application identities` : **IMPLEMENTED_AND_TESTED** (ADR-087) —
+  les sept runtimes matérialisent manifests, coordonnées, packages/imports,
+  chemins natifs et labels depuis le projet et l'id applicatif ; la régénération
+  refuse le retrait ou renommage implicite d'une identité livrée.
+- `Contractual parity` : **DECIDED_PARTIAL** (ADR-088) — quatre niveaux séparés
+  (produit, contrat externe, client, composition) ; première tranche
+  `ApiErrorResponse` générée et consommée dans quatre langages. Les surfaces
+  Auth/RBAC/Files et l'équivalence des profils restent ouvertes.
 - `base` comme capability : **REMOVED** du registre, des manifests de capabilities, profils et plans ;
   compatibilité Blueprint v1 effacée à l'ingestion.
 - `Capability Manifest v2` : **IMPLEMENTED** (ADR-067) — closure déterministe,
@@ -150,7 +182,7 @@ la même surface client que Next.js ; React Native et Flutter sont explicitement
 tient l'upload, seule responsabilité due dans la famille Mobile.
 ```
 
-- `Parité par famille` : **MESURÉE SUR TOUS LES RUNTIMES** (ADR-070/074) —
+- `Parité produit par famille` : **MESURÉE SUR TOUS LES RUNTIMES** (ADR-070/074) —
   Authentication, RBAC et Files satisfont la règle sur toutes leurs targets
   applicables ; `parity-gaps.json` ne porte plus aucun écart. NestJS, Spring et FastAPI tiennent les sept
   responsabilités Files et protègent leur surface par les permissions `files.*`.
@@ -161,11 +193,11 @@ tient l'upload, seule responsabilité due dans la famille Mobile.
   d'autorisation Spring répondait `500` au lieu de `403`.
 
   Les trois capabilities livrées ont leur parité déclarée. Restent notamment les
-  identités applicatives dérivées du CSM, les contrats polyglottes générés et le lifecycle.
+  contrat composé complet, clients polyglottes, classification fine des documents applicatifs et lifecycle.
 
 Ces éléments sont qualifiés contre le Platform Baseline v2 par les rapports de
-conformance et les goldens nommés ; aucune équivalence produit au-delà des
-responsabilités déclarées n'est sous-entendue.
+conformance et les goldens nommés. ADR-088 interdit d'en déduire une équivalence
+HTTP, client ou profil sans les preuves contractuelles et croisées correspondantes.
 
 ## CI et dépendances
 

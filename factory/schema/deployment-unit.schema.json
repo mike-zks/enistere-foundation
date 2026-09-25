@@ -1,0 +1,252 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enistere.com/schemas/deployment-unit/v1",
+  "title": "Enistere Deployment Unit v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "application",
+    "runtime",
+    "family",
+    "artifacts",
+    "configuration",
+    "health",
+    "migrations",
+    "dependencies",
+    "rollout"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "id": { "$ref": "#/$defs/id" },
+    "application": { "$ref": "#/$defs/id" },
+    "runtime": {
+      "enum": ["nestjs", "spring", "fastapi", "nextjs", "angular", "react-native", "flutter"]
+    },
+    "family": { "enum": ["api", "web", "mobile"] },
+    "owner": { "type": ["string", "null"], "minLength": 1 },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "configuration": { "$ref": "#/$defs/configuration" },
+    "health": { "$ref": "#/$defs/health" },
+    "migrations": { "$ref": "#/$defs/migrations" },
+    "dependencies": { "$ref": "#/$defs/dependencies" },
+    "rollout": { "$ref": "#/$defs/rollout" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "family": { "const": "api" } }, "required": ["family"] },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "items": {
+              "properties": { "kind": { "enum": ["oci-image", "jvm-jar"] } }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "family": { "const": "web" } }, "required": ["family"] },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "items": {
+              "properties": { "kind": { "enum": ["oci-image", "web-static-bundle"] } }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "family": { "const": "mobile" } }, "required": ["family"] },
+      "then": {
+        "properties": {
+          "artifacts": {
+            "items": {
+              "properties": {
+                "kind": { "enum": ["android-package", "ios-package", "mobile-update-bundle"] }
+              }
+            }
+          },
+          "health": { "properties": { "kind": { "const": "none" } } }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,62}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:\\.|(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)[^\\u0000]+)$"
+    },
+    "command": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "status", "build", "distribution", "evidence", "blockers"],
+      "properties": {
+        "id": { "$ref": "#/$defs/id" },
+        "kind": {
+          "enum": [
+            "oci-image",
+            "jvm-jar",
+            "web-static-bundle",
+            "android-package",
+            "ios-package",
+            "mobile-update-bundle"
+          ]
+        },
+        "status": { "enum": ["ready", "blocked"] },
+        "build": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["context", "command", "outputs"],
+          "properties": {
+            "context": { "$ref": "#/$defs/relativePath" },
+            "definition": { "$ref": "#/$defs/relativePath" },
+            "command": { "$ref": "#/$defs/command" },
+            "outputs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": { "$ref": "#/$defs/relativePath" }
+            }
+          }
+        },
+        "distribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["channel", "immutable"],
+          "properties": {
+            "channel": {
+              "enum": ["local-file", "oci-registry", "artifact-registry", "app-store"]
+            },
+            "immutable": { "type": "boolean" }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "blockers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "blocked" } }, "required": ["status"] },
+          "then": { "properties": { "blockers": { "minItems": 1 } } },
+          "else": { "properties": { "blockers": { "maxItems": 0 }, "evidence": { "minItems": 1 } } }
+        },
+        {
+          "if": { "properties": { "kind": { "const": "oci-image" } }, "required": ["kind"] },
+          "then": { "properties": { "build": { "required": ["definition"] } } }
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nonSecret", "secrets"],
+      "properties": {
+        "nonSecret": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" }
+        },
+        "secrets": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "reference"],
+            "properties": {
+              "name": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,127}$" },
+              "reference": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "key"],
+                "properties": {
+                  "kind": { "enum": ["environment", "ci-secret", "secret-store"] },
+                  "key": { "type": "string", "minLength": 1 }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "health": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path"],
+      "properties": {
+        "kind": { "enum": ["http", "none"] },
+        "path": { "type": ["string", "null"], "pattern": "^/" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "http" } }, "required": ["kind"] },
+          "then": { "properties": { "path": { "type": "string" } } },
+          "else": { "properties": { "path": { "type": "null" } } }
+        }
+      ]
+    },
+    "migrations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "command", "reversible"],
+      "properties": {
+        "kind": { "enum": ["command", "startup", "none"] },
+        "command": { "type": ["array", "null"], "items": { "type": "string", "minLength": 1 } },
+        "reversible": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "command" } }, "required": ["kind"] },
+          "then": { "properties": { "command": { "$ref": "#/$defs/command" } } },
+          "else": { "properties": { "command": { "type": "null" }, "reversible": { "const": false } } }
+        }
+      ]
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["units", "primitives"],
+      "properties": {
+        "units": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } },
+        "primitives": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/$defs/id" } }
+      }
+    },
+    "rollout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["order", "rollbackOrder", "rollbackStrategy"],
+      "properties": {
+        "order": { "type": "integer", "minimum": 0 },
+        "rollbackOrder": { "type": "integer", "minimum": 0 },
+        "rollbackStrategy": {
+          "enum": ["redeploy-previous-artifact", "restore-and-redeploy", "store-rollback", "manual"]
+        }
+      }
+    }
+  }
+}

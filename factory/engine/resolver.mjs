@@ -14,12 +14,14 @@ import {
   assessCapabilitySupport,
   buildCapabilityMatrix,
   resolveCapabilityGraph,
+  targetOperationalConfiguration,
 } from './capabilities.mjs';
 import { matchProfileSelection } from './profiles.mjs';
 import { RESOLUTION_DIAGNOSTIC_CODES as RC, diagnostic } from '../model/diagnostics.mjs';
 import { resolvedSystem } from '../model/resolved-system.mjs';
 import { SYSTEM_PROFILE_DEFINITIONS } from '../model/system-profiles.mjs';
 import { assessDistributedPlatformSupport } from './architecture-support.mjs';
+import { copyDeliveryDescriptor } from './operational-delivery.mjs';
 
 const GATE_COMMANDS = ['install', 'test', 'build', 'verify'];
 const SLOTS = ['api', 'web', 'mobile'];
@@ -137,6 +139,7 @@ export function resolveSystem(csm, { starters, capabilityManifests, modularStart
       primitives: definitions(target.primitives, manifest.primitives),
       migrations: definitions(target.migrations, manifest.migrations),
       conformance: definitions(target.conformance, manifest.conformance),
+      configuration: targetOperationalConfiguration(manifest, runtimeId),
     };
   };
 
@@ -145,6 +148,7 @@ export function resolveSystem(csm, { starters, capabilityManifests, modularStart
       diagnostics.push(diagnostic(RC.UNKNOWN_RUNTIME_ADAPTER, `no runtime adapter for ${app.runtime}`, { details: { runtime: app.runtime } }));
     }
     const starter = starterById.get(app.runtime);
+    const runtimeAdapter = getTargetAdapter(app.runtime);
     const gates = GATE_COMMANDS
       .filter((command) => starter?.commands?.[command])
       .map((command) => ({ gate: command, command: starter.commands[command].join(' ') }));
@@ -161,6 +165,7 @@ export function resolveSystem(csm, { starters, capabilityManifests, modularStart
       kind: app.kind,
       runtime: app.runtime,
       adapter: adapterVersions[app.runtime] ?? null,
+      delivery: copyDeliveryDescriptor(runtimeAdapter?.delivery),
       baseline: {
         contractVersion: starter?.baseline?.contractVersion ?? null,
         familyContract: starter?.baseline?.familyContract ?? null,

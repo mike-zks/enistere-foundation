@@ -4,7 +4,7 @@
  * css/tokens.css). Importe le build (`dist/`) — exécuter `npm run build` au préalable (le script npm
  * `tokens:generate` s'en charge).
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -14,6 +14,7 @@ import { buildStylesContent } from './styles.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const GEN = join(ROOT, 'generated');
+const CANONICAL_CSS = join(ROOT, 'generated', 'css', 'design-tokens.css');
 
 const result = validateDefaultTokens();
 if (!result.valid) {
@@ -22,12 +23,14 @@ if (!result.valid) {
 }
 
 const { json, typescript, css } = generateAll();
+const canonicalCss = readFileSync(CANONICAL_CSS, 'utf8');
+const combinedCss = `${css.trimEnd()}\n\n${canonicalCss}`;
 mkdirSync(join(GEN, 'typescript'), { recursive: true });
 mkdirSync(join(GEN, 'css'), { recursive: true });
 writeFileSync(join(GEN, 'tokens.json'), json);
 writeFileSync(join(GEN, 'typescript', 'tokens.ts'), typescript);
-writeFileSync(join(GEN, 'css', 'tokens.css'), css);
-writeFileSync(join(GEN, 'css', 'styles.css'), buildStylesContent(css, join(ROOT, 'src', 'components')));
+writeFileSync(join(GEN, 'css', 'tokens.css'), combinedCss);
+writeFileSync(join(GEN, 'css', 'styles.css'), buildStylesContent(combinedCss, join(ROOT, 'src', 'components')));
 
 console.log(
   JSON.stringify(

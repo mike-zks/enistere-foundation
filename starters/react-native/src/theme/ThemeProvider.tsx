@@ -12,19 +12,22 @@ import { createContext, useContext, useMemo, type PropsWithChildren } from 'reac
 import { useColorScheme } from 'react-native';
 
 import { resolveTheme, type ColorScheme, type Theme } from './tokens';
+import type { DesignThemeSelection } from './design-contract.generated';
 
 const ThemeContext = createContext<Theme | null>(null);
 
 export interface ThemeProviderProps extends PropsWithChildren {
   /** Force a scheme; when omitted the OS scheme is followed. */
   readonly scheme?: ColorScheme;
+  /** Trusted visual context; it never grants tenant access or permissions. */
+  readonly selection?: Omit<DesignThemeSelection, 'requestedMode' | 'systemMode'>;
 }
 
-export function ThemeProvider({ scheme, children }: ThemeProviderProps): React.JSX.Element {
+export function ThemeProvider({ scheme, selection, children }: ThemeProviderProps): React.JSX.Element {
   const systemScheme = useColorScheme();
   const resolved = useMemo<Theme>(
-    () => resolveTheme(scheme ?? (systemScheme === 'dark' ? 'dark' : 'light')),
-    [scheme, systemScheme],
+    () => resolveTheme(scheme ?? (systemScheme === 'dark' ? 'dark' : 'light'), selection),
+    [scheme, selection, systemScheme],
   );
   return <ThemeContext.Provider value={resolved}>{children}</ThemeContext.Provider>;
 }

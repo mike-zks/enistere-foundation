@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enistere.com/schemas/design-experience/v1",
+  "title": "Enistere Design Experience Contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "semanticColorKeys", "patterns"],
+  "properties": {
+    "schemaVersion": { "const": "1" },
+    "id": { "const": "design-experience" },
+    "semanticColorKeys": {
+      "type": "array",
+      "minItems": 19,
+      "maxItems": 19,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "background.default", "background.muted", "background.elevated",
+          "foreground.default", "foreground.muted", "foreground.inverse",
+          "border.default", "border.strong", "border.focus",
+          "action.primary", "action.primaryHover", "action.primaryPressed", "action.disabled",
+          "status.success", "status.warning", "status.danger", "status.info",
+          "focus.ring", "overlay"
+        ]
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/pattern" }
+    }
+  },
+  "$defs": {
+    "pattern": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "applicability", "announcement", "action", "focus", "motion",
+        "safeContent", "revealTechnicalDetails", "messageKey"
+      ],
+      "properties": {
+        "id": {
+          "enum": ["loading", "empty", "error", "success", "unauthorized", "forbidden", "offline"]
+        },
+        "applicability": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["web", "mobile"] }
+        },
+        "announcement": { "enum": ["none", "polite", "assertive"] },
+        "action": { "enum": ["none", "optional", "required"] },
+        "focus": { "enum": ["none", "preserve", "move-to-state", "restore-trigger"] },
+        "motion": { "enum": ["none", "reduced-safe"] },
+        "safeContent": { "const": true },
+        "revealTechnicalDetails": { "const": false },
+        "messageKey": { "type": "string", "pattern": "^experience\\.[a-z][a-z0-9-]*$" }
+      }
+    }
+  }
+}

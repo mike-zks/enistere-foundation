@@ -149,7 +149,7 @@ jobs:
             --publish 9000:9000 \
             --env MINIO_ROOT_USER=golden_runtime_test_access_key \
             --env MINIO_ROOT_PASSWORD=golden_runtime_test_secret_key \
-            minio/minio:RELEASE.2025-04-22T22-12-26Z server /data
+            quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z server /data
           for attempt in $(seq 1 30); do
             curl --fail --silent http://localhost:9000/minio/health/live && exit 0
             sleep 2

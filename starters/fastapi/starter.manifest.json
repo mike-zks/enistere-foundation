@@ -15,6 +15,5 @@
     "model": "modular",
     "readyCapabilities": ["auth", "rbac", "files"],
     "plannedCapabilities": []
-  },
-  "deployment": { "dockerfile": "Dockerfile", "healthPath": "/health" }
+  }
 }

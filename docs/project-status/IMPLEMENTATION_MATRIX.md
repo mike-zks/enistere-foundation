@@ -9,7 +9,7 @@
 
 | Capacité | État | Limite actuelle |
 |---|---|---|
-| `doctor/init/validate/plan/generate/verify` | Implémenté | lifecycle `inspect/diff/upgrade/migrate` non livré |
+| `doctor/init/validate/plan/generate/regenerate/verify` | Implémenté | aucun merge trois voies, reverrouillage automatique ou lifecycle `inspect/diff/upgrade/migrate` |
 | `architecture list/describe/recommend` | **Implémenté** (ADR-060/065) | quatre sorties canoniques, six dimensions et support séparé |
 | `capability list/describe` | **Implémenté** (ADR-067) | lecture du registre v2 ; add/remove/upgrade relèvent du lifecycle futur |
 | Initialisation system-first | **Implémentée** (ADR-065) | `init` exige `--architecture` avant les runtimes ; mode interactif riche non livré |
@@ -24,6 +24,9 @@
 | Platform Baseline v2 exécutable | **Implémenté** (ADR-058/061/062/063/064) | Common/API/Web/Mobile versionnés ; sept runtimes conformes ; rapport calculé dans `factory/conformance/reports/` |
 | Source unique des starters | **Implémentée et gardée** (ADR-063/064) | sept racines `starters/<runtime>` ; `base/`, `composition.baseSource` et capabilities Mobile embarquées interdits |
 | Frontière de matérialisation dérivée | **Implémentée et gardée** (ADR-086) | applications et overlays sélectionnés seulement ; caches, métadonnées de starter, chemins machine et racines de capabilities exclus |
+| Identités applicatives dérivées du CSM | **Implémentées et gardées** (ADR-087) | sept runtimes ; namespace neutre `app.*`, aucun cycle de renommage/retrait livré |
+| Parité contractuelle | **Décidée, partielle** (ADR-088) | `ApiErrorResponse` généré TS/Java/Python/Dart ; surface complète et profils croisés non prouvés ; OpenAPI Spring Files absent |
+| Contrat de livraison opérationnelle | **Implémenté dans le plan, artefacts partiels** (ADR-089) | sept descripteurs adapters ; une unité validée par application, contrat dérivé et lock ; 4 kinds prêts mesurés, images NestJS/Next.js et releases natives bloquées |
 | Requalification de `base` | **Implémentée** (ADR-058) | baseline implicite ; `base` absent du graphe capability/CSM/plan, toléré uniquement en entrée Blueprint v1 puis effacé |
 | Fitness functions du pipeline (FF6–FF8) | **Implémenté** (ADR-047) | frontière d'ingestion, modèle interne unique, chaîne canonique — gardés contre régression |
 | `profiles` / `profile <name>` | Implémenté (R7/ADR-062) | presets de composition historiques : 35 déclarés, tous générables ; 31 prouvés par un golden exact |
@@ -37,9 +40,10 @@
 | Graphe de capabilities | **Implémenté** (ADR-067) | closure/ordre déterministes, auto-inclusions tracées, cycles et conflits refusés |
 | Conformité produit de capability | **Implémenté** — `auth`, `rbac` et `files` conformes (ADR-068 → ADR-070/074) | évaluateur générique, contrats découverts par convention, invariants par rôle et par responsabilité, `not-applicable` traité comme absence légitime |
 | Gates hermétiques | **Implémenté pour le mobile** (ADR-071) | le verdict d'un golden ne dépend plus d'une valeur distante mutable ; outil de vérification épinglé. Les autres gates ne sont pas audités |
-| Parité par famille de runtimes | **Mesurée sur tous les runtimes** (ADR-070, ADR-074) | un runtime ne s'exonère plus par `unsupported` ; aucun écart déclaré ne reste dans `factory/quality/parity-gaps.json` |
+| Parité produit par famille de runtimes | **Mesurée sur tous les runtimes** (ADR-070, ADR-074) | aucun écart de responsabilités ; ne vaut pas parité HTTP/client/composition (ADR-088) |
 | Composition modulaire (`modular-overlay`) | Implémentée (1A) | active si toutes les targets sont modulaires |
-| Packages partagés par consommateurs + lock racine | Implémenté (ADR-086) | fermeture transitive `@enistere/*`, workspaces explicites, `npm install` → `npm ci` ; bindings polyglottes non livrés |
+| Packages partagés par consommateurs + lock racine | Implémenté (ADR-086/088) | fermeture transitive `@enistere/*` ; contrat composé privilégié ; première tranche polyglotte livrée, migration client Fetch/UI Kit ouverte |
+| Contrat design/expérience multi-runtime | **Bindings et thèmes implémentés, parité des patterns partielle** (ADR-090) | quatre runtimes consommateurs sans copies de couleurs ; 2 ThemePacks résolus institution/contexte/mode ; 7 patterns déclarés mais matrice runtime non close ([étude 2026-08-09](../audits/UI_UX_MULTI_RUNTIME_STUDY_2026-08-09.md)) |
 | CI `Factory Golden Runtime` | Implémentée (1A-R), étendue (1B/1C/R8A/ADR-066) | inclut le golden topologique `distributed-spring-nestjs` |
 | Statuts de support (`not-applicable`) | Implémenté (1B) | permet les compositions mixtes sans surface factice |
 | Composition Prisma structurée | Implémentée (1B-R) | modèle intermédiaire strict, sans parsing de texte |
@@ -49,7 +53,7 @@
 | Lock déterministe + digests d'overlays | Implémenté | upgrade non livré |
 | Contrat de domaine neutre | Initial | pas de génération CRUD framework |
 | Agents locaux | Implémenté | exécution volontairement sous approbation |
-| Deployment local/staging | Initial | staging généré à compléter par images applicatives |
+| Livraison opérationnelle local/staging | **Modélisée, non conforme** | unités émises ; restent Compose fixe sans primitives, staging sans applications, Dockerfiles dérivés NestJS/Next.js rouges, releases natives absentes et aucune CI dérivée ([audit 2026-08-02](../audits/OPERATIONAL_PARITY_AUDIT_2026-08-02.md)) |
 
 ## Capabilities
 

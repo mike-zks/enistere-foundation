@@ -1,43 +1,29 @@
 /**
- * Theme tokens — aligned bridge to `@enistere/ui-kit` generated tokens.
+ * React Native binding of the generated neutral design contract.
  *
- * Governance:
- * - ADR-008 makes `@enistere/ui-kit` the SOURCE OF TRUTH for design tokens. It
- *   is already RN-safe (colors as hex strings, spacing/radius as numeric dp,
- *   structured shadows — see its `react-native.consumer.ts`).
- * - ADR-010 mandates "tokens Enistere + ThemeProvider + composants maison
- *   contrôlés" for React Native (NativeWind/UI libraries NOT introduced here).
+ * Governance: `contracts/design/` is canonical (ADR-090). ADR-010 keeps the
+ * ThemeProvider and components idiomatic to React Native; no DOM dependency is
+ * introduced. Typography remains an adapter extension in this contract version.
  *
- * RN35 — explicit alignment: color values are now taken verbatim from
- * `packages/ui-kit/generated/typescript/tokens.ts` (tokensVersion 0.1.0):
- *   light: background.default/muted/elevated, foreground.default/muted/inverse,
- *          border.default, action.primary, status.danger/success
- *   dark:  same slots from the dark semantic theme
- * Spacing, radius and typography scale (fontSize, fontWeight, lineHeight ratio)
- * are derived from the same generated file; lineHeight is converted to absolute
- * dp for React Native (ratio × fontSize, rounded to integer).
- *
- * When the workspace is unified (Metro monorepo), replace these literals with
- * direct imports from `@enistere/ui-kit/tokens` — the ThemeProvider and all
- * consuming components stay intact.
+ * This file maps neutral semantic slots to the idiomatic RN theme shape. The
+ * generated data contains no DOM or React dependency.
  */
+import {
+  resolveDesignTheme,
+  type DesignThemeSelection,
+} from './design-contract.generated';
+
+const defaultDesign = resolveDesignTheme({ requestedId: 'enistere-default', requestedMode: 'light' });
 
 /** Numeric spacing scale in density-independent pixels (dp). */
-export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
-} as const;
+export const spacing = defaultDesign.shared.spacing;
 
 /** Corner radius scale (dp) — aligned to UI Kit primitives.radius. */
 export const radius = {
-  sm: 4,
-  md: 8,
-  lg: 12,
-  pill: 9999,
+  sm: defaultDesign.shared.radius.sm,
+  md: defaultDesign.shared.radius.md,
+  lg: defaultDesign.shared.radius.lg,
+  pill: defaultDesign.shared.radius.xxl,
 } as const;
 
 /**
@@ -55,7 +41,7 @@ export const typography = {
 
 /** Minimum touch target (dp) — accessibility floor per ADR-010 §16/§19. */
 export const a11y = {
-  minTouchTarget: 44,
+  minTouchTarget: defaultDesign.shared.minimumTouchTarget,
 } as const;
 
 /** The set of semantic color slots a theme must provide. */
@@ -72,39 +58,28 @@ export interface ThemeColors {
   readonly success: string;
 }
 
-// Light — verbatim from UI Kit generated/typescript/tokens.ts lightTheme
-const lightColors: ThemeColors = {
-  background: '#FFFFFF',       // background.default
-  surface: '#F8FAFC',          // background.muted
-  surfaceElevated: '#FFFFFF',  // background.elevated
-  border: '#E2E8F0',           // border.default
-  text: '#0F172A',             // foreground.default
-  textMuted: '#64748B',        // foreground.muted
-  primary: '#2563EB',          // action.primary
-  primaryText: '#FFFFFF',      // foreground.inverse
-  danger: '#DC2626',           // status.danger
-  success: '#16A34A',          // status.success
-};
-
-// Dark — verbatim from UI Kit generated/typescript/tokens.ts darkTheme
-const darkColors: ThemeColors = {
-  background: '#020617',       // background.default
-  surface: '#0F172A',          // background.muted
-  surfaceElevated: '#1E293B',  // background.elevated
-  border: '#334155',           // border.default
-  text: '#F8FAFC',             // foreground.default
-  textMuted: '#94A3B8',        // foreground.muted
-  primary: '#3B82F6',          // action.primary
-  primaryText: '#FFFFFF',      // white on blue primary (light inverse) — better contrast than dark foreground.inverse on blue-400
-  danger: '#EF4444',           // status.danger
-  success: '#22C55E',          // status.success
-};
+function mapColors(colors: Readonly<Record<string, string>>): ThemeColors {
+  return {
+    background: colors['background.default'] as string,
+    surface: colors['background.muted'] as string,
+    surfaceElevated: colors['background.elevated'] as string,
+    border: colors['border.default'] as string,
+    text: colors['foreground.default'] as string,
+    textMuted: colors['foreground.muted'] as string,
+    primary: colors['action.primary'] as string,
+    primaryText: colors['foreground.inverse'] as string,
+    danger: colors['status.danger'] as string,
+    success: colors['status.success'] as string,
+  };
+}
 
 export type ColorScheme = 'light' | 'dark';
 
 /** A fully resolved theme handed to components via `useTheme()`. */
 export interface Theme {
   readonly scheme: ColorScheme;
+  readonly packId: string;
+  readonly institutionId: string;
   readonly colors: ThemeColors;
   readonly spacing: typeof spacing;
   readonly radius: typeof radius;
@@ -112,26 +87,33 @@ export interface Theme {
   readonly a11y: typeof a11y;
 }
 
-export const lightTheme: Theme = {
-  scheme: 'light',
-  colors: lightColors,
-  spacing,
-  radius,
-  typography,
-  a11y,
-};
+function buildTheme(scheme: ColorScheme, selection: Omit<DesignThemeSelection, 'requestedMode'>): Theme {
+  const resolved = resolveDesignTheme({ ...selection, requestedMode: scheme });
+  const isDefault = resolved.pack.id === 'enistere-default';
+  return {
+    scheme: resolved.mode,
+    packId: resolved.pack.id,
+    institutionId: resolved.pack.institution.id,
+    colors: mapColors(resolved.colors),
+    spacing: isDefault ? spacing : resolved.shared.spacing,
+    radius: isDefault ? radius : {
+      sm: resolved.shared.radius.sm,
+      md: resolved.shared.radius.md,
+      lg: resolved.shared.radius.lg,
+      pill: resolved.shared.radius.xxl,
+    },
+    typography,
+    a11y: isDefault ? a11y : { minTouchTarget: resolved.shared.minimumTouchTarget },
+  };
+}
 
-export const darkTheme: Theme = {
-  scheme: 'dark',
-  colors: darkColors,
-  spacing,
-  radius,
-  typography,
-  a11y,
-};
+export const lightTheme: Theme = buildTheme('light', {});
+export const darkTheme: Theme = buildTheme('dark', {});
 
-export function resolveTheme(scheme: ColorScheme): Theme {
-  return scheme === 'dark' ? darkTheme : lightTheme;
+export function resolveTheme(scheme: ColorScheme, selection: Omit<DesignThemeSelection, 'requestedMode'> = {}): Theme {
+  return Object.keys(selection).length === 0
+    ? scheme === 'dark' ? darkTheme : lightTheme
+    : buildTheme(scheme, selection);
 }
 
 export type SpacingToken = keyof typeof spacing;

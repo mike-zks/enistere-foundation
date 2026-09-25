@@ -4,8 +4,13 @@ export { TOKENS_VERSION } from './meta.js';
 export { SEMANTIC_COLOR_KEYS, type SemanticColorKey } from './semantic/colors.js';
 export { primitives } from './primitives/index.js';
 export { semanticTypography } from './semantic/typography.js';
-export { lightColorReferences } from './themes/light.js';
-export { darkColorReferences } from './themes/dark.js';
+export {
+  designExperience,
+  themePacks,
+  resolveDesignTheme,
+  type DesignThemeMode,
+  type DesignThemeSelection,
+} from './generated/design-contract.js';
 export {
   lightTheme,
   darkTheme,

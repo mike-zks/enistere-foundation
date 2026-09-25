@@ -297,14 +297,14 @@ export const lightTheme = {
     },
     "status": {
       "success": "#16A34A",
-      "warning": "#F59E0B",
+      "warning": "#D97706",
       "danger": "#DC2626",
       "info": "#2563EB"
     },
     "focus": {
       "ring": "#3B82F6"
     },
-    "overlay": "#0F172A"
+    "overlay": "#0F172ACC"
   }
 } as const;
 
@@ -341,6 +341,6 @@ export const darkTheme = {
     "focus": {
       "ring": "#60A5FA"
     },
-    "overlay": "#020617"
+    "overlay": "#020617CC"
   }
 } as const;

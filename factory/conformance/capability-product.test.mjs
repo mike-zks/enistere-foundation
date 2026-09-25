@@ -325,6 +325,23 @@ describe('capability product conformance', () => {
     assert.equal(written.capabilities.length, 3);
   });
 
+  it('resolves Spring materialized proofs from the application identity', async () => {
+    const blueprint = createDefaultBlueprint('capability-conformance-spring-identity');
+    blueprint.stack = { api: 'spring', web: null, mobile: null };
+    blueprint.capabilities = ['auth', 'rbac', 'files'];
+    blueprint.deployment = { environments: ['local'] };
+    const projectDir = join(root, 'spring-identity');
+    const plan = await generateProject(blueprint, projectDir);
+    const application = plan.applications.find((item) => item.runtime === 'spring');
+
+    assert.notEqual(application.identity.maven.packageName, 'com.enistere.core');
+    const reports = await verifyMaterializedCapabilities(projectDir, plan, REPO_ROOT);
+    for (const report of reports) {
+      assert.equal(report.targets.spring.status, 'CONFORMANT', report.capability);
+      assert.equal(report.targets.spring.materialized, true, report.capability);
+    }
+  });
+
   it('fails when a materialized proof marker disappears', async () => {
     const blueprint = createDefaultBlueprint('capability-conformance-tampered');
     blueprint.stack = { api: 'nestjs', web: null, mobile: null };

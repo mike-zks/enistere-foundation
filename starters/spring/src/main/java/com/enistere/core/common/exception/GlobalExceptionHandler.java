@@ -1,6 +1,7 @@
 package com.enistere.core.common.exception;
 
 import com.enistere.core.common.web.CorrelationIdFilter;
+import com.enistere.core.contracts.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -30,14 +31,14 @@ public class GlobalExceptionHandler {
         return id instanceof String value ? value : null;
     }
 
-    private static ResponseEntity<ApiError> respond(int statusCode, String errorCode, String message, Object details, HttpServletRequest request) {
+    private static ResponseEntity<ApiErrorResponse> respond(int statusCode, String errorCode, String message, Object details, HttpServletRequest request) {
         return ResponseEntity.status(statusCode).body(
-            ApiError.of(statusCode, errorCode, message, details, request.getRequestURI(), requestId(request))
+            ApiErrorResponse.create(statusCode, errorCode, message, details, request.getRequestURI(), requestId(request))
         );
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
             .map(e -> e.getField() + ": " + e.getDefaultMessage())
             .toList();
@@ -52,7 +53,7 @@ public class GlobalExceptionHandler {
      * merely sent an out-of-range page size.
      */
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
         List<String> errors = ex.getConstraintViolations().stream()
             .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
             .sorted()
@@ -61,7 +62,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<ApiError> handleBind(BindException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleBind(BindException ex, HttpServletRequest request) {
         List<String> errors = ex.getBindingResult().getFieldErrors().stream()
             .map(e -> e.getField() + ": " + e.getDefaultMessage())
             .toList();
@@ -69,28 +70,28 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiError> handleMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
         return respond(HttpStatus.BAD_REQUEST.value(), "BAD_REQUEST", "Malformed or missing request body", null, request);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ApiError> handleMaxUploadSize(MaxUploadSizeExceededException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleMaxUploadSize(MaxUploadSizeExceededException ex, HttpServletRequest request) {
         return respond(HttpStatus.PAYLOAD_TOO_LARGE.value(), "FILE_TOO_LARGE", "File size exceeds the maximum allowed", null, request);
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<ApiError> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex, HttpServletRequest request) {
         return respond(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), "UNSUPPORTED_MEDIA_TYPE", "Content type not supported", null, request);
     }
 
     @ExceptionHandler(CodedException.class)
-    public ResponseEntity<ApiError> handleCoded(CodedException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleCoded(CodedException ex, HttpServletRequest request) {
         String message = ex.getReason() != null ? ex.getReason() : "Error";
         return respond(ex.getStatusCode().value(), ex.getErrorCode(), message, null, request);
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ApiError> handleResponseStatus(ResponseStatusException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleResponseStatus(ResponseStatusException ex, HttpServletRequest request) {
         int statusValue = ex.getStatusCode().value();
         String errorCode = ex.getStatusCode() instanceof HttpStatus hs ? hs.name() : String.valueOf(statusValue);
         String message = ex.getReason() != null ? ex.getReason() : "Error";
@@ -98,7 +99,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest request) {
+    public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
         // Never expose stack traces — log internally, return an opaque error.
         return respond(HttpStatus.INTERNAL_SERVER_ERROR.value(), "INTERNAL_ERROR", "An unexpected error occurred", null, request);
     }

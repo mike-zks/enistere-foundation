@@ -29,6 +29,25 @@ export function resolvedSystem({
       ...app,
       baseline: { ...app.baseline },
       gates: [...app.gates],
+      delivery: app.delivery ? {
+        ...app.delivery,
+        artifacts: app.delivery.artifacts.map((artifact) => ({
+          ...artifact,
+          build: { ...artifact.build, command: [...artifact.build.command], outputs: [...artifact.build.outputs] },
+          distribution: { ...artifact.distribution },
+          evidence: [...artifact.evidence],
+          blockers: [...artifact.blockers],
+        })),
+        configuration: {
+          nonSecret: [...app.delivery.configuration.nonSecret],
+          secrets: [...app.delivery.configuration.secrets],
+        },
+        health: { ...app.delivery.health },
+        migrations: {
+          ...app.delivery.migrations,
+          command: app.delivery.migrations.command ? [...app.delivery.migrations.command] : null,
+        },
+      } : null,
       resolvedCapabilities: [...app.resolvedCapabilities],
       consumes: [...app.consumes],
       ownership: app.ownership

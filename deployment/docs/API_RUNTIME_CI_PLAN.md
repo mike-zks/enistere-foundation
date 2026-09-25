@@ -11,7 +11,7 @@
   `api-runtime-ci-${{ github.ref }}`. Node 24, **`npm ci`** dans `starters/nestjs/` (**projet autonome**,
   lockfile propre, hors workspaces racine).
 - **PostgreSQL** en `services:` (`postgres:16`, healthcheck `pg_isready`). **MinIO** via **`docker run`**
-  (`minio/minio server /data` — un conteneur `services:` ne peut pas porter cette commande) + attente santé +
+  (`quay.io/minio/minio server /data` — un conteneur `services:` ne peut pas porter cette commande) + attente santé +
   **bucket `enistere-test-files`** créé (l'API ne le crée pas).
 - Étapes (scripts **réels**) : `prisma:generate` → `prisma:validate` → **`prisma:migrate:deploy`** → `lint`
   → `npm test` → **`test:e2e`** → **`openapi:check`** → `build` → `npm audit`.

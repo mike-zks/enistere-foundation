@@ -1,7 +1,7 @@
 // ============================================================
 // ENISTERE ANGULAR — Global styles
 // Material 3 theme + Enistere design tokens (ADR-035 / ADR-008)
-// Source tokens: ui-kit/generated/css/tokens.css
+// Source tokens: src/design-tokens.generated.css (contracts/design/)
 // ============================================================
 
 @use '@angular/material' as mat;
@@ -28,30 +28,24 @@ $enistere-dark-theme: mat.define-theme((
   density: (scale: 0),
 ));
 
-// ---- Enistere design tokens (aligned with ui-kit/generated/css/tokens.css) ----
+// ---- Angular-only aliases/extensions over design-tokens.generated.css ----
 :root {
-  // Spacing
   --enistere-spacing-0: 0px;
-  --enistere-spacing-1: 4px;
-  --enistere-spacing-2: 8px;
+  --enistere-spacing-1: var(--enistere-spacing-xs);
+  --enistere-spacing-2: var(--enistere-spacing-sm);
   --enistere-spacing-3: 12px;
-  --enistere-spacing-4: 16px;
+  --enistere-spacing-4: var(--enistere-spacing-md);
   --enistere-spacing-5: 20px;
-  --enistere-spacing-6: 24px;
-  --enistere-spacing-8: 32px;
+  --enistere-spacing-6: var(--enistere-spacing-lg);
+  --enistere-spacing-8: var(--enistere-spacing-xl);
   --enistere-spacing-10: 40px;
-  --enistere-spacing-12: 48px;
+  --enistere-spacing-12: var(--enistere-spacing-xxl);
   --enistere-spacing-16: 64px;
   --enistere-spacing-20: 80px;
   --enistere-spacing-24: 96px;
 
-  // Radius
-  --enistere-radius-none: 0px;
-  --enistere-radius-sm: 4px;
-  --enistere-radius-md: 8px;
-  --enistere-radius-lg: 12px;
-  --enistere-radius-xl: 20px;
-  --enistere-radius-full: 9999px;
+  --enistere-radius-none: var(--enistere-radius-xs);
+  --enistere-radius-full: var(--enistere-radius-xxl);
 
   // Typography
   --enistere-font-family-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -92,63 +86,13 @@ $enistere-dark-theme: mat.define-theme((
   --enistere-easing-decelerate: cubic-bezier(0, 0, 0, 1);
   --enistere-easing-accelerate: cubic-bezier(0.3, 0, 1, 1);
 
-  // Semantic colors (light, default)
-  --enistere-color-background-default: #ffffff;
-  --enistere-color-background-muted: #f8fafc;
-  --enistere-color-background-elevated: #ffffff;
-  --enistere-color-foreground-default: #0f172a;
-  --enistere-color-foreground-muted: #64748b;
-  --enistere-color-foreground-inverse: #ffffff;
-  --enistere-color-border-default: #e2e8f0;
-  --enistere-color-border-strong: #cbd5e1;
-  --enistere-color-border-focus: #3b82f6;
-  --enistere-color-action-primary: #2563eb;
-  --enistere-color-action-primary-hover: #1d4ed8;
-  --enistere-color-action-primary-pressed: #1e40af;
-  --enistere-color-action-disabled: #cbd5e1;
-  --enistere-color-status-success: #16a34a;
-  --enistere-color-status-warning: #f59e0b;
-  --enistere-color-status-danger: #dc2626;
-  --enistere-color-status-info: #2563eb;
-  --enistere-color-focus-ring: #3b82f6;
-  --enistere-color-overlay: #0f172a;
 }
 
-// Dark mode — Enistere semantic color overrides
-[data-theme='dark'] {
-  --enistere-color-background-default: #020617;
-  --enistere-color-background-muted: #0f172a;
-  --enistere-color-background-elevated: #1e293b;
-  --enistere-color-foreground-default: #f8fafc;
-  --enistere-color-foreground-muted: #94a3b8;
-  --enistere-color-foreground-inverse: #0f172a;
-  --enistere-color-border-default: #334155;
-  --enistere-color-border-strong: #475569;
-  --enistere-color-border-focus: #60a5fa;
-  --enistere-color-action-primary: #3b82f6;
-  --enistere-color-action-primary-hover: #60a5fa;
-  --enistere-color-action-primary-pressed: #93c5fd;
-  --enistere-color-action-disabled: #334155;
-  --enistere-color-status-success: #22c55e;
-  --enistere-color-status-warning: #f59e0b;
-  --enistere-color-status-danger: #ef4444;
-  --enistere-color-status-info: #3b82f6;
-  --enistere-color-focus-ring: #60a5fa;
-  --enistere-color-overlay: #020617;
-}
-
-// ---- Apply Material 3 light theme + Enistere token mapping ----
-html {
-  @include mat.all-component-themes($enistere-light-theme);
-
-  // Map Enistere design tokens → Material 3 system tokens (--mat-sys-*)
-  // These override the palette-derived defaults generated above.
-  // Because --mat-sys-* references var(--enistere-*), dark mode token
-  // changes on [data-theme='dark'] propagate automatically via CSS cascade.
+@mixin enistere-material-token-map() {
   --mat-sys-primary: var(--enistere-color-action-primary);
   --mat-sys-on-primary: var(--enistere-color-foreground-inverse);
-  --mat-sys-primary-container: #dbeafe;
-  --mat-sys-on-primary-container: #1e40af;
+  --mat-sys-primary-container: var(--enistere-color-background-muted);
+  --mat-sys-on-primary-container: var(--enistere-color-foreground-default);
   --mat-sys-surface: var(--enistere-color-background-default);
   --mat-sys-on-surface: var(--enistere-color-foreground-default);
   --mat-sys-surface-variant: var(--enistere-color-background-muted);
@@ -159,6 +103,12 @@ html {
   --mat-sys-on-error: var(--enistere-color-foreground-inverse);
   --mat-sys-background: var(--enistere-color-background-default);
   --mat-sys-on-background: var(--enistere-color-foreground-default);
+}
+
+// ---- Apply Material 3 themes, then restore the canonical semantic mapping ----
+html {
+  @include mat.all-component-themes($enistere-light-theme);
+  @include enistere-material-token-map();
 
   font-family: var(--enistere-font-family-sans);
 }
@@ -167,6 +117,7 @@ html {
 html[data-theme='dark'],
 [data-theme='dark'] > html {
   @include mat.all-component-colors($enistere-dark-theme);
+  @include enistere-material-token-map();
 }
 
 // ---- Global resets ----

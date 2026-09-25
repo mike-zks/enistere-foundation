@@ -1338,8 +1338,8 @@
     }
   },
   "info": {
-    "title": "Enistere API Core NestJS",
-    "description": "Contrat OpenAPI canonique du API Core NestJS V1 — source de vérité des API publiques (ADR-016).",
+    "title": "Enistere NestJS Composed API",
+    "description": "Contrat HTTP versionné de la composition NestJS complète. Les schémas neutres inter-runtimes vivent sous contracts/.",
     "version": "0.1.0",
     "contact": {}
   },
@@ -1366,7 +1366,7 @@
           },
           "service": {
             "type": "string",
-            "example": "api-nestjs-core"
+            "example": "example-api"
           },
           "timestamp": {
             "type": "string",
@@ -1430,58 +1430,7 @@
         ]
       },
       "ApiErrorResponseDto": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "example": false,
-            "description": "Toujours false pour une réponse d’erreur."
-          },
-          "statusCode": {
-            "type": "number",
-            "example": 404,
-            "description": "Code de statut HTTP."
-          },
-          "message": {
-            "type": "string",
-            "example": "File not found.",
-            "description": "Message générique non sensible."
-          },
-          "errorCode": {
-            "type": "string",
-            "example": "FILE_NOT_FOUND",
-            "description": "Code d’erreur applicatif stable."
-          },
-          "details": {
-            "type": "object",
-            "nullable": true,
-            "description": "Détails structurés optionnels (ex. erreurs de validation). Jamais de secret ni de stack.",
-            "example": null
-          },
-          "path": {
-            "type": "string",
-            "example": "/files/123",
-            "description": "Chemin de la requête."
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2026-06-09T12:00:00.000Z"
-          },
-          "requestId": {
-            "type": "string",
-            "description": "Identifiant de corrélation de la requête (en-tête X-Request-Id). Pas une donnée de sécurité.",
-            "example": "b3f1c2d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
-          }
-        },
-        "required": [
-          "success",
-          "statusCode",
-          "message",
-          "errorCode",
-          "path",
-          "timestamp"
-        ]
+        "$ref": "./generated/api-error-response.v1.openapi.json"
       },
       "UserProfileResponseDto": {
         "type": "object",

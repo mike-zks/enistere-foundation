@@ -18,5 +18,16 @@ import type { ColorScheme } from './tokens';
 export function ThemePreferenceProvider({ children }: PropsWithChildren): React.JSX.Element {
   const themePreference = useUiStore((state) => state.themePreference);
   const scheme: ColorScheme | undefined = themePreference === 'system' ? undefined : themePreference;
-  return <ThemeProvider scheme={scheme}>{children}</ThemeProvider>;
+  return (
+    <ThemeProvider
+      scheme={scheme}
+      selection={{
+        institutionId: process.env.EXPO_PUBLIC_ENISTERE_INSTITUTION_ID ?? 'enistere',
+        contextId: process.env.EXPO_PUBLIC_ENISTERE_THEME_CONTEXT ?? 'default',
+        requestedId: process.env.EXPO_PUBLIC_ENISTERE_THEME_ID,
+      }}
+    >
+      {children}
+    </ThemeProvider>
+  );
 }

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1",
+  "id": "sunrise-institute",
+  "version": "1.0.0",
+  "contractVersion": "1",
+  "institution": { "id": "sunrise", "displayName": "Sunrise Institute" },
+  "selection": {
+    "contexts": ["default", "learning"],
+    "allowUserMode": true,
+    "followSystem": true,
+    "fallbackThemeId": "enistere-default"
+  },
+  "shared": {
+    "spacing": { "xs": 4, "sm": 8, "md": 16, "lg": 24, "xl": 32, "xxl": 48 },
+    "radius": { "xs": 0, "sm": 6, "md": 10, "lg": 14, "xl": 22, "xxl": 9999 },
+    "minimumTouchTarget": 48
+  },
+  "modes": {
+    "light": {
+      "colors": {
+        "background.default": "#FFFBEB", "background.muted": "#FEF3C7", "background.elevated": "#FFFFFF",
+        "foreground.default": "#451A03", "foreground.muted": "#78350F", "foreground.inverse": "#FFFFFF",
+        "border.default": "#FCD34D", "border.strong": "#F59E0B", "border.focus": "#7C3AED",
+        "action.primary": "#7C3AED", "action.primaryHover": "#6D28D9", "action.primaryPressed": "#5B21B6", "action.disabled": "#D6D3D1",
+        "status.success": "#15803D", "status.warning": "#B45309", "status.danger": "#B91C1C", "status.info": "#6D28D9",
+        "focus.ring": "#7C3AED", "overlay": "#451A03CC"
+      }
+    },
+    "dark": {
+      "colors": {
+        "background.default": "#1C1917", "background.muted": "#292524", "background.elevated": "#44403C",
+        "foreground.default": "#FAFAF9", "foreground.muted": "#D6D3D1", "foreground.inverse": "#1C1917",
+        "border.default": "#57534E", "border.strong": "#78716C", "border.focus": "#FBBF24",
+        "action.primary": "#F59E0B", "action.primaryHover": "#FBBF24", "action.primaryPressed": "#FCD34D", "action.disabled": "#57534E",
+        "status.success": "#4ADE80", "status.warning": "#FBBF24", "status.danger": "#F87171", "status.info": "#A78BFA",
+        "focus.ring": "#FBBF24", "overlay": "#1C1917CC"
+      }
+    }
+  },
+  "assets": []
+}

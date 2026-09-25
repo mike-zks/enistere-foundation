@@ -1,11 +1,11 @@
 // @ts-check
 /**
- * Génération DÉTERMINISTE des types OpenAPI canoniques pour `@enistere/api-contracts`.
+ * Génération DÉTERMINISTE des types du transport NestJS composé pour `@enistere/api-contracts`.
  *
  *   node scripts/generate.mjs           → (ré)écrit src/generated/schema.ts
  *   node scripts/generate.mjs --check   → échoue (code 1) si l'artefact suivi diverge du contrat
  *
- * Source UNIQUE : contract/openapi.json (contrat canonique complet, ADR-016), lu en `file://`
+ * Source HTTP : contract/openapi.json (composition NestJS complète, ADR-016), lu en `file://`
  * (jamais un serveur HTTP, jamais /docs, jamais une URL de production). En-tête statique (aucun
  * timestamp) ⇒ deux générations successives produisent un fichier identique (reproductibilité).
  *
@@ -32,7 +32,7 @@ const HEADER = [
   '/**',
   ' * ENISTERE — Types OpenAPI GÉNÉRÉS. NE PAS MODIFIER À LA MAIN.',
   ' *',
-  ' * Source de vérité : packages/api-contracts/contract/openapi.json (contrat canonique complet, ADR-016).',
+  ' * Source HTTP : packages/api-contracts/contract/openapi.json (composition NestJS complète, ADR-016).',
   ' * Régénérer : npm run generate   ·   Vérifier la fraîcheur : npm run generate:check',
   ' *',
   ' * Fichier types-only (aucun runtime). Outil : openapi-typescript.',

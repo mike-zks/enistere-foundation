@@ -2,7 +2,7 @@
   "name": "@enistere/ui-kit",
   "version": "0.1.1",
   "private": true,
-  "description": "UI Kit Enistere : design tokens agnostiques (source de vérité) + premières primitives Web accessibles (React). ADR-008/009/010. Pas de bibliothèque complète, pas de Tailwind/Radix dans le package.",
+  "description": "Binding Web React DOM du contrat design Enistere et primitives accessibles. Privé, sans rôle de source universelle.",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": [

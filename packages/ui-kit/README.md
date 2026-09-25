@@ -1,7 +1,9 @@
 # @enistere/ui-kit
 
-> **Statut : IMPLEMENTATION_PARTIELLE.** Design tokens Enistere (ADR-008, source de vérité) **+
-> 19 primitives Web accessibles** (React) — UI Kit V2/4/5/6. **Privé / non publié** (`0.1.1`). **Pas de
+> **Statut : IMPLEMENTATION_PARTIELLE, BINDING WEB HISTORIQUE.** Tokens Enistere en cours de migration
+> vers le contrat neutre [`contracts/design/`](../../contracts/design/) **+ 19 primitives Web
+> accessibles React DOM** — UI Kit V2/4/5/6. Ce package n'est pas le contrat universel de Next.js,
+> Angular, React Native et Flutter. **Privé / non publié** (`0.1.1`). **Pas de
 > bibliothèque complète**, **pas de Tailwind/Radix/shadcn/NativeWind dans le package** (ADR-009/010 :
 > ces stacks vivent dans les cores clients ; le UI Kit reste piloté par les tokens).
 
@@ -103,26 +105,31 @@ intentions**, **pas** les composants : il aura ses propres primitives (ThemeProv
 
 ## 1. Rôle
 
-Fournir des design tokens **communs, agnostiques, centralisés, versionnés et exportables**, consommés à
-terme par le Web Core Next.js, le Mobile Core React Native et les futurs cores Flutter/Angular — chacun
-adaptant l'implémentation à sa plateforme, **sans redéfinir une source de vérité indépendante**.
+Fournir le binding React DOM et l'implémentation historique des tokens pour le
+Web Next.js. La source neutre cible est définie par la
+[`DESIGN_EXPERIENCE_SPECIFICATION`](../../docs/specifications/DESIGN_EXPERIENCE_SPECIFICATION.md).
+Angular, React Native et Flutter conservent leurs composants idiomatiques et
+consommeront leurs propres projections générées. Tant que cette migration n'est
+pas exécutée, les tokens ci-dessous restent une source de compatibilité, pas la
+preuve d'une vérité multi-runtime unique.
 
 ## 2. ADR appliqués
 
 - **ADR-008** (design tokens) : primitives → sémantique → thèmes, light/dark, export JSON, versionné.
 - **ADR-009** (stack UI Web : Tailwind/Radix/shadcn) : **futur** — aucune de ces dépendances ici.
-- **ADR-010** (stack UI React Native : tokens + ThemeProvider + maison) : **futur** — aucune dépendance RN ici.
+- **ADR-010** (stack UI React Native : tokens + ThemeProvider + maison) : le runtime RN consomme sa
+  projection TypeScript séparée ; aucune dépendance RN n'entre dans ce package Web.
 
 ## 3. Architecture des tokens
 
 ```
-primitives  (valeurs brutes agnostiques)
-   ↓ référencées par
-themes       (light/dark : chaque couleur sémantique → une primitive)
-   ↓ résolus en
-sémantique   (intentions : background/foreground/border/action/status/focus/overlay)
-   ↓ sérialisés en
-generated/   (artefacts JSON · TypeScript · CSS, déterministes)
+contracts/design/ (ThemePacks + intentions sémantiques canoniques)
+   ↓ projection déterministe
+generated/css/design-tokens.css + src/tokens/generated/
+   ↓ complétés par
+extensions Web (typographie, ombres, motion, breakpoints, z-index)
+   ↓ agrégés en
+generated/ (artefacts JSON · TypeScript · CSS du binding Web)
 ```
 
 Les composants futurs utilisent les **tokens sémantiques** (ex. `action.primary`), jamais les
@@ -143,8 +150,8 @@ Couleurs : `background.{default,muted,elevated}`, `foreground.{default,muted,inv
 
 ## 6. Thèmes
 
-`lightTheme` et `darkTheme` partagent **exactement le même contrat de clés** (vérifié par test). Chaque
-couleur est **résolue** depuis une primitive (aucune valeur hex en dur dans les thèmes).
+`lightTheme` et `darkTheme` sont résolus depuis le ThemePack canonique et partagent **exactement le
+même contrat de clés**. Les anciennes palettes light/dark locales ont été retirées.
 
 ## 7. Unités canoniques
 
@@ -197,10 +204,11 @@ Variables préfixées `--enistere-`, kebab-case ; **light par défaut dans `:roo
 Les variables CSS alimenteront Tailwind (theme via `var(--enistere-*)`), Radix/shadcn et les thèmes
 light/dark. Ces dépendances **ne sont pas** ajoutées tant qu'ADR-009 n'est pas implémentée.
 
-## 13. Usage React Native futur (ADR-010)
+## 13. Usage React Native (ADR-010)
 
-Les tokens numériques (nombres) et couleurs (chaînes) alimenteront un `ThemeProvider` + StyleSheet
-maison ; les ombres structurées mappent `shadow*`/`elevation`. NativeWind reste optionnel par projet.
+Le générateur matérialise les données TypeScript sans DOM dans le starter React Native. Son
+`ThemeProvider` les adapte à StyleSheet et résout institution/contexte/mode. NativeWind reste
+optionnel par projet.
 
 ## 14. Règles d'extension
 

@@ -18,6 +18,7 @@ from fastapi.responses import JSONResponse
 from .composition.capability_exception_handlers import CAPABILITY_EXCEPTION_HANDLERS
 from .composition.capability_routers import CAPABILITY_ROUTERS
 from .config import settings
+from .contracts import ApiErrorResponse
 from .platform import RequestMeasurement, diagnostics, runtime_lifespan, technical_audit, telemetry
 
 SAFE_REQUEST_ID = re.compile(r"^[A-Za-z0-9._-]{8,128}$")
@@ -102,16 +103,15 @@ def canonical_error(
     message: str,
     details: object,
 ) -> JSONResponse:
-    return JSONResponse(status_code=status, content={
-        "success": False,
-        "statusCode": status,
-        "errorCode": code,
-        "message": message,
-        "details": details,
-        "path": request.url.path,
-        "timestamp": datetime.now(UTC).isoformat(),
-        "requestId": getattr(request.state, "request_id", None),
-    })
+    error = ApiErrorResponse.create(
+        status_code=status,
+        error_code=code,
+        message=message,
+        details=details,
+        path=request.url.path,
+        request_id=getattr(request.state, "request_id", None),
+    )
+    return JSONResponse(status_code=status, content=error.to_dict())
 
 
 @app.exception_handler(RequestValidationError)

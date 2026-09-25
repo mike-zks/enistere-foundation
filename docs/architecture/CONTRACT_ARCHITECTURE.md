@@ -4,6 +4,7 @@
 
 ```text
 contracts/
+├── design/
 ├── http/
 ├── schemas/
 ├── events/
@@ -31,7 +32,33 @@ Canonical Contracts
 └── test fixtures
 ```
 
-Aucun package TypeScript n’est la source unique d’un contrat polyglotte.
+Aucun package TypeScript n’est la source unique d’un contrat polyglotte. Le
+contrat est une unité logique ; npm, Maven, Python et Dart n'en sont que des
+représentations générées et seules celles réellement consommées sont livrées.
+
+## Contrat composé par autorité
+
+La baseline et les capabilities sélectionnées composent le contrat externe de
+chaque autorité déclarée dans le Canonical System Model. Dans une architecture
+distribuée, chaque arête `communications[]` référence l'autorité et la version
+consommées ; il n'existe pas de contrat global contenant toutes les opérations de
+toutes les applications.
+
+Un adapter serveur est conforme seulement si sa surface observable respecte ce
+contrat : `operationId`, route, verbe, statut, schéma, erreur et sécurité. Une
+preuve de responsabilité produit ne suffit pas à établir cette compatibilité.
+
+## Frontends et design
+
+Les applications Next.js, Angular, React Native et Flutter restent indépendantes
+et idiomatiques. Le contrat polyglotte `design-experience/v1` partage des tokens,
+des ThemePacks et des règles observables ; un package de composants propre à un
+framework n'est jamais la source universelle du design.
+
+Voir la
+[spécification design/expérience](../specifications/DESIGN_EXPERIENCE_SPECIFICATION.md),
+[ADR-088](../adr/ADR-088-contractual-parity-and-shared-artifacts.md) et
+[ADR-090](../adr/ADR-090-polyglot-design-experience-contract.md).
 
 ## Versionnement
 

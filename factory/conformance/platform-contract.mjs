@@ -85,6 +85,22 @@ export function findFile(dir, name) {
   return null;
 }
 
+/** Finds a Spring Boot entrypoint without assuming the generated Java package or class name. */
+function findSpringBootApplication(dir) {
+  if (!existsSync(dir)) return null;
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const found = findSpringBootApplication(full);
+      if (found) return found;
+    } else if (entry.name.endsWith('Application.java')
+      && readFileSync(full, 'utf8').includes('@SpringBootApplication')) {
+      return full;
+    }
+  }
+  return null;
+}
+
 /**
  * Classifies an error-envelope source. The canonical target is 'flat-envelope'
  * (ADR-048). Returns 'problem-details' | 'flat-envelope' | 'spring-apierror' | 'unknown'.
@@ -162,7 +178,7 @@ function evaluateNestjs(appDir) {
 /** Evaluates the invariants of a generated Spring API application. */
 function evaluateSpring(appDir) {
   const java = join(appDir, 'src', 'main', 'java');
-  const errorFile = findFile(java, 'ApiError.java');
+  const errorFile = findFile(java, 'ApiErrorResponse.java') ?? findFile(java, 'ApiError.java');
   const shape = errorFile ? classifyErrorShape(readFileSync(errorFile, 'utf8')) : 'unknown';
   const healthController = findFile(java, 'HealthController.java');
   const appYml = findFile(join(appDir, 'src', 'main', 'resources'), 'application.yml');
@@ -186,7 +202,7 @@ function evaluateSpring(appDir) {
   const transactionAdapter = findFile(java, 'SpringTransactionAdapter.java');
   const transactionProof = findFile(join(appDir, 'src', 'test'), 'SpringTransactionAdapterTest.java');
   return {
-    'http-server': result(findFile(java, 'EnistereCoreApplication.java') ? STATUS.COMPLIANT : STATUS.MISSING, 'Spring Boot application'),
+    'http-server': result(findSpringBootApplication(java) ? STATUS.COMPLIANT : STATUS.MISSING, 'Spring Boot application'),
     'input-validation': result(
       validationPort && validationAdapter && validationProof && findFile(java, 'GlobalExceptionHandler.java')
         ? STATUS.COMPLIANT : STATUS.MISSING,
@@ -223,7 +239,7 @@ function evaluateFastapi(appDir) {
   const platform = readOptional(join(app, 'platform.py'));
   const httpProof = readOptional(join(tests, 'test_http_contract.py'));
   const platformProof = readOptional(join(tests, 'test_platform.py'));
-  const shape = classifyErrorShape(main);
+  const shape = classifyErrorShape(`${main}\n${readOptional(join(app, 'contracts', 'api_error_response.py'))}`);
   const extensionsProven = [
     'AUTHENTICATION', 'AUTHORIZATION', 'FILES', 'EVENTS',
   ].every((token) => platform.includes(token))
@@ -632,7 +648,9 @@ export function evaluateCommonBaseline({ appDir, runtime, gates = [] }) {
   } else if (runtime === 'spring') {
     const appYml = findFile(resources, 'application.yml');
     configuration = Boolean(appYml && findFile(java, 'PlatformProperties.java'));
-    canonicalErrors = classifyErrorShape(readOptional(findFile(java, 'ApiError.java'))) === 'flat-envelope';
+    canonicalErrors = classifyErrorShape(readOptional(
+      findFile(java, 'ApiErrorResponse.java') ?? findFile(java, 'ApiError.java'),
+    )) === 'flat-envelope';
     structuredLogging = readOptional(appYml).includes('structured') && Boolean(findFile(java, 'RequestLoggingFilter.java'));
     correlation = Boolean(findFile(java, 'CorrelationIdFilter.java'));
     technicalAudit = Boolean(findFile(java, 'AuditService.java'));
@@ -681,7 +699,9 @@ export function evaluateCommonBaseline({ appDir, runtime, gates = [] }) {
     const pyproject = readOptional(join(appDir, 'pyproject.toml'));
     configuration = config.includes('BaseSettings') && config.includes('Field(');
     configurationProven = configuration && platformProof.includes('test_configuration_is_typed');
-    canonicalErrors = classifyErrorShape(main) === 'flat-envelope';
+    canonicalErrors = classifyErrorShape(
+      `${main}\n${readOptional(join(app, 'contracts', 'api_error_response.py'))}`,
+    ) === 'flat-envelope';
     structuredLogging = main.includes('http.request.completed') && main.includes('json.dumps');
     correlation = main.includes('SAFE_REQUEST_ID') && httpProof.includes('X-Request-Id');
     technicalAudit = platform.includes('class TechnicalAudit')

@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enistere.dev/contracts/schemas/api-error-response.v1.schema.json",
+  "title": "ApiErrorResponse",
+  "description": "Enveloppe publique, plate et non sensible commune aux runtimes API Enistere.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "success": {
+      "const": false,
+      "description": "Toujours false pour une réponse d'erreur."
+    },
+    "statusCode": {
+      "type": "integer",
+      "minimum": 100,
+      "maximum": 599
+    },
+    "errorCode": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Z][A-Z0-9_]*$"
+    },
+    "message": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Message générique ne contenant ni secret ni détail interne."
+    },
+    "details": {
+      "description": "Détails publics optionnels, par exemple des erreurs de validation à plat."
+    },
+    "path": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "requestId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Identifiant de corrélation X-Request-Id ; ce n'est pas une donnée de sécurité."
+    }
+  },
+  "required": [
+    "success",
+    "statusCode",
+    "errorCode",
+    "message",
+    "path",
+    "timestamp"
+  ],
+  "examples": [
+    {
+      "success": false,
+      "statusCode": 401,
+      "errorCode": "AUTH_INVALID_CREDENTIALS",
+      "message": "Authentication failed.",
+      "details": null,
+      "path": "/auth/login",
+      "timestamp": "2026-07-23T12:00:00.000Z",
+      "requestId": "request-example-1"
+    }
+  ]
+}
