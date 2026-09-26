@@ -7,6 +7,13 @@
  * runs in every environment of the system) and domain items are resolved to
  * the pinned Domain Contract revision they belong to. Runtime preferences keep
  * their declared order: it is intent.
+ *
+ * The IR carries the Domain IR of every pinned Domain Contract (E3) and binds
+ * each operation and event to the components that implement, consume,
+ * publish or subscribe to it. An event is published by the components that
+ * declare it and by the implementers of an operation that emits it. An
+ * operation nobody implements, or an event nobody publishes, is listed as
+ * unsupported intent: explicit, never blocking.
  */
 
 import {
@@ -17,8 +24,11 @@ import {
   type Component,
   type ContractRef,
   type Digest,
+  type DomainContract,
   type SystemDefinition,
 } from '@enistere/foundation-kernel-contracts';
+
+import { buildDomainIR, type DomainIR } from './domain-ir.ts';
 
 export interface IRInteraction {
   target: string;
@@ -51,6 +61,10 @@ export interface SystemIR {
   environments: { id: string; kind: string; deploymentMode: string }[];
   integrations: { id: string; kind: string; direction: string }[];
   components: IRComponent[];
+  domains: DomainIR[];
+  operationBindings: { item: string; implementedBy: string[]; consumedBy: string[] }[];
+  eventBindings: { item: string; publishedBy: string[]; subscribedBy: string[] }[];
+  unsupported: { item: string; code: 'IR_OPERATION_UNIMPLEMENTED' | 'IR_EVENT_UNPUBLISHED' | 'IR_FACET_NOT_INTERPRETED' }[];
   digest: Digest;
 }
 
@@ -94,8 +108,43 @@ function normalizeComponent(component: Component, allEnvironments: readonly stri
   };
 }
 
-/** Builds the IR of a definition that belongs to a valid contract set. */
-export function buildSystemIR(definition: SystemDefinition): SystemIR {
+function bindings(components: readonly IRComponent[], domains: readonly DomainIR[]): Pick<SystemIR, 'operationBindings' | 'eventBindings' | 'unsupported'> {
+  const members = (select: (component: IRComponent) => readonly string[], item: string): string[] =>
+    components.filter((component) => select(component).includes(item)).map((component) => component.id);
+  const operationBindings = domains.flatMap((domain) =>
+    domain.operations.map((operation) => ({
+      item: operation.ref,
+      implementedBy: members((component) => component.implements, operation.ref),
+      consumedBy: members((component) => component.interactions.flatMap((edge) => edge.operations), operation.ref),
+    })),
+  );
+  const eventBindings = domains.flatMap((domain) =>
+    domain.events.map((event) => {
+      const emitters = domain.operations.filter((operation) => operation.emits.includes(event.ref)).map((operation) => operation.ref);
+      const publishedBy = components
+        .filter((component) => component.publishes.includes(event.ref) || component.implements.some((operation) => emitters.includes(operation)))
+        .map((component) => component.id);
+      return { item: event.ref, publishedBy, subscribedBy: members((component) => component.subscribes, event.ref) };
+    }),
+  );
+  const unsupported: SystemIR['unsupported'] = [
+    ...operationBindings.filter((binding) => binding.implementedBy.length === 0).map((binding) => ({ item: binding.item, code: 'IR_OPERATION_UNIMPLEMENTED' as const })),
+    ...eventBindings.filter((binding) => binding.publishedBy.length === 0).map((binding) => ({ item: binding.item, code: 'IR_EVENT_UNPUBLISHED' as const })),
+    ...domains.flatMap((domain) => domain.unsupported.map((facet) => ({ item: `${domain.contract.ref}#${facet.id}`, code: facet.code }))),
+  ].sort((a, b) => byText(a.item, b.item) || byText(a.code, b.code));
+  return {
+    operationBindings: operationBindings.sort((a, b) => byText(a.item, b.item)),
+    eventBindings: eventBindings.sort((a, b) => byText(a.item, b.item)),
+    unsupported,
+  };
+}
+
+/**
+ * Builds the IR of a definition that belongs to a valid contract set.
+ * `domainContracts` are the Domain Contracts of its closure; only the
+ * revisions the definition pins are used.
+ */
+export function buildSystemIR(definition: SystemDefinition, domainContracts: readonly DomainContract[] = []): SystemIR {
   const environments = definition.spec.environments.map((environment) => ({ id: environment.id, kind: environment.kind, deploymentMode: environment.deploymentMode }));
   const allEnvironments = environments.map((environment) => environment.id);
   const resolveItem = domainItemResolver(definition);
@@ -110,5 +159,11 @@ export function buildSystemIR(definition: SystemDefinition): SystemIR {
       .map((component) => normalizeComponent(component, allEnvironments, resolveItem))
       .sort((a, b) => byText(a.id, b.id)),
   };
-  return { ...content, digest: digestOf(content) };
+  const pinned = definition.spec.inputs.domainContracts;
+  const domains = domainContracts
+    .filter((contract) => pinned.some((ref) => ref.id === contract.metadata.id && ref.revision === contract.metadata.revision))
+    .map(buildDomainIR)
+    .sort((a, b) => byText(a.contract.ref, b.contract.ref));
+  const withDomains = { ...content, domains, ...bindings(content.components, domains) };
+  return { ...withDomains, digest: digestOf(withDomains) };
 }

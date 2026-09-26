@@ -261,6 +261,8 @@ function report(documents: AnyContract[], validation: ContractSetValidation, cur
       resolved: compilation.resolved?.digest ?? null,
       plan: compilation.plan?.digest ?? null,
       unsupported: compilation.plan?.unsupported ?? [],
+      domains: (compilation.ir?.domains ?? []).map((domain) => ({ contract: domain.contract.ref, digest: domain.digest })),
+      unsupportedIntent: compilation.plan?.unsupportedIntent ?? [],
     },
     diagnostics: validation.diagnostics,
   };

@@ -25,6 +25,8 @@ export interface ExecutionPlan {
   inputs: { closure: Digest; ir: Digest; resolved: Digest };
   steps: PlanStep[];
   unsupported: UnsupportedItem[];
+  /** Domain intent the IR cannot realize (E3): carried over, never hidden. */
+  unsupportedIntent: SystemIR['unsupported'];
   /** Components whose code is not compiler-owned: the owner keeps the work. */
   ownerWork: { component: string; ownership: string; team: string }[];
   /** Requirements allocated to planned components: what Evidence must later prove. */
@@ -60,6 +62,7 @@ export function planSystem(closure: SystemClosure, ir: SystemIR, resolved: Resol
     inputs: { closure: closure.digest, ir: ir.digest, resolved: resolved.digest },
     steps,
     unsupported: resolved.unsupported.map((item) => ({ ...item })),
+    unsupportedIntent: ir.unsupported.map((item) => ({ ...item })),
     ownerWork: ir.components
       .filter((component) => component.ownership.class !== 'COMPILER_OWNED')
       .map((component) => ({ component: component.id, ownership: component.ownership.class, team: component.ownership.team })),

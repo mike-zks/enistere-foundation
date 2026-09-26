@@ -17,7 +17,7 @@
  * ownership of every artifact and computes the digests.
  */
 
-import type { IRComponent } from '@enistere/foundation-kernel-compiler';
+import type { DomainIR, IRComponent } from '@enistere/foundation-kernel-compiler';
 import { digestOf, fileDigest, type Digest } from '@enistere/foundation-kernel-contracts';
 
 /** Ownership of a generated file (document 02 FR-OWN). */
@@ -40,6 +40,8 @@ export interface AdapterContext {
   system: string;
   /** Reference of the compiled System Definition. */
   definition: string;
+  /** Domain IR of the pinned Domain Contracts (E3, read-only; additive to protocol v0). */
+  domains?: readonly DomainIR[];
 }
 
 /** A command run without shell, in the component directory. */

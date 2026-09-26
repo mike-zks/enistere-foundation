@@ -40,6 +40,9 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
    d'extension owner-seeded) ; tout le reste — dont les capabilities authentication, authorization et
    files — est listé UNSUPPORTED. Le job CI `adapters` matérialise réellement ce plan, puis l'installe, le
    compile, le démarre (`/health` = 200) et l'audite.
+8. Domain IR (E3) : l'IR compilé porte le Domain IR de `asteria-service-requests@1` et lie ses 10
+   opérations (toutes implémentées par l'Authority API) et ses 4 événements aux composants ; les facets
+   `offline-sync`, `scheduling` et `workflow` sont conservées mais listées non interprétées (avant E5).
 
 ## Fichiers
 
