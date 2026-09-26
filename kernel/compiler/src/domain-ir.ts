@@ -10,8 +10,9 @@
  * be confused.
  *
  * Facets (offline sync, scheduling, workflow…) are carried as data and listed
- * as `unsupported`: the kernel does not interpret them before the domain
- * projection (E5) and the organization bindings (E6). Nothing is dropped.
+ * as `unsupported`: the kernel does not interpret them, and never realizes one
+ * as a platform capability (the API contract projection of E5 leaves them
+ * out). Nothing is dropped.
  */
 
 import {

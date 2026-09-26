@@ -1,8 +1,8 @@
 {
   "name": "@enistere/foundation-adapter-nestjs",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Enistere Foundation — NestJS runtime adapter (Adapter Protocol v0): materializes an api-service component as a native NestJS project.",
+  "description": "Enistere Foundation \u2014 NestJS runtime adapter (Adapter Protocol v0): materializes an api-service component as a native NestJS project realizing its shared API contracts.",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": false,
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@enistere/foundation-kernel-compiler": "0.1.0",
+    "@enistere/foundation-kernel-contracts": "0.1.0",
     "@enistere/foundation-kernel-extensions": "0.1.0"
   },
   "devDependencies": {

@@ -39,7 +39,7 @@ Sans `--catalog`, le catalogue est vide et chaque composant est UNSUPPORTED. Ave
 node surfaces/cli/src/cli.ts materialize goldens/asteria/contracts goldens/asteria/evidence \
   --extensions extensions --out /tmp/asteria-ws        # PARTIAL (code 2) : authority-api matérialisée
 node surfaces/cli/src/cli.ts verify /tmp/asteria-ws --extensions extensions --toolchain \
-  --evidence-out /tmp/evidence                         # structure, install, build, boot, audit
+  --evidence-out /tmp/evidence                         # structure, install, build, boot, contract, audit
 node surfaces/cli/src/cli.ts export goldens/asteria/contracts goldens/asteria/evidence \
   --extensions extensions --workspace /tmp/asteria-ws --evidence /tmp/evidence \
   --out /tmp/proof-chain.json                          # proof chain (E4)

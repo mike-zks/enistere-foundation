@@ -4,23 +4,31 @@
  * Materializes an `api-service` component as a native NestJS project (ESM,
  * TypeScript) that runs without Foundation: health endpoint, configuration by
  * environment variables, container image running as a non-root user. Written
- * from scratch (ADR-094). Domain operations (E5) and platform capabilities are
- * not generated yet: resolution lists them as UNSUPPORTED.
+ * from scratch (ADR-094). Since E5 (ADR-099) it also realizes the shared API
+ * contracts the component provides (`contract.ts`): the kernel's OpenAPI
+ * document embedded as is, typed routes validated against it, and handlers the
+ * team implements. Platform capabilities are not generated: resolution lists
+ * them as UNSUPPORTED.
  *
- * Every file is compiler-owned except `src/extension/extension.module.ts`, the
- * extension point seeded once and then owned by the component's team.
+ * Every file is compiler-owned except `src/extension/**`: the extension point
+ * and the operation handlers, seeded once and then owned by the component's
+ * team.
  */
 
 import type { IRComponent } from '@enistere/foundation-kernel-compiler';
+import type { ApiContract } from '@enistere/foundation-kernel-compiler';
 import type { AdapterContext, Artifact, RuntimeAdapter, ToolchainCheck } from '@enistere/foundation-kernel-extensions';
 
-export const ADAPTER = Object.freeze({ id: 'nestjs', version: '0.1.0' });
+import { camel, CONTRACT_CHECK, contractArtifacts, contractFile, operationsOf, pascal } from './contract.ts';
+
+export const ADAPTER = Object.freeze({ id: 'nestjs', version: '0.2.0' });
 
 /** Exact versions: a materialization is reproducible. */
 export const DEPENDENCIES = Object.freeze({
   '@nestjs/common': '12.1.0',
   '@nestjs/core': '12.1.0',
   '@nestjs/platform-express': '12.1.0',
+  ajv: '8.20.0',
   'reflect-metadata': '0.2.2',
   rxjs: '7.8.2',
 });
@@ -41,7 +49,7 @@ function packageJson(component: IRComponent, context: AdapterContext): string {
     description: `${component.name} — ${context.system} (materialized by Enistere Foundation)`,
     type: 'module',
     engines: { node: '>=22' },
-    scripts: { build: 'tsc -p tsconfig.json', start: 'node dist/main.js' },
+    scripts: { build: 'tsc -p tsconfig.json', start: 'node dist/main.js', 'contract:check': 'node scripts/contract-check.mjs' },
     dependencies: { ...DEPENDENCIES },
     devDependencies: { ...DEV_DEPENDENCIES },
   });
@@ -64,26 +72,38 @@ const TSCONFIG = json({
   include: ['src/**/*.ts'],
 });
 
-const MAIN = lines(
-  "import 'reflect-metadata';",
-  "import { NestFactory } from '@nestjs/core';",
-  "import { AppModule } from './app.module.js';",
-  '',
-  '// Configuration comes from the environment only; no secret is generated.',
-  'const port = Number(process.env.PORT ?? 3000);',
-  'const app = await NestFactory.create(AppModule);',
-  'app.enableShutdownHooks();',
-  'await app.listen(port);',
-);
+const provided = (component: IRComponent, context: AdapterContext): ApiContract[] =>
+  (context.apiContracts ?? []).filter((contract) => contract.provider === component.id);
 
-const APP_MODULE = lines(
-  "import { Module } from '@nestjs/common';",
-  "import { ExtensionModule } from './extension/extension.module.js';",
-  "import { HealthController } from './health/health.controller.js';",
-  '',
-  '@Module({ imports: [ExtensionModule], controllers: [HealthController] })',
-  'export class AppModule {}',
-);
+const main = (contracts: readonly ApiContract[]): string =>
+  lines(
+    "import 'reflect-metadata';",
+    "import { NestFactory } from '@nestjs/core';",
+    "import { AppModule } from './app.module.js';",
+    ...(contracts.length > 0 ? ["import { ProblemFilter } from './contract/problem.filter.js';"] : []),
+    '',
+    '// Configuration comes from the environment only; no secret is generated.',
+    'const port = Number(process.env.PORT ?? 3000);',
+    'const app = await NestFactory.create(AppModule);',
+    ...(contracts.length > 0 ? ['app.useGlobalFilters(new ProblemFilter());'] : []),
+    'app.enableShutdownHooks();',
+    'await app.listen(port);',
+  );
+
+function appModule(contracts: readonly ApiContract[]): string {
+  const modules = contracts.map((contract) => `${pascal(contract.boundedContext)}Module`);
+  const controllers = ['HealthController', ...(contracts.length > 0 ? ['ContractsController'] : [])];
+  return lines(
+    "import { Module } from '@nestjs/common';",
+    ...(contracts.length > 0 ? ["import { ContractsController } from './contract/contracts.controller.js';"] : []),
+    ...contracts.map((contract) => `import { ${pascal(contract.boundedContext)}Module } from './domain/${contract.boundedContext}/${contract.boundedContext}.module.js';`),
+    "import { ExtensionModule } from './extension/extension.module.js';",
+    "import { HealthController } from './health/health.controller.js';",
+    '',
+    `@Module({ imports: [${['ExtensionModule', ...modules].join(', ')}], controllers: [${controllers.join(', ')}] })`,
+    'export class AppModule {}',
+  );
+}
 
 const healthController = (component: IRComponent): string =>
   lines(
@@ -107,29 +127,58 @@ const EXTENSION_MODULE = lines(
   'export class ExtensionModule {}',
 );
 
-const DOCKERFILE = lines(
-  'FROM node:24-alpine AS build',
-  'WORKDIR /app',
-  'COPY package.json tsconfig.json ./',
-  'RUN npm install --no-audit --no-fund',
-  'COPY src ./src',
-  'RUN npm run build && npm prune --omit=dev',
-  '',
-  'FROM node:24-alpine',
-  'ENV NODE_ENV=production PORT=3000',
-  'WORKDIR /app',
-  'COPY --from=build --chown=node:node /app/package.json ./',
-  'COPY --from=build --chown=node:node /app/node_modules ./node_modules',
-  'COPY --from=build --chown=node:node /app/dist ./dist',
-  'USER node',
-  'EXPOSE 3000',
-  'CMD ["node", "dist/main.js"]',
-);
+const dockerfile = (contracts: readonly ApiContract[]): string =>
+  lines(
+    'FROM node:24-alpine AS build',
+    'WORKDIR /app',
+    'COPY package.json tsconfig.json ./',
+    'RUN npm install --no-audit --no-fund',
+    'COPY src ./src',
+    'RUN npm run build && npm prune --omit=dev',
+    '',
+    'FROM node:24-alpine',
+    'ENV NODE_ENV=production PORT=3000',
+    'WORKDIR /app',
+    'COPY --from=build --chown=node:node /app/package.json ./',
+    'COPY --from=build --chown=node:node /app/node_modules ./node_modules',
+    'COPY --from=build --chown=node:node /app/dist ./dist',
+    ...(contracts.length > 0 ? ['COPY --chown=node:node contract ./contract'] : []),
+    'USER node',
+    'EXPOSE 3000',
+    'CMD ["node", "dist/main.js"]',
+  );
 
 const DOCKERIGNORE = lines('node_modules', 'dist', '.foundation', '*.log');
 const GITIGNORE = lines('node_modules/', 'dist/', '*.log');
 
-function readme(component: IRComponent, context: AdapterContext): string {
+function contractSection(contracts: readonly ApiContract[]): string[] {
+  if (contracts.length === 0) return [];
+  return [
+    '',
+    '## Shared API contracts',
+    '',
+    'Projected by Foundation from the Domain Contract; consumers use the same document.',
+    'Inputs are validated against it (400); an operation answers 501 until your team implements it.',
+    'Authorization and files are platform capabilities, not simulated here.',
+    '',
+    ...contracts.flatMap((contract) => [
+      `### \`${contract.id}\` — \`${contractFile(contract)}\``,
+      '',
+      `Served at \`GET /contracts/${contract.boundedContext}.openapi.json\`; consumers: ${contract.consumers.map((id) => `\`${id}\``).join(', ') || 'none'}.`,
+      '',
+      '| Operation | Route | Roles (intent) | Invariants to enforce |',
+      '|---|---|---|---|',
+      ...operationsOf(contract).map(
+        (operation) =>
+          `| \`${camel(operation.id)}\` | \`${operation.method.toUpperCase()} ${operation.path}\` | ${operation.roles.join(', ') || '—'} | ${operation.invariants.map((ref) => ref.split('#')[1]).join(', ') || '—'} |`,
+      ),
+      '',
+    ]),
+    'Check the running service against its contracts: `npm run build && npm run contract:check`.',
+  ];
+}
+
+function readme(component: IRComponent, context: AdapterContext, contracts: readonly ApiContract[]): string {
   return lines(
     `# ${component.name}`,
     '',
@@ -142,12 +191,13 @@ function readme(component: IRComponent, context: AdapterContext): string {
     'npm run build',
     'PORT=3000 npm start   # GET /health',
     '```',
+    ...contractSection(contracts),
     '',
     '## Ownership',
     '',
     '| Files | Owner |',
     '|---|---|',
-    '| `src/extension/**` | Your team: seeded once, never overwritten by Foundation. |',
+    '| `src/extension/**` (extension point, operation handlers) | Your team: seeded once, never overwritten by Foundation. |',
     '| Everything else | Foundation (compiler-owned): a local change is reported as a conflict, never overwritten. |',
   );
 }
@@ -160,17 +210,20 @@ export const nestjsAdapter: RuntimeAdapter = {
   },
 
   plan(component, context): Artifact[] {
+    const contracts = provided(component, context);
     return [
       { path: 'package.json', content: packageJson(component, context), ownership: 'COMPILER_OWNED' },
       { path: 'tsconfig.json', content: TSCONFIG, ownership: 'COMPILER_OWNED' },
-      { path: 'src/main.ts', content: MAIN, ownership: 'COMPILER_OWNED' },
-      { path: 'src/app.module.ts', content: APP_MODULE, ownership: 'COMPILER_OWNED' },
+      { path: 'src/main.ts', content: main(contracts), ownership: 'COMPILER_OWNED' },
+      { path: 'src/app.module.ts', content: appModule(contracts), ownership: 'COMPILER_OWNED' },
       { path: 'src/health/health.controller.ts', content: healthController(component), ownership: 'COMPILER_OWNED' },
       { path: 'src/extension/extension.module.ts', content: EXTENSION_MODULE, ownership: 'OWNER_SEEDED' },
-      { path: 'Dockerfile', content: DOCKERFILE, ownership: 'COMPILER_OWNED' },
+      ...contractArtifacts(contracts),
+      { path: 'scripts/contract-check.mjs', content: CONTRACT_CHECK, ownership: 'COMPILER_OWNED' },
+      { path: 'Dockerfile', content: dockerfile(contracts), ownership: 'COMPILER_OWNED' },
       { path: '.dockerignore', content: DOCKERIGNORE, ownership: 'COMPILER_OWNED' },
       { path: '.gitignore', content: GITIGNORE, ownership: 'COMPILER_OWNED' },
-      { path: 'README.md', content: readme(component, context), ownership: 'COMPILER_OWNED' },
+      { path: 'README.md', content: readme(component, context, contracts), ownership: 'COMPILER_OWNED' },
     ];
   },
 
@@ -180,6 +233,7 @@ export const nestjsAdapter: RuntimeAdapter = {
       { check: 'build', steps: [{ run: ['npm', 'run', 'build'], timeoutMs: 120_000 }] },
       { check: 'audit', steps: [{ run: ['npm', 'audit', '--audit-level=high'], timeoutMs: 120_000 }] },
       { check: 'boot', steps: [{ start: ['node', 'dist/main.js'], env: {}, portVariable: 'PORT', path: '/health', expectStatus: 200, timeoutMs: 30_000 }] },
+      { check: 'contract', steps: [{ run: ['node', 'scripts/contract-check.mjs'], timeoutMs: 90_000 }] },
     ];
   },
 };

@@ -4,24 +4,23 @@
 
 | Champ | Valeur |
 |---|---|
-| Commit / branche | Base `c28c6f1` (`main`, fusion de la PR #259) ; travail sur `claude/e4-ownership-evidence` |
+| Commit / branche | Base `8dfe2d0` (`main`, fusion de la PR #260) ; travail sur `claude/e5-domain-projection` |
 | Date | 2026-09-26 |
-| Mission | E4 — Ownership & Evidence Extraction (ADR-098) ; première mission de l'horizon V1 |
-| Résultat | E4 **PASS** localement sur la gate du document 06 (owner change survit ; proof chain exportable) ; CI de la PR à confirmer |
+| Mission | E5 — Domain Contract Projection (ADR-099) |
+| Résultat | E5 **PASS** localement sur la gate du document 06 (domaine distinct de capability ; contrat partagé) ; CI de la PR à confirmer |
 
 ## Completed
 
-- **Kernel** : contrats A1–A7 (E0) et **A8 `MaterializationRecord`** (E4 : schéma, registre, autorité
-  COMPILE_APPLY par le compilateur, règles de chemins et d'outcome, validation d'ensemble) ; compiler,
-  façade (E1), Adapter Protocol v0 (E2), Domain IR (E3) ; **proof chain v1** (`exportProofChain`,
-  `verifyProofChain` : digest, ensemble fermé, rejeu de la compilation, liens A8/A7).
-- **Engine** : un A8 par matérialisation (`.foundation/records/`, révision n+1, supersedes) — l'inventaire
-  local est supprimé, le dernier A8 est l'unique inventaire ; VERIFY cite l'A8 vérifié ; `executedAt`
-  injecté.
-- **CLI** : `export`, `verify-bundle`. **CI** `adapters` : export et vérification du bundle réel, publié en
-  artefact.
-- **Golden Asteria** : `expected/proof-chain.json` vérifié par le test (et altération refusée).
-- Missions antérieures : E0, R0-C, R0-D, E1, E2, E3 — rapports ci-dessous ; documents 03 et 06 v1.1.
+- **Kernel** : contrats A1–A8 ; compiler, façade, Domain IR, proof chain ; **projection du domaine**
+  (`projectApiContracts`) : un contrat OpenAPI 3.1 par domaine et fournisseur, routes dérivées, schémas
+  fermés, Problem Details, autorisation comme intention de domaine ; plan avec `sharedContracts`, step
+  MATERIALIZE nommant ses contrats, `ownerWork` des opérations et invariants ; `AdapterContext.apiContracts`.
+- **Adapter NestJS 0.2.0** : contrat embarqué à l'identique et servi, types/handlers/contrôleur/module
+  dérivés du document, entrées validées par Ajv contre le contrat (400), erreurs déclarées (422), handlers
+  owner-seeded (501), check TOOLCHAIN `contract` (`scripts/contract-check.mjs`).
+- **Golden Asteria** : contrat `authority-api.service-requests` (10 opérations) partagé par l'Authority
+  API et ses 4 consommateurs ; digest identique avec le catalogue synthétique et les extensions réelles.
+- Missions antérieures : E0, R0-C, R0-D, E1–E4 — rapports ci-dessous ; documents 03 et 06 v1.1.
 
 ## In progress
 
@@ -31,35 +30,68 @@ Aucun.
 
 Aucun. Rappel : `adapters` doit figurer dans les checks requis de `protect-main` (ADR-096).
 
-## Tests (exécutés le 2026-09-26 sur `claude/e4-ownership-evidence`)
+## Tests (exécutés le 2026-09-26 sur `claude/e5-domain-projection`)
 
 | Commande | Résultat |
 |---|---|
 | `npm run foundation:typecheck` (7 workspaces) | OK (0 erreur) |
-| `npm run foundation:test` | 117/117 PASS — compiler 27 (dont proof chain 6), contracts 53 (dont A8 5), extensions 6, materializer 9 (dont gate E4), adapter 5, CLI 8, goldens 9 |
+| `npm run foundation:test` | 129/129 PASS — compiler 33 (dont contrat d'API 6), contracts 53, extensions 6, materializer 10, adapter 9, CLI 8, goldens 10 |
 | `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 21 fichiers, 0 diagnostic |
-| CLI `materialize` → `verify --toolchain` → `export` → `verify-bundle` | 2 (PARTIAL) → 0 (PASS) → 0 (EXPORTED : 6 contrats, 1 A8, 5 A7) → 0 (VALID) ; bundle altéré → INVALID |
-| `npm run tools:test` · `npm run docs:links` · `npm audit --audit-level=high` · actionlint | OK · OK · 0 vulnérabilité · OK |
+| CLI `materialize` → `verify --toolchain` → `export` → `verify-bundle` | 2 (PARTIAL) → PASS (structure, install, build, boot, contract : 11 vérifications, audit) → EXPORTED → VALID |
+| Service généré, manuel | entrée valide → 501 ; entrée invalide → 400 (4 erreurs) ; route inconnue → 404 ; Problem Details |
+| `npm run tools:test` · `npm run docs:links` · `npm audit --audit-level=high` | OK · OK · 0 vulnérabilité |
 
-**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture, dont le job `adapters`).
+**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture, dont le job `adapters`) ; construction de
+l'image Docker (aucun démon Docker ici ; non exigée par la gate).
 
 ## Known gaps
 
-- Pas de signature ni d'enveloppe in-toto/SLSA de la proof chain ; pas d'Evidence Graph ni de proof
-  profiles (V1+) ; le bundle porte les digests des fichiers, pas leur contenu.
-- Pas de projection du domaine vers un runtime (E5) ; facets et invariants non interprétés.
-- Un seul runtime (NestJS, `api-service`) ; pas de lockfile généré ; pas de signature des extensions.
+- Pas d'AsyncAPI ni de transport d'événements (messaging non validé, D-3) ; invariants non exécutables ;
+  routes RPC dérivées plutôt que ressources REST ; pas de clients générés pour les consommateurs (E8).
+- Capabilities authentication, authorization, files : UNSUPPORTED, jamais simulées.
+- Pas de signature de la proof chain ; pas d'Evidence Graph (V1+).
 - Contexte d'organisation non appliqué (E6) ; aucun Control Plane, Workbench, Worker, Registry, AI Gateway.
 
 ## Decisions
 
-ADR-091 à ADR-097, **ADR-098** (A8 MaterializationRecord et proof chain v1) — voir
+ADR-091 à ADR-098, **ADR-099** (projection du Domain Contract en contrat OpenAPI partagé) — voir
 [`DECISIONS.md`](DECISIONS.md).
 
 ## Next single action
 
-**E5 — Domain Contract Projection** ([`BACKLOG.md`](BACKLOG.md)) ; trancher d'abord le format de projection
-de l'API et le périmètre des invariants exécutables.
+**E6 — Organization Context & Design bindings** ([`BACKLOG.md`](BACKLOG.md)) ; trancher d'abord la forme
+des règles de politique évaluables et la source des design tokens (D-5).
+
+---
+
+## Rapport de mission E5 — Domain Contract Projection (document 05 §11, Annexe A §16)
+
+- **Mission** : E5 — Domain Contract Projection.
+- **Date** : 2026-09-26.
+- **Branch / HEAD** : `claude/e5-domain-projection`, base `8dfe2d0`.
+- **Objectif** : projeter le Domain Contract vers les runtimes sans le confondre avec les capabilities,
+  sous la forme d'un contrat partagé par le fournisseur et ses consommateurs.
+- **Scope** : `kernel/compiler` (projection, plan, façade), `kernel/extensions` (contexte d'adapter),
+  `engine/materializer` (transmission), `extensions/runtimes/nestjs`, golden.
+- **Out of scope** : AsyncAPI et transport d'événements, invariants exécutables, capabilities, contexte
+  d'organisation (E6), second adapter (E8).
+- **État initial** : E4 mergée ; Domain IR non projeté ; Authority API sans opération métier.
+- **Changements réalisés** : voir *Completed*.
+- **Fichiers touchés** : `kernel/compiler/src/{api-contract,plan,facade,domain-ir,index}.ts`,
+  `kernel/compiler/test/{api-contract,compiler}.test.ts` ; `kernel/contracts/src/primitives/diagnostics.ts` ;
+  `kernel/extensions/src/adapter.ts` ; `engine/materializer/{src/materialize.ts,test/materializer.test.ts}` ;
+  `extensions/runtimes/nestjs/**` ; `goldens/**` ; `package-lock.json` ; documentation et gouvernance.
+- **Contrats impactés** : aucun schéma modifié.
+- **Migrations** : aucune.
+- **Tests exécutés / résultats** : voir *Tests*.
+- **Preuves** : `api-contract.test.ts` ; `adapter.test.ts` ; `materializer.test.ts` (handlers préservés) ;
+  `goldens/asteria/expected/compilation.json` ; job CI `adapters` (check `contract`).
+- **Risques résiduels** : voir *Known gaps*.
+- **Décisions** : ADR-099.
+- **Documentation** : CONTEXT, ROADMAP, BACKLOG, CURRENT_STATE, IMPLEMENTATION_MATRIX, DECISIONS,
+  CHANGELOG, registre ADR, README (compiler, extensions, adapter, golden, workflows), runbook.
+- **Statut** : PASS (domaine distinct de capability ; contrat partagé) — localement.
+- **Prochaine action unique** : E6 — Organization Context & Design bindings.
 
 ---
 

@@ -33,6 +33,7 @@ import {
   type SystemDefinition,
 } from '@enistere/foundation-kernel-contracts';
 
+import { projectApiContracts, type ApiContract } from './api-contract.ts';
 import { EMPTY_CATALOG, validateCatalog } from './catalog.ts';
 import { buildClosure, COMPILER, type ClosureEntry, type SystemClosure } from './closure.ts';
 import { buildSystemIR, type SystemIR } from './ir.ts';
@@ -73,6 +74,8 @@ export interface ResolveResult {
 export interface PlanResult extends Omit<ResolveResult, 'stage' | 'status'> {
   stage: 'plan';
   status: 'PLANNED' | 'PARTIAL' | 'INVALID';
+  /** Shared API contracts projected from the Domain IR (E5); the plan cites their digests. */
+  apiContracts: ApiContract[];
   plan: ExecutionPlan | null;
 }
 
@@ -88,7 +91,7 @@ const FACADE_LAYER = { layer: 'kernel.facade' } as const;
 const IR_REASONS: Readonly<Record<SystemIR['unsupported'][number]['code'], string>> = {
   IR_OPERATION_UNIMPLEMENTED: 'no component implements this operation',
   IR_EVENT_UNPUBLISHED: 'no component publishes this event',
-  IR_FACET_NOT_INTERPRETED: 'domain facets are not interpreted before the domain projection (E5)',
+  IR_FACET_NOT_INTERPRETED: 'domain facets are not interpreted by the compiler; no facet is realized as a platform capability',
 };
 
 function selectDefinition(documents: readonly AnyContract[], index: ContractIndex, wanted: string | undefined): SystemDefinition | Diagnostic {
@@ -121,7 +124,7 @@ export function createKernelFacade(): KernelFacade {
     };
   }
 
-  function compile(documents: readonly unknown[], options: CompileOptions): { result: ResolveResult; plan: ExecutionPlan | null } {
+  function compile(documents: readonly unknown[], options: CompileOptions): { result: ResolveResult; plan: ExecutionPlan | null; contracts: ApiContract[] } {
     const validation = validateContractSet(documents);
     const catalog = validateCatalog(options.catalog === undefined ? EMPTY_CATALOG : options.catalog);
     const base: ResolveResult = {
@@ -136,13 +139,13 @@ export function createKernelFacade(): KernelFacade {
       resolved: null,
       diagnostics: sortDiagnostics([...validation.diagnostics, ...catalog.diagnostics]),
     };
-    if (!validation.valid || !catalog.catalog || !catalog.digest) return { result: base, plan: null };
+    if (!validation.valid || !catalog.catalog || !catalog.digest) return { result: base, plan: null, contracts: [] };
 
     const contracts = validation.entries.map((entry) => entry.document);
     const index = indexContracts(contracts);
     const selected = selectDefinition(contracts, index, options.definition);
     if (!('kind' in selected) || selected.kind !== 'SystemDefinition') {
-      return { result: { ...base, diagnostics: sortDiagnostics([...base.diagnostics, selected as Diagnostic]) }, plan: null };
+      return { result: { ...base, diagnostics: sortDiagnostics([...base.diagnostics, selected as Diagnostic]) }, plan: null, contracts: [] };
     }
     const definition = selected;
     const { closure, documents: inputs } = buildClosure(definition, index, catalog.digest as Digest);
@@ -151,7 +154,8 @@ export function createKernelFacade(): KernelFacade {
       diagnostic(item.code, `${item.item} is not realized: ${IR_REASONS[item.code]}`, { layer: 'kernel.compiler', ref: ir.definition, details: { item: item.item } }),
     );
     const { resolved, diagnostics } = resolveSystem(ir, catalog.catalog, catalog.digest);
-    const plan = planSystem(closure, ir, resolved);
+    const apiContracts = projectApiContracts(ir);
+    const plan = planSystem(closure, ir, resolved, apiContracts);
     const all = sortDiagnostics([...base.diagnostics, ...intent, ...diagnostics]);
     const result: ResolveResult = {
       ...base,
@@ -162,7 +166,8 @@ export function createKernelFacade(): KernelFacade {
       resolved,
       diagnostics: all,
     };
-    return { result, plan: result.status === 'INVALID' ? null : plan };
+    const valid = result.status !== 'INVALID';
+    return { result, plan: valid ? plan : null, contracts: valid ? apiContracts : [] };
   }
 
   function resolve(documents: readonly unknown[], options: CompileOptions = {}): ResolveResult {
@@ -170,9 +175,9 @@ export function createKernelFacade(): KernelFacade {
   }
 
   function plan(documents: readonly unknown[], options: CompileOptions = {}): PlanResult {
-    const { result, plan: executionPlan } = compile(documents, options);
+    const { result, plan: executionPlan, contracts } = compile(documents, options);
     const status = result.status === 'RESOLVED' ? 'PLANNED' : result.status;
-    return { ...result, stage: 'plan', status, plan: executionPlan };
+    return { ...result, stage: 'plan', status, apiContracts: contracts, plan: executionPlan };
   }
 
   return Object.freeze({ version: FACADE_VERSION, validate, resolve, plan });

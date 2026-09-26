@@ -2136,8 +2136,8 @@
       "class": "UNSUPPORTED",
       "severity": "warning",
       "layer": "kernel.compiler",
-      "message": "DomainContract/asteria-service-requests@1#offline-sync is not realized: domain facets are not interpreted before the domain projection (E5)",
-      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "message": "DomainContract/asteria-service-requests@1#offline-sync is not realized: domain facets are not interpreted by the compiler; no facet is realized as a platform capability",
+      "remediation": "Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.",
       "retryable": false,
       "ref": "SystemDefinition/asteria@2",
       "details": {
@@ -2149,8 +2149,8 @@
       "class": "UNSUPPORTED",
       "severity": "warning",
       "layer": "kernel.compiler",
-      "message": "DomainContract/asteria-service-requests@1#scheduling is not realized: domain facets are not interpreted before the domain projection (E5)",
-      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "message": "DomainContract/asteria-service-requests@1#scheduling is not realized: domain facets are not interpreted by the compiler; no facet is realized as a platform capability",
+      "remediation": "Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.",
       "retryable": false,
       "ref": "SystemDefinition/asteria@2",
       "details": {
@@ -2162,8 +2162,8 @@
       "class": "UNSUPPORTED",
       "severity": "warning",
       "layer": "kernel.compiler",
-      "message": "DomainContract/asteria-service-requests@1#workflow is not realized: domain facets are not interpreted before the domain projection (E5)",
-      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "message": "DomainContract/asteria-service-requests@1#workflow is not realized: domain facets are not interpreted by the compiler; no facet is realized as a platform capability",
+      "remediation": "Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.",
       "retryable": false,
       "ref": "SystemDefinition/asteria@2",
       "details": {
@@ -2203,6 +2203,1352 @@
       }
     }
   ],
+  "apiContracts": [
+    {
+      "id": "authority-api.service-requests",
+      "domain": {
+        "ref": "DomainContract/asteria-service-requests@1",
+        "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+      },
+      "boundedContext": "service-requests",
+      "provider": "authority-api",
+      "consumers": [
+        "async-worker",
+        "field-mobile",
+        "ops-web",
+        "requester-web"
+      ],
+      "operations": [
+        "DomainContract/asteria-service-requests@1#assign-request",
+        "DomainContract/asteria-service-requests@1#escalate-request",
+        "DomainContract/asteria-service-requests@1#list-assignments",
+        "DomainContract/asteria-service-requests@1#list-my-requests",
+        "DomainContract/asteria-service-requests@1#list-requests",
+        "DomainContract/asteria-service-requests@1#record-intervention",
+        "DomainContract/asteria-service-requests@1#record-scan-result",
+        "DomainContract/asteria-service-requests@1#submit-request",
+        "DomainContract/asteria-service-requests@1#triage-request",
+        "DomainContract/asteria-service-requests@1#upload-attachment"
+      ],
+      "document": {
+        "openapi": "3.1.0",
+        "info": {
+          "title": "service-requests — authority-api",
+          "version": "1"
+        },
+        "x-foundation": {
+          "projection": "foundation.enistere.com/api-contract/v1",
+          "contract": {
+            "ref": "DomainContract/asteria-service-requests@1",
+            "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+          },
+          "provider": "authority-api",
+          "consumers": [
+            "async-worker",
+            "field-mobile",
+            "ops-web",
+            "requester-web"
+          ]
+        },
+        "paths": {
+          "/service-requests/assign-request": {
+            "post": {
+              "operationId": "assign-request",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#assign-request",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "An operations agent assigns requests.",
+                "roles": [
+                  "ops-agent"
+                ]
+              },
+              "x-foundation-idempotent": false,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#RequestStatusChanged"
+              ],
+              "x-foundation-invariants": [
+                "DomainContract/asteria-service-requests@1#INV-002",
+                "DomainContract/asteria-service-requests@1#INV-003"
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/AssignInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Assignment"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "422": {
+                  "description": "A declared domain error.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Problem"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "code"
+                            ],
+                            "properties": {
+                              "code": {
+                                "enum": [
+                                  "AGENT_UNAVAILABLE",
+                                  "INVALID_TRANSITION"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/escalate-request": {
+            "post": {
+              "operationId": "escalate-request",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#escalate-request",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "Only the platform worker identity escalates, on schedule.",
+                "roles": [
+                  "asteria-worker"
+                ]
+              },
+              "x-foundation-idempotent": true,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#RequestEscalated"
+              ],
+              "x-foundation-invariants": [],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/EscalationInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/ServiceRequest"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "422": {
+                  "description": "A declared domain error.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Problem"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "code"
+                            ],
+                            "properties": {
+                              "code": {
+                                "enum": [
+                                  "NOT_OVERDUE"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/list-assignments": {
+            "get": {
+              "operationId": "list-assignments",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#list-assignments",
+              "x-foundation-kind": "QUERY",
+              "x-foundation-authorization": {
+                "intent": "A field agent only reads their own assignments.",
+                "roles": [
+                  "field-agent"
+                ]
+              },
+              "x-foundation-idempotent": false,
+              "x-foundation-emits": [],
+              "x-foundation-invariants": [],
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Assignment"
+                        }
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/list-my-requests": {
+            "get": {
+              "operationId": "list-my-requests",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#list-my-requests",
+              "x-foundation-kind": "QUERY",
+              "x-foundation-authorization": {
+                "intent": "A requester only reads their own requests.",
+                "roles": [
+                  "requester"
+                ]
+              },
+              "x-foundation-idempotent": false,
+              "x-foundation-emits": [],
+              "x-foundation-invariants": [],
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/ServiceRequest"
+                        }
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/list-requests": {
+            "get": {
+              "operationId": "list-requests",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#list-requests",
+              "x-foundation-kind": "QUERY",
+              "x-foundation-authorization": {
+                "intent": "Operations staff read every request.",
+                "roles": [
+                  "ops-agent",
+                  "supervisor"
+                ]
+              },
+              "x-foundation-idempotent": false,
+              "x-foundation-emits": [],
+              "x-foundation-invariants": [],
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/ServiceRequest"
+                        }
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/record-intervention": {
+            "post": {
+              "operationId": "record-intervention",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#record-intervention",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "The assigned field agent reports on their own assignment.",
+                "roles": [
+                  "field-agent"
+                ]
+              },
+              "x-foundation-idempotent": true,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#RequestStatusChanged"
+              ],
+              "x-foundation-invariants": [
+                "DomainContract/asteria-service-requests@1#INV-002"
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/InterventionInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/InterventionReport"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "422": {
+                  "description": "A declared domain error.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Problem"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "code"
+                            ],
+                            "properties": {
+                              "code": {
+                                "enum": [
+                                  "ASSIGNMENT_NOT_OWNED",
+                                  "INVALID_TRANSITION"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/record-scan-result": {
+            "post": {
+              "operationId": "record-scan-result",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#record-scan-result",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "Only the platform worker identity records analysis results.",
+                "roles": [
+                  "asteria-worker"
+                ]
+              },
+              "x-foundation-idempotent": true,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#AttachmentScanned"
+              ],
+              "x-foundation-invariants": [
+                "DomainContract/asteria-service-requests@1#INV-004"
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/ScanResultInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Attachment"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/submit-request": {
+            "post": {
+              "operationId": "submit-request",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#submit-request",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "An authenticated requester creates a request on their own behalf.",
+                "roles": [
+                  "requester"
+                ]
+              },
+              "x-foundation-idempotent": true,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#RequestStatusChanged"
+              ],
+              "x-foundation-invariants": [
+                "DomainContract/asteria-service-requests@1#INV-001",
+                "DomainContract/asteria-service-requests@1#INV-002"
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/SubmitRequestInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/ServiceRequest"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "422": {
+                  "description": "A declared domain error.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Problem"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "code"
+                            ],
+                            "properties": {
+                              "code": {
+                                "enum": [
+                                  "ATTACHMENT_NOT_OWNED",
+                                  "OUTSIDE_TERRITORY"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/triage-request": {
+            "post": {
+              "operationId": "triage-request",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#triage-request",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "An operations agent triages requests.",
+                "roles": [
+                  "ops-agent"
+                ]
+              },
+              "x-foundation-idempotent": false,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#RequestStatusChanged"
+              ],
+              "x-foundation-invariants": [
+                "DomainContract/asteria-service-requests@1#INV-002"
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/TriageInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/ServiceRequest"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "422": {
+                  "description": "A declared domain error.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Problem"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "code"
+                            ],
+                            "properties": {
+                              "code": {
+                                "enum": [
+                                  "INVALID_TRANSITION"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "/service-requests/upload-attachment": {
+            "post": {
+              "operationId": "upload-attachment",
+              "x-foundation-operation": "DomainContract/asteria-service-requests@1#upload-attachment",
+              "x-foundation-kind": "COMMAND",
+              "x-foundation-authorization": {
+                "intent": "An authenticated requester or field agent uploads on their own behalf.",
+                "roles": [
+                  "field-agent",
+                  "requester"
+                ]
+              },
+              "x-foundation-idempotent": false,
+              "x-foundation-emits": [
+                "DomainContract/asteria-service-requests@1#AttachmentUploaded"
+              ],
+              "x-foundation-invariants": [
+                "DomainContract/asteria-service-requests@1#INV-004"
+              ],
+              "requestBody": {
+                "required": true,
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/UploadAttachmentInput"
+                    }
+                  }
+                }
+              },
+              "responses": {
+                "200": {
+                  "description": "Done.",
+                  "content": {
+                    "application/json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Attachment"
+                      }
+                    }
+                  }
+                },
+                "400": {
+                  "description": "The input does not match the contract.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                },
+                "422": {
+                  "description": "A declared domain error.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "allOf": [
+                          {
+                            "$ref": "#/components/schemas/Problem"
+                          },
+                          {
+                            "type": "object",
+                            "required": [
+                              "code"
+                            ],
+                            "properties": {
+                              "code": {
+                                "enum": [
+                                  "FILE_TOO_LARGE",
+                                  "UNSUPPORTED_MEDIA_TYPE"
+                                ]
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "501": {
+                  "description": "The operation is not implemented yet by the owning team.",
+                  "content": {
+                    "application/problem+json": {
+                      "schema": {
+                        "$ref": "#/components/schemas/Problem"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "components": {
+          "schemas": {
+            "AssignInput": {
+              "type": "object",
+              "required": [
+                "requestId",
+                "fieldAgentId",
+                "dueAt"
+              ],
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "fieldAgentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "dueAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#AssignInput"
+            },
+            "Assignment": {
+              "type": "object",
+              "required": [
+                "id",
+                "requestId",
+                "fieldAgentId",
+                "dueAt"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "fieldAgentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "dueAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#Assignment"
+            },
+            "Attachment": {
+              "type": "object",
+              "required": [
+                "id",
+                "file",
+                "mediaType",
+                "scanStatus"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "file": {
+                  "type": "string",
+                  "format": "file-ref",
+                  "minLength": 1
+                },
+                "mediaType": {
+                  "type": "string"
+                },
+                "scanStatus": {
+                  "$ref": "#/components/schemas/ScanStatus"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#Attachment"
+            },
+            "AttachmentReference": {
+              "type": "object",
+              "required": [
+                "attachmentId"
+              ],
+              "properties": {
+                "attachmentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#AttachmentReference"
+            },
+            "AttachmentScan": {
+              "type": "object",
+              "required": [
+                "attachmentId",
+                "scanStatus"
+              ],
+              "properties": {
+                "attachmentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "scanStatus": {
+                  "$ref": "#/components/schemas/ScanStatus"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#AttachmentScan"
+            },
+            "Escalation": {
+              "type": "object",
+              "required": [
+                "requestId",
+                "supervisorId",
+                "at"
+              ],
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "supervisorId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#Escalation"
+            },
+            "EscalationInput": {
+              "type": "object",
+              "required": [
+                "requestId",
+                "dueAt"
+              ],
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "dueAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#EscalationInput"
+            },
+            "GeoLocation": {
+              "type": "object",
+              "required": [
+                "latitude",
+                "longitude"
+              ],
+              "properties": {
+                "latitude": {
+                  "type": "string",
+                  "format": "decimal",
+                  "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"
+                },
+                "longitude": {
+                  "type": "string",
+                  "format": "decimal",
+                  "pattern": "^-?[0-9]+(?:\\.[0-9]+)?$"
+                },
+                "address": {
+                  "type": "string",
+                  "x-foundation-sensitive": true
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#GeoLocation"
+            },
+            "InterventionInput": {
+              "type": "object",
+              "required": [
+                "assignmentId",
+                "outcome",
+                "notes",
+                "photoIds",
+                "clientReportId"
+              ],
+              "properties": {
+                "assignmentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "outcome": {
+                  "$ref": "#/components/schemas/InterventionOutcome"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "photoIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                  }
+                },
+                "clientReportId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#InterventionInput"
+            },
+            "InterventionOutcome": {
+              "type": "string",
+              "enum": [
+                "RESOLVED",
+                "PARTIALLY_RESOLVED",
+                "NOT_RESOLVABLE"
+              ],
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#InterventionOutcome"
+            },
+            "InterventionReport": {
+              "type": "object",
+              "required": [
+                "id",
+                "assignmentId",
+                "outcome",
+                "notes",
+                "photos",
+                "recordedAt"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "assignmentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "outcome": {
+                  "$ref": "#/components/schemas/InterventionOutcome"
+                },
+                "notes": {
+                  "type": "string"
+                },
+                "photos": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Attachment"
+                  }
+                },
+                "recordedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#InterventionReport"
+            },
+            "Priority": {
+              "type": "string",
+              "enum": [
+                "LOW",
+                "NORMAL",
+                "HIGH",
+                "URGENT"
+              ],
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#Priority"
+            },
+            "RequestCategory": {
+              "type": "string",
+              "enum": [
+                "LIGHTING",
+                "ROADWORKS",
+                "WASTE",
+                "WATER",
+                "OTHER"
+              ],
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#RequestCategory"
+            },
+            "RequestStatus": {
+              "type": "string",
+              "enum": [
+                "SUBMITTED",
+                "TRIAGED",
+                "ASSIGNED",
+                "IN_PROGRESS",
+                "RESOLVED",
+                "CLOSED",
+                "REJECTED"
+              ],
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#RequestStatus"
+            },
+            "RequestStatusChange": {
+              "type": "object",
+              "required": [
+                "requestId",
+                "from",
+                "to",
+                "at"
+              ],
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "from": {
+                  "$ref": "#/components/schemas/RequestStatus"
+                },
+                "to": {
+                  "$ref": "#/components/schemas/RequestStatus"
+                },
+                "at": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#RequestStatusChange"
+            },
+            "ScanResultInput": {
+              "type": "object",
+              "required": [
+                "attachmentId",
+                "scanStatus"
+              ],
+              "properties": {
+                "attachmentId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "scanStatus": {
+                  "$ref": "#/components/schemas/ScanStatus"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#ScanResultInput"
+            },
+            "ScanStatus": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "CLEAN",
+                "INFECTED"
+              ],
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#ScanStatus"
+            },
+            "ServiceRequest": {
+              "type": "object",
+              "required": [
+                "id",
+                "reference",
+                "requesterId",
+                "category",
+                "description",
+                "location",
+                "status",
+                "createdAt",
+                "attachments"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "reference": {
+                  "type": "string"
+                },
+                "requesterId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "category": {
+                  "$ref": "#/components/schemas/RequestCategory"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "location": {
+                  "$ref": "#/components/schemas/GeoLocation"
+                },
+                "status": {
+                  "$ref": "#/components/schemas/RequestStatus"
+                },
+                "priority": {
+                  "$ref": "#/components/schemas/Priority"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$"
+                },
+                "attachments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Attachment"
+                  }
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#ServiceRequest"
+            },
+            "SubmitRequestInput": {
+              "type": "object",
+              "required": [
+                "category",
+                "description",
+                "location",
+                "attachmentIds"
+              ],
+              "properties": {
+                "category": {
+                  "$ref": "#/components/schemas/RequestCategory"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "location": {
+                  "$ref": "#/components/schemas/GeoLocation"
+                },
+                "attachmentIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                  }
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#SubmitRequestInput"
+            },
+            "TriageInput": {
+              "type": "object",
+              "required": [
+                "requestId",
+                "priority",
+                "category"
+              ],
+              "properties": {
+                "requestId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                },
+                "priority": {
+                  "$ref": "#/components/schemas/Priority"
+                },
+                "category": {
+                  "$ref": "#/components/schemas/RequestCategory"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#TriageInput"
+            },
+            "UploadAttachmentInput": {
+              "type": "object",
+              "required": [
+                "file",
+                "mediaType"
+              ],
+              "properties": {
+                "file": {
+                  "type": "string",
+                  "format": "file-ref",
+                  "minLength": 1
+                },
+                "mediaType": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "x-foundation-type": "DomainContract/asteria-service-requests@1#UploadAttachmentInput"
+            },
+            "Problem": {
+              "description": "Problem Details (RFC 9457).",
+              "type": "object",
+              "required": [
+                "title",
+                "status"
+              ],
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "integer"
+                },
+                "detail": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "x-foundation-events": [
+          {
+            "id": "AttachmentScanned",
+            "ref": "DomainContract/asteria-service-requests@1#AttachmentScanned",
+            "version": 1,
+            "payload": {
+              "$ref": "#/components/schemas/AttachmentScan"
+            }
+          },
+          {
+            "id": "AttachmentUploaded",
+            "ref": "DomainContract/asteria-service-requests@1#AttachmentUploaded",
+            "version": 1,
+            "payload": {
+              "$ref": "#/components/schemas/AttachmentReference"
+            }
+          },
+          {
+            "id": "RequestEscalated",
+            "ref": "DomainContract/asteria-service-requests@1#RequestEscalated",
+            "version": 1,
+            "payload": {
+              "$ref": "#/components/schemas/Escalation"
+            }
+          },
+          {
+            "id": "RequestStatusChanged",
+            "ref": "DomainContract/asteria-service-requests@1#RequestStatusChanged",
+            "version": 1,
+            "payload": {
+              "$ref": "#/components/schemas/RequestStatusChange"
+            }
+          }
+        ]
+      },
+      "digest": "sha256:b4c871aa87cdedf0daac31e33e0609a9bd337b87e49a0be3bbaf8fb38c267881"
+    }
+  ],
   "plan": {
     "system": "asteria",
     "inputs": {
@@ -2225,7 +3571,8 @@
           "ci",
           "staging",
           "production"
-        ]
+        ],
+        "contracts": []
       },
       {
         "action": "MATERIALIZE",
@@ -2241,7 +3588,8 @@
           "ci",
           "staging",
           "production"
-        ]
+        ],
+        "contracts": []
       },
       {
         "action": "MATERIALIZE",
@@ -2257,6 +3605,9 @@
           "ci",
           "staging",
           "production"
+        ],
+        "contracts": [
+          "authority-api.service-requests"
         ]
       },
       {
@@ -2300,7 +3651,8 @@
           "ci",
           "staging",
           "production"
-        ]
+        ],
+        "contracts": []
       },
       {
         "action": "BIND_CAPABILITY",
@@ -2334,7 +3686,8 @@
           "ci",
           "staging",
           "production"
-        ]
+        ],
+        "contracts": []
       },
       {
         "action": "BIND_CAPABILITY",
@@ -2368,7 +3721,8 @@
           "ci",
           "staging",
           "production"
-        ]
+        ],
+        "contracts": []
       },
       {
         "action": "BIND_CAPABILITY",
@@ -2415,41 +3769,160 @@
         "code": "IR_FACET_NOT_INTERPRETED"
       }
     ],
+    "sharedContracts": [
+      {
+        "id": "authority-api.service-requests",
+        "domain": "DomainContract/asteria-service-requests@1",
+        "provider": "authority-api",
+        "consumers": [
+          "async-worker",
+          "field-mobile",
+          "ops-web",
+          "requester-web"
+        ],
+        "digest": "sha256:b4c871aa87cdedf0daac31e33e0609a9bd337b87e49a0be3bbaf8fb38c267881"
+      }
+    ],
     "ownerWork": [
       {
+        "work": "COMPONENT",
         "component": "asteria-db",
         "ownership": "EXTERNAL",
         "team": "enistere-platform"
       },
       {
+        "work": "COMPONENT",
         "component": "asteria-objects",
         "ownership": "EXTERNAL",
         "team": "enistere-platform"
       },
       {
+        "work": "COMPONENT",
         "component": "async-worker",
         "ownership": "OWNER_MANAGED",
         "team": "asteria-backend"
       },
       {
+        "work": "COMPONENT",
         "component": "authority-api",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-backend"
       },
       {
+        "work": "COMPONENT",
         "component": "field-mobile",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-mobile"
       },
       {
+        "work": "COMPONENT",
         "component": "ops-web",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-web"
       },
       {
+        "work": "COMPONENT",
         "component": "requester-web",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-web"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#assign-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#escalate-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#list-assignments",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#list-my-requests",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#list-requests",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#record-intervention",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#record-scan-result",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#submit-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#triage-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#upload-attachment",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-001",
+        "enforcement": "OWNER_WORK"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-002",
+        "enforcement": "DETERMINISTIC"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-003",
+        "enforcement": "OWNER_WORK"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-004",
+        "enforcement": "DETERMINISTIC"
       }
     ],
     "proofObligations": [
@@ -2518,6 +3991,6 @@
         "requirement": "UX-001"
       }
     ],
-    "digest": "sha256:49ee6e4cf725e245b48e459b4edf3c1fd6c0ed28e587545b1f13a08e667a216c"
+    "digest": "sha256:c886ef4c7504d25b6dcc19e7f1ddbf546b8cd694ffbd7921800efe3cdacbfeec"
   }
 }

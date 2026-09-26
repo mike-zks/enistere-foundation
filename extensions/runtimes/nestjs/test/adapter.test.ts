@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 
-import type { IRComponent } from '@enistere/foundation-kernel-compiler';
+import { createKernelFacade, type IRComponent } from '@enistere/foundation-kernel-compiler';
+import { digestOf } from '@enistere/foundation-kernel-contracts';
 import { planArtifacts, validateManifest } from '@enistere/foundation-kernel-extensions';
 
 import adapter, { ADAPTER, DEPENDENCIES, DEV_DEPENDENCIES } from '../src/adapter.ts';
@@ -57,6 +59,57 @@ test('the plan is deterministic and keeps a single owner-managed extension point
   for (const path of ['package.json', 'tsconfig.json', 'src/main.ts', 'src/app.module.ts', 'src/health/health.controller.ts', 'Dockerfile', 'README.md']) {
     assert.ok(first.contents.has(path), path);
   }
+});
+
+const GOLDEN = fileURLToPath(new URL('../../../../goldens/asteria/', import.meta.url));
+function asteria(): { component: IRComponent; context: Parameters<typeof adapter.plan>[1] } {
+  const documents = ['contracts/', 'evidence/'].flatMap((directory) => readdirSync(`${GOLDEN}${directory}`).map((file) => JSON.parse(readFileSync(`${GOLDEN}${directory}${file}`, 'utf8')) as unknown));
+  const result = createKernelFacade().plan(documents, { catalog: JSON.parse(readFileSync(`${GOLDEN}sources/catalog.json`, 'utf8')) });
+  const component = result.ir!.components.find((candidate) => candidate.id === 'authority-api')!;
+  return { component, context: { system: 'asteria', definition: result.definition!.ref, domains: result.ir!.domains, apiContracts: result.apiContracts } };
+}
+
+test('the shared API contract is embedded as projected by the kernel, never re-described', () => {
+  const { component, context } = asteria();
+  const contract = context.apiContracts![0]!;
+  const { contents } = planArtifacts(adapter.describe(), component, adapter.plan(component, context));
+  const embedded = JSON.parse(contents.get('contract/service-requests.openapi.json') as string) as unknown;
+  assert.deepEqual(embedded, contract.document);
+  assert.equal(digestOf(embedded as never), contract.digest, 'the embedded document has the digest cited by the plan');
+});
+
+test('the contract gives typed routes validated against the contract, and owner-seeded handlers answering 501', () => {
+  const { component, context } = asteria();
+  const { plan, contents } = planArtifacts(adapter.describe(), component, adapter.plan(component, context));
+  assert.deepEqual(
+    plan.artifacts.filter((artifact) => artifact.ownership === 'OWNER_SEEDED').map((artifact) => artifact.path),
+    ['src/extension/extension.module.ts', 'src/extension/service-requests.handlers.ts'],
+  );
+  const controller = contents.get('src/domain/service-requests/service-requests.controller.ts') as string;
+  assert.match(controller, /@Post\('submit-request'\)/);
+  assert.match(controller, /@Get\('list-requests'\)/);
+  assert.equal((controller.match(/validateInput</g) ?? []).length, 7, 'every operation with an input validates it against the contract');
+  const handlers = contents.get('src/extension/service-requests.handlers.ts') as string;
+  assert.equal((handlers.match(/throw new NotImplementedException/g) ?? []).length, 10);
+  assert.match(contents.get('src/domain/service-requests/types.ts') as string, /export type RequestStatus = "SUBMITTED" \| "TRIAGED"/);
+  assert.match(contents.get('src/domain/service-requests/types.ts') as string, /export interface ServiceRequest \{[^}]*priority\?: Priority;/s);
+  assert.match(contents.get('Dockerfile') as string, /^COPY --chown=node:node contract \.\/contract$/m);
+  assert.match(contents.get('README.md') as string, /`submitRequest` \| `POST \/service-requests\/submit-request` \| requester \| INV-001, INV-002/);
+});
+
+test('authorization and files stay capabilities: nothing in the project simulates them', () => {
+  const { component, context } = asteria();
+  const { contents } = planArtifacts(adapter.describe(), component, adapter.plan(component, context));
+  for (const [path, content] of contents) {
+    if (path.endsWith('.json') || path.endsWith('.md')) continue;
+    assert.doesNotMatch(content, /UseGuards|CanActivate|passport|jwt|multer|FileInterceptor/i, path);
+  }
+});
+
+test('a component that provides no contract keeps the E2 project shape', () => {
+  const { contents } = planArtifacts(adapter.describe(), component(), adapter.plan(component(), context));
+  assert.ok(![...contents.keys()].some((path) => path.startsWith('contract/') || path.startsWith('src/domain/')));
+  assert.doesNotMatch(contents.get('Dockerfile') as string, /contract/);
 });
 
 test('dependencies are pinned to exact versions; the image does not run as root; no secret is generated', () => {

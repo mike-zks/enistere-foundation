@@ -23,6 +23,7 @@ Ajout libre ; suppression ou réécriture d'un ADR accepté = validation humaine
 | [ADR-096](ADR-096-adapter-protocol-v0.md) | Adapter Protocol v0 et premier adapter NestJS | Accepté |
 | [ADR-097](ADR-097-domain-ir.md) | Domain IR et liaison à l'IR système | Accepté |
 | [ADR-098](ADR-098-materialization-record-and-proof-chain.md) | A8 MaterializationRecord et proof chain v1 | Accepté |
+| [ADR-099](ADR-099-domain-contract-projection.md) | Projection du Domain Contract en contrat OpenAPI partagé | Accepté |
 
 Les ADR 001–090 de l'itération précédente (sauf ADR-073) sont archivés dans
 [`archive/laboratory/adr/`](../archive/laboratory/adr/) : histoire, sans autorité (ADR-094). La
