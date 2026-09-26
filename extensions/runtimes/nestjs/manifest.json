@@ -1,9 +1,9 @@
 {
-  "$comment": "First runtime adapter of Enistere Foundation (mission E2, ADR-096), written from scratch on Adapter Protocol v0.",
+  "$comment": "First runtime adapter of Enistere Foundation (E2, ADR-096), written from scratch on Adapter Protocol v0; realizes the shared API contracts its component provides since E5 (ADR-099).",
   "protocol": "foundation.enistere.com/adapter-protocol/v0",
   "id": "nestjs",
   "extensionType": "RUNTIME_ADAPTER",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "maintainer": "Enistere Foundation",
   "supports": {
     "componentKinds": [
@@ -51,6 +51,11 @@
       "id": "boot",
       "level": "TOOLCHAIN",
       "statement": "The service starts and answers GET /health with HTTP 200."
+    },
+    {
+      "id": "contract",
+      "level": "TOOLCHAIN",
+      "statement": "The service serves its shared API contracts as committed, rejects inputs that do not match them (400, Problem Details) and answers 501 for operations its team has not implemented yet."
     },
     {
       "id": "audit",

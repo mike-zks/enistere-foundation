@@ -159,7 +159,7 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   // E3 Domain IR: domain intent the IR cannot realize.
   IR_OPERATION_UNIMPLEMENTED: spec('UNSUPPORTED', 'warning', 'Allocate the operation to a component (implements) or remove it from the Domain Contract.'),
   IR_EVENT_UNPUBLISHED: spec('UNSUPPORTED', 'warning', 'Let a component publish the event, directly or by implementing an operation that emits it.'),
-  IR_FACET_NOT_INTERPRETED: spec('UNSUPPORTED', 'warning', 'Domain facets are carried but not interpreted before the domain projection (E5); review what they require.'),
+  IR_FACET_NOT_INTERPRETED: spec('UNSUPPORTED', 'warning', 'Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.'),
   // E4 Proof chain (self-contained bundle, replayed on verification).
   PROOF_MALFORMED: spec('INVALID_INPUT', 'error', 'Provide a proof-chain bundle produced by the Foundation export.'),
   PROOF_DIGEST_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'The bundle was altered after export: export it again from the trusted sources.'),

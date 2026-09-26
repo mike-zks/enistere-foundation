@@ -144,6 +144,22 @@ test('an owner change survives a new adapter version (E4 gate)', async () => {
   assert.equal(history[1]?.metadata.supersedes?.revision, 1);
 });
 
+test('handlers written by the team survive a re-materialization of the shared contract (E5)', async () => {
+  const host = await loadExtensions(`${REPO}extensions`);
+  const root = workspace();
+  const first = materialize(planWith(host), host, root, AT);
+  assert.deepEqual(first.diagnostics, []);
+  const handlers = join(root, 'authority-api/src/extension/service-requests.handlers.ts');
+  assert.match(readFileSync(handlers, 'utf8'), /NotImplementedException/);
+  writeFileSync(handlers, '// the team implemented the service requests here\n');
+  const again = materialize(planWith(host), host, root, { executedAt: '2026-09-26T09:00:00Z' });
+  const decision = again.records[0]!.spec.files.find((file) => file.path === 'src/extension/service-requests.handlers.ts')?.decision;
+  assert.equal(decision, 'KEEP_OWNER');
+  assert.equal(again.records[0]!.spec.outcome, 'APPLIED');
+  assert.equal(readFileSync(handlers, 'utf8'), '// the team implemented the service requests here\n');
+  assert.ok(existsSync(join(root, 'authority-api/contract/service-requests.openapi.json')));
+});
+
 test('the Engine names no framework, runtime or cloud (TA-04)', () => {
   const forbidden = /nestjs|spring|fastapi|nextjs|angular|react-native|flutter|postgres|kubernetes/i;
   for (const file of readdirSync(SOURCES)) assert.doesNotMatch(readFileSync(`${SOURCES}${file}`, 'utf8'), forbidden, file);

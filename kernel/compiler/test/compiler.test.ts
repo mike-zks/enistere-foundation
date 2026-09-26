@@ -126,7 +126,7 @@ test('the plan materializes resolved components, connects external ones and keep
   assert.equal(step('asteria-objects'), undefined, 'an unsupported component is never planned');
   assert.equal(step('async-worker')?.action, 'MATERIALIZE', 'the Async Worker is a first-class planned component');
   assert.deepEqual(plan.unsupported, resolved.unsupported);
-  assert.ok(plan.ownerWork.some((item) => item.component === 'async-worker' && item.ownership === 'OWNER_MANAGED'));
+  assert.ok(plan.ownerWork.some((item) => item.work === 'COMPONENT' && item.component === 'async-worker' && item.ownership === 'OWNER_MANAGED'));
   assert.ok(plan.proofObligations.length > 0);
   assert.deepEqual(plan.inputs, { closure: closure.digest, ir: ir.digest, resolved: resolved.digest });
 });

@@ -33,6 +33,20 @@ test('the committed proof chain verifies outside the repository: digest, closed 
   assert.equal(verifyProofChain(tampered).valid, false);
 });
 
+test('the domain is projected once, as one API contract shared by its provider and its consumers (E5)', () => {
+  const compilation = JSON.parse(readGoldenFile('expected/compilation.json')) as {
+    apiContracts: { id: string; digest: string; provider: string; consumers: string[] }[];
+    plan: { sharedContracts: { id: string; digest: string }[] };
+  };
+  const materialization = JSON.parse(readGoldenFile('expected/materialization.json')) as { plan: { sharedContracts: { id: string; digest: string }[] } };
+  const [contract] = compilation.apiContracts;
+  assert.equal(compilation.apiContracts.length, 1);
+  assert.equal(contract?.provider, 'authority-api');
+  assert.deepEqual(contract?.consumers, ['async-worker', 'field-mobile', 'ops-web', 'requester-web']);
+  assert.deepEqual(compilation.plan.sharedContracts.map((item) => [item.id, item.digest]), [[contract?.id, contract?.digest]]);
+  assert.deepEqual(materialization.plan.sharedContracts, compilation.plan.sharedContracts, 'the contract does not depend on the extensions available');
+});
+
 test('the build is deterministic', () => {
   assert.deepEqual(buildAsteriaGolden().files, buildAsteriaGolden().files);
 });

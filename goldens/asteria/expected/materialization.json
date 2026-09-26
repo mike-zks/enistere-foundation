@@ -2,18 +2,18 @@
   "extensions": [
     {
       "id": "nestjs",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "source": "runtimes/nestjs/manifest.json"
     }
   ],
-  "catalog": "sha256:a2e361fa732098972227eb32e8cd719d29a7a2181597520557d6d5e4dd940b5d",
+  "catalog": "sha256:5b28d0b4adc0f4119276fc8dec6c38ca1e4d067579809fa17424f18dc5c7d5d4",
   "status": "PARTIAL",
   "plan": {
     "system": "asteria",
     "inputs": {
-      "closure": "sha256:ec5b3ba19dfc195981cfe662c1a9e4c115c5207d36516f5db292e185c90f30be",
+      "closure": "sha256:1d876236955f90f89b1f5bb22ccb588e8e021565d220b75ef212c39d153fda05",
       "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
-      "resolved": "sha256:059e19673f67fbd2deeed4929f27789adf387e64e755d8054b1e2d21b8033f5c"
+      "resolved": "sha256:a962e101e477a694c6af993b9b5ad2cf088620460ef1ccd5e03b04349b4d138d"
     },
     "steps": [
       {
@@ -21,7 +21,7 @@
         "component": "authority-api",
         "adapter": {
           "id": "nestjs",
-          "version": "0.1.0"
+          "version": "0.2.0"
         },
         "runtime": "nestjs",
         "ownership": "SHARED_CONTROLLED",
@@ -30,6 +30,9 @@
           "ci",
           "staging",
           "production"
+        ],
+        "contracts": [
+          "authority-api.service-requests"
         ]
       }
     ],
@@ -94,41 +97,160 @@
         "code": "IR_FACET_NOT_INTERPRETED"
       }
     ],
+    "sharedContracts": [
+      {
+        "id": "authority-api.service-requests",
+        "domain": "DomainContract/asteria-service-requests@1",
+        "provider": "authority-api",
+        "consumers": [
+          "async-worker",
+          "field-mobile",
+          "ops-web",
+          "requester-web"
+        ],
+        "digest": "sha256:b4c871aa87cdedf0daac31e33e0609a9bd337b87e49a0be3bbaf8fb38c267881"
+      }
+    ],
     "ownerWork": [
       {
+        "work": "COMPONENT",
         "component": "asteria-db",
         "ownership": "EXTERNAL",
         "team": "enistere-platform"
       },
       {
+        "work": "COMPONENT",
         "component": "asteria-objects",
         "ownership": "EXTERNAL",
         "team": "enistere-platform"
       },
       {
+        "work": "COMPONENT",
         "component": "async-worker",
         "ownership": "OWNER_MANAGED",
         "team": "asteria-backend"
       },
       {
+        "work": "COMPONENT",
         "component": "authority-api",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-backend"
       },
       {
+        "work": "COMPONENT",
         "component": "field-mobile",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-mobile"
       },
       {
+        "work": "COMPONENT",
         "component": "ops-web",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-web"
       },
       {
+        "work": "COMPONENT",
         "component": "requester-web",
         "ownership": "SHARED_CONTROLLED",
         "team": "asteria-web"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#assign-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#escalate-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#list-assignments",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#list-my-requests",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#list-requests",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#record-intervention",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#record-scan-result",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#submit-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#triage-request",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "IMPLEMENT_OPERATION",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#upload-attachment",
+        "contract": "authority-api.service-requests"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-001",
+        "enforcement": "OWNER_WORK"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-002",
+        "enforcement": "DETERMINISTIC"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-003",
+        "enforcement": "OWNER_WORK"
+      },
+      {
+        "work": "ENFORCE_INVARIANT",
+        "component": "authority-api",
+        "team": "asteria-backend",
+        "item": "DomainContract/asteria-service-requests@1#INV-004",
+        "enforcement": "DETERMINISTIC"
       }
     ],
     "proofObligations": [
@@ -161,14 +283,14 @@
         "requirement": "SEC-002"
       }
     ],
-    "digest": "sha256:c5e57f703591224d996af93dec24477980832b6098c80f0f0a67530de266e34a"
+    "digest": "sha256:002748b645e70e264e69c88617b2afcf589dc02b00e14df3abaf215ee3fc9f97"
   },
   "artifactPlans": [
     {
       "component": "authority-api",
       "adapter": {
         "id": "nestjs",
-        "version": "0.1.0"
+        "version": "0.2.0"
       },
       "ownership": "SHARED_CONTROLLED",
       "artifacts": [
@@ -185,27 +307,82 @@
         {
           "path": "Dockerfile",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:6d1a022a7d4552f540d82588dcd04b269c4fab7105d68727cf12bb75024eb83b"
+          "digest": "sha256:3253ce2d5510f0eae2ad154f6006114ec9bdb1c427ce7a68d5820ef188f157dc"
         },
         {
           "path": "README.md",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:1f5478d0aa170dc28ecc7fe51ccf5cee8ed6b9337ef6be41b4b3dfd6f8a1b770"
+          "digest": "sha256:dbe5a561807efdb03496891a5ec11079c66f54208d4dd5c39e9816cc8caab23f"
+        },
+        {
+          "path": "contract/service-requests.openapi.json",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:cb86f520852b8a7ba5fe2b5d8c1973ac2e2f778aff9475d8cae9e6c0354aed94"
         },
         {
           "path": "package.json",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:988afc6e07ec3c4873547aff707ea5de2d85044668168240841a19d2ad8396a4"
+          "digest": "sha256:e1b6f6fd5daf1abcc6c39562d03a7891c44f69b6648ff3e7ba657be63d9f303b"
+        },
+        {
+          "path": "scripts/contract-check.mjs",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:97d06a60d4844b97cc26c084d075219020915c7ae75595e1a5db53e58f6becbf"
         },
         {
           "path": "src/app.module.ts",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:deda77c40c010e2e15485004337f5e866691fe1b00668cb19266039ac1de3309"
+          "digest": "sha256:71766b9b016128bbcc6b8abd5f4495326a2686d02ed0a944e8ce02744216294e"
+        },
+        {
+          "path": "src/contract/contracts.controller.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:c9579a7d79ebe10e006b34a06aef642e6ff9546c1f64fbe0c6707792e5029064"
+        },
+        {
+          "path": "src/contract/domain-error.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:b33514b5ffc58e3667d4df065db43ab35edcd401c93a4f1a9605793ec4acf7a0"
+        },
+        {
+          "path": "src/contract/problem.filter.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:5252463c118cdbde754dfa699b4164a5698d2cee79c3a07aca3eae8520c73cc7"
+        },
+        {
+          "path": "src/contract/validation.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:50a199a276213e40b5d249a58ba1e1e1e03e4b42e4d69d96a3dcdba7c4dce6bb"
+        },
+        {
+          "path": "src/domain/service-requests/handlers.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:884e7d71b307a25c4d006dbec980fdf17cf28b229bef918b46921142e7d11c50"
+        },
+        {
+          "path": "src/domain/service-requests/service-requests.controller.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:948bfcadf80d458cd95ee2bee8f3c3fd3134b119efba2f706708cb8cedcb0d5f"
+        },
+        {
+          "path": "src/domain/service-requests/service-requests.module.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:e2f59d7831e29f04daa2da942d4208e4d5b0662c76aec8fa7093e307466babbc"
+        },
+        {
+          "path": "src/domain/service-requests/types.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:19e313ad885afe297a33201e96fa507c75873de6c4f24eee4e1b0d6fd5b4698c"
         },
         {
           "path": "src/extension/extension.module.ts",
           "ownership": "OWNER_SEEDED",
           "digest": "sha256:ab5018a79e1eaaa899235eab8811e72d25e94d892a3484040c97c457f478bc2f"
+        },
+        {
+          "path": "src/extension/service-requests.handlers.ts",
+          "ownership": "OWNER_SEEDED",
+          "digest": "sha256:a80e002cb8823f635d8b5236ba4e16aa164b3cd63a0d2f35e8382d4927c2f90e"
         },
         {
           "path": "src/health/health.controller.ts",
@@ -215,7 +392,7 @@
         {
           "path": "src/main.ts",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:f6550cf0ef913c72726d586ad792230dd080215c2e8fcf8d84db535a894b41b2"
+          "digest": "sha256:cd4cd5399359d42c61b2680f7dace7b709e5ebaa4da8f0f68abd7a8366dccc5b"
         },
         {
           "path": "tsconfig.json",
@@ -223,7 +400,7 @@
           "digest": "sha256:1b9db6e14c176dbcdd9e0fdf85ef44bf896474539e84fdcbceb8117722f3ac38"
         }
       ],
-      "digest": "sha256:92c6cd958217fd73ee1e9cefcfecf14f04d1be2de61288efcdd4cb861e10603c"
+      "digest": "sha256:d88edbe5b2f6959ddc66d3d86255d08d654264223032bca4bb12afc436e4152e"
     }
   ],
   "diagnostics": [
@@ -232,8 +409,8 @@
       "class": "UNSUPPORTED",
       "severity": "warning",
       "layer": "kernel.compiler",
-      "message": "DomainContract/asteria-service-requests@1#offline-sync is not realized: domain facets are not interpreted before the domain projection (E5)",
-      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "message": "DomainContract/asteria-service-requests@1#offline-sync is not realized: domain facets are not interpreted by the compiler; no facet is realized as a platform capability",
+      "remediation": "Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.",
       "retryable": false,
       "ref": "SystemDefinition/asteria@2",
       "details": {
@@ -245,8 +422,8 @@
       "class": "UNSUPPORTED",
       "severity": "warning",
       "layer": "kernel.compiler",
-      "message": "DomainContract/asteria-service-requests@1#scheduling is not realized: domain facets are not interpreted before the domain projection (E5)",
-      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "message": "DomainContract/asteria-service-requests@1#scheduling is not realized: domain facets are not interpreted by the compiler; no facet is realized as a platform capability",
+      "remediation": "Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.",
       "retryable": false,
       "ref": "SystemDefinition/asteria@2",
       "details": {
@@ -258,8 +435,8 @@
       "class": "UNSUPPORTED",
       "severity": "warning",
       "layer": "kernel.compiler",
-      "message": "DomainContract/asteria-service-requests@1#workflow is not realized: domain facets are not interpreted before the domain projection (E5)",
-      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "message": "DomainContract/asteria-service-requests@1#workflow is not realized: domain facets are not interpreted by the compiler; no facet is realized as a platform capability",
+      "remediation": "Domain facets are carried but not interpreted by the compiler, and never realized as a platform capability; review what they require.",
       "retryable": false,
       "ref": "SystemDefinition/asteria@2",
       "details": {

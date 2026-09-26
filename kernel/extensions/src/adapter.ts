@@ -17,7 +17,7 @@
  * ownership of every artifact and computes the digests.
  */
 
-import type { DomainIR, IRComponent } from '@enistere/foundation-kernel-compiler';
+import type { ApiContract, DomainIR, IRComponent } from '@enistere/foundation-kernel-compiler';
 import { digestOf, fileDigest, isSafeArtifactPath, type Digest } from '@enistere/foundation-kernel-contracts';
 
 /** Ownership of a generated file (document 02 FR-OWN). */
@@ -42,6 +42,12 @@ export interface AdapterContext {
   definition: string;
   /** Domain IR of the pinned Domain Contracts (E3, read-only; additive to protocol v0). */
   domains?: readonly DomainIR[];
+  /**
+   * Shared API contracts projected by the kernel (E5, read-only; additive to
+   * protocol v0). An adapter embeds the contracts its component provides as
+   * they are: it never projects the domain again.
+   */
+  apiContracts?: readonly ApiContract[];
 }
 
 /** A command run without shell, in the component directory. */
