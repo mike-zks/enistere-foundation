@@ -4,24 +4,24 @@
 
 ## Mission active
 
-**Aucune.** E0 à E5 (ADR-092 à ADR-099, avec R0-C et R0-D) sont terminées ; rapports dans
+**Aucune.** E0 à E6 (ADR-092 à ADR-100, avec R0-C et R0-D) sont terminées ; rapports dans
 [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## Prochaine mission unique
 
-### E6 — Organization Context & Design bindings (horizon V1)
+### E7 — Day-2 Change Intelligence (horizon V1)
 
-- **Objectif** : appliquer le contexte d'organisation effectif (A3 : Entity Profile, Policy Packs,
-  précédence, verrous, dérogations) à la compilation, et relier la gouvernance de design aux surfaces, sans
-  confondre thème et domaine.
-- **In scope** : évaluation des politiques d'A3 à la résolution et au plan (blocage explicite ou waiver
-  tracé) ; design bindings des surfaces (tokens, thème) distincts du contrat de domaine ; golden Asteria
-  (verrou refusant l'IdP du client, dérogation W-001 datée).
-- **Out of scope** : Day-2 change (E7), second adapter (E8), Workbench.
-- **Critères de PASS (document 06)** : theme ≠ domain ; une policy bloque ou produit un waiver.
-- **À trancher avant de lancer** : forme des règles de politique évaluables (langage de règles ou
-  prédicats déclaratifs fermés) et source des design tokens (D-5 : `design-tokens.json` et mockups
-  absents du dépôt).
+- **Objectif** : avant d'appliquer un changement, montrer son impact — ce qui change dans la
+  compilation, les fichiers, les contrats partagés, les politiques — et rendre visible l'Evidence qu'il
+  périme.
+- **In scope** : diff de deux compilations (closure, IR, contrats d'API, bindings, politiques, plan) ;
+  impact d'un Change Request (A6) calculé à partir de sa base et de sa révision proposée ; plan de
+  matérialisation en « dry-run » (fichiers CREATE/UPDATE/KEEP_OWNER/CONFLICT) sans écriture ; Evidence
+  périmée listée ; golden Asteria (asteria-cr-001).
+- **Out of scope** : second adapter (E8), exécution automatique d'un changement, Control Plane.
+- **Critères de PASS (document 06)** : impact/diff avant apply ; Evidence périmée visible.
+- **À trancher avant de lancer** : l'impact calculé devient-il un contrat (enrichissement d'A6 ou record
+  dédié) ou un résultat dérivé non persistant ; granularité du diff (par item ou par fichier).
 
 ## En attente de validation humaine
 

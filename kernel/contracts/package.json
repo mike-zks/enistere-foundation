@@ -2,7 +2,7 @@
   "name": "@enistere/foundation-kernel-contracts",
   "version": "0.1.0",
   "private": true,
-  "description": "Enistere Foundation — E0 Contract Foundation: eight first-class contracts (A1–A7 from E0, A8 MaterializationRecord from E4) and their shared primitives (version, stable ref, provenance, acceptance/status, diagnostics, digest, migration seam).",
+  "description": "Enistere Foundation — E0 Contract Foundation: nine first-class contracts (A1–A7 from E0, A8 MaterializationRecord from E4, A9 DesignSystem from E6) and their shared primitives (version, stable ref, provenance, acceptance/status, diagnostics, digest, migration seam).",
   "license": "UNLICENSED",
   "type": "module",
   "sideEffects": false,

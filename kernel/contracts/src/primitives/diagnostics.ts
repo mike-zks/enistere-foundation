@@ -51,7 +51,7 @@ const spec = (failureClass: FailureClass, severity: Severity, remediation: strin
 export const DIAGNOSTIC_CODES = Object.freeze({
   // Envelope, schema and versioning.
   CONTRACT_NOT_AN_OBJECT: spec('INVALID_INPUT', 'error', 'Provide a JSON object with apiVersion, kind, metadata and spec.'),
-  CONTRACT_UNKNOWN_KIND: spec('UNSUPPORTED', 'error', 'Use one of the eight contract kinds (A1–A8).'),
+  CONTRACT_UNKNOWN_KIND: spec('UNSUPPORTED', 'error', 'Use one of the nine contract kinds (A1–A9).'),
   CONTRACT_UNSUPPORTED_API_VERSION: spec('UNSUPPORTED', 'error', 'Migrate the document with a registered migration; unknown versions are never read by fallback.'),
   CONTRACT_SCHEMA_VIOLATION: spec('INVALID_INPUT', 'error', 'Fix the document so that it satisfies the published JSON Schema.'),
   CONTRACT_NOT_CANONICAL_JSON: spec('INVALID_INPUT', 'error', 'Remove non-JSON values (undefined, non-finite numbers, class instances).'),

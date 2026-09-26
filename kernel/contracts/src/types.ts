@@ -1,5 +1,5 @@
 /**
- * TypeScript view of the eight first-class contracts (A1–A7 from E0, A8 from E4). The JSON Schemas under
+ * TypeScript view of the nine first-class contracts (A1–A7 from E0, A8 from E4, A9 from E6). The JSON Schemas under
  * `schemas/v1alpha1/` are the language-neutral source of the shape; these types
  * are the reference implementation's reading of it and are only trusted after
  * `validateContract` has accepted a document.

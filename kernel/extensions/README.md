@@ -7,5 +7,5 @@ Aucune I/O, aucun framework.
 |---|---|
 | `schemas/adapter-manifest.v0.schema.json` | Manifest d'un Runtime Adapter : ce qu'il réalise, mode d'exécution, permissions (jamais de secret), outils, checks de vérification, point d'entrée |
 | `manifest.ts` | `validateManifest` (interpréteur de schémas du Kernel) ; `catalogFromManifests` → descripteurs du catalogue E1, validés par `validateCatalog` |
-| `adapter.ts` | Interface `RuntimeAdapter` ; `AdapterContext` (Domain IR, contrats d'API partagés — E3, E5, additifs) ; `planArtifacts` : chemins sûrs, digests, ownership bornée par la classe du composant |
+| `adapter.ts` | Interface `RuntimeAdapter` ; `AdapterContext` (Domain IR, contrats d'API partagés, design bindings — E3, E5, E6, additifs) ; `planArtifacts` : chemins sûrs, digests, ownership bornée par la classe du composant |
 | `ownership.ts` | `decideWrite` : CREATE, UPDATE, UNCHANGED, KEEP_OWNER ou CONFLICT — aucun overwrite silencieux (FR-OWN-02) |

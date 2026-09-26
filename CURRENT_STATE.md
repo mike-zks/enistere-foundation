@@ -4,23 +4,26 @@
 
 | Champ | Valeur |
 |---|---|
-| Commit / branche | Base `8dfe2d0` (`main`, fusion de la PR #260) ; travail sur `claude/e5-domain-projection` |
+| Commit / branche | Base `94451db` (`main`, fusion de la PR #261) ; travail sur `claude/e6-organization-design` |
 | Date | 2026-09-26 |
-| Mission | E5 — Domain Contract Projection (ADR-099) |
-| Résultat | E5 **PASS** localement sur la gate du document 06 (domaine distinct de capability ; contrat partagé) ; CI de la PR à confirmer |
+| Mission | E6 — Organization Context & Design bindings (ADR-100) |
+| Résultat | E6 **PASS** localement sur la gate du document 06 (theme ≠ domain ; une policy bloque ou produit un waiver) ; CI de la PR à confirmer |
 
 ## Completed
 
-- **Kernel** : contrats A1–A8 ; compiler, façade, Domain IR, proof chain ; **projection du domaine**
-  (`projectApiContracts`) : un contrat OpenAPI 3.1 par domaine et fournisseur, routes dérivées, schémas
-  fermés, Problem Details, autorisation comme intention de domaine ; plan avec `sharedContracts`, step
-  MATERIALIZE nommant ses contrats, `ownerWork` des opérations et invariants ; `AdapterContext.apiContracts`.
-- **Adapter NestJS 0.2.0** : contrat embarqué à l'identique et servi, types/handlers/contrôleur/module
-  dérivés du document, entrées validées par Ajv contre le contrat (400), erreurs déclarées (422), handlers
-  owner-seeded (501), check TOOLCHAIN `contract` (`scripts/contract-check.mjs`).
-- **Golden Asteria** : contrat `authority-api.service-requests` (10 opérations) partagé par l'Authority
-  API et ses 4 consommateurs ; digest identique avec le catalogue synthétique et les extensions réelles.
-- Missions antérieures : E0, R0-C, R0-D, E1–E4 — rapports ci-dessous ; documents 03 et 06 v1.1.
+- **Kernel — politiques** : `evaluatePolicies` applique à la compilation un catalogue fermé de règles
+  d'A3 (runtimes par famille, fournisseur d'identité, résidence des données, accessibilité) ; une
+  violation bloque (INVALID, aucun plan, rapport conservé) ; un waiver est tracé (WAIVED, expiration) ;
+  les autres règles sont NOT_EVALUATED, listées ; le rapport entre dans le plan (proof chain).
+- **Kernel — design** : contrat **A9 `DesignSystem`** (W3C Design Tokens, WCAG 2.2, contextes) ; A4
+  épingle le Design System de chaque surface, `environments[].region` ; design bindings (tokens résolus
+  par contexte) dans l'IR, le plan et `AdapterContext.designBindings`.
+- **Engine** : un plan reposant sur un waiver expiré à l'instant de matérialisation n'est pas appliqué.
+- **Golden Asteria** : A9 `operator-design-system@1`, régions (staging `eu-central` WAIVED par W-001),
+  fournisseur OIDC aligné sur la règle verrouillée ; régénéré.
+- **D-5** : `docs/design/design-tokens.json` (tokens de l'interface Foundation, document 04), validé par
+  `npm run design:tokens` (job CI `kernel`).
+- Missions antérieures : E0, R0-C, R0-D, E1–E5 — rapports ci-dessous ; documents 03 et 06 v1.1.
 
 ## In progress
 
@@ -30,37 +33,70 @@ Aucun.
 
 Aucun. Rappel : `adapters` doit figurer dans les checks requis de `protect-main` (ADR-096).
 
-## Tests (exécutés le 2026-09-26 sur `claude/e5-domain-projection`)
+## Tests (exécutés le 2026-09-26 sur `claude/e6-organization-design`)
 
 | Commande | Résultat |
 |---|---|
 | `npm run foundation:typecheck` (7 workspaces) | OK (0 erreur) |
-| `npm run foundation:test` | 129/129 PASS — compiler 33 (dont contrat d'API 6), contracts 53, extensions 6, materializer 10, adapter 9, CLI 8, goldens 10 |
-| `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 21 fichiers, 0 diagnostic |
-| CLI `materialize` → `verify --toolchain` → `export` → `verify-bundle` | 2 (PARTIAL) → PASS (structure, install, build, boot, contract : 11 vérifications, audit) → EXPORTED → VALID |
-| Service généré, manuel | entrée valide → 501 ; entrée invalide → 400 (4 erreurs) ; route inconnue → 404 ; Problem Details |
-| `npm run tools:test` · `npm run docs:links` · `npm audit --audit-level=high` | OK · OK · 0 vulnérabilité |
+| `npm run foundation:test` | 142/142 PASS — compiler 39 (dont organisation/design 6), contracts 58 (dont A9 5), extensions 6, materializer 11, adapter 9, CLI 8, goldens 11 |
+| `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 22 fichiers, 0 diagnostic |
+| CLI `materialize` → `verify --toolchain` → `export` → `verify-bundle` | 2 (PARTIAL) → PASS → EXPORTED (7 contrats) → VALID |
+| `npm run tools:test` · `npm run design:tokens` · `npm run docs:links` · `npm audit --audit-level=high` · actionlint | 12/12 · OK · OK · 0 vulnérabilité · OK |
 
-**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture, dont le job `adapters`) ; construction de
-l'image Docker (aucun démon Docker ici ; non exigée par la gate).
+**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture).
 
 ## Known gaps
 
-- Pas d'AsyncAPI ni de transport d'événements (messaging non validé, D-3) ; invariants non exécutables ;
-  routes RPC dérivées plutôt que ressources REST ; pas de clients générés pour les consommateurs (E8).
-- Capabilities authentication, authorization, files : UNSUPPORTED, jamais simulées.
-- Pas de signature de la proof chain ; pas d'Evidence Graph (V1+).
-- Contexte d'organisation non appliqué (E6) ; aucun Control Plane, Workbench, Worker, Registry, AI Gateway.
+- Règles NOT_EVALUATED : `deployment.image.reference`, `ai.decide.allowed` (appliquée par l'autorité des
+  contrats, pas par la compilation), `evidence.retention.days` ; famille de runtime déduite du préfixe du
+  kind.
+- Aucun adapter de surface ne consomme les design bindings (E8) ; mockups du document 04 absents (D-5).
+- Pas d'AsyncAPI ni de transport d'événements ; invariants non exécutables ; capabilities non simulées.
+- Aucun Control Plane, Workbench, Worker, Registry, AI Gateway.
 
 ## Decisions
 
-ADR-091 à ADR-098, **ADR-099** (projection du Domain Contract en contrat OpenAPI partagé) — voir
+ADR-091 à ADR-099, **ADR-100** (politiques d'organisation évaluées et contrat A9 DesignSystem) — voir
 [`DECISIONS.md`](DECISIONS.md).
 
 ## Next single action
 
-**E6 — Organization Context & Design bindings** ([`BACKLOG.md`](BACKLOG.md)) ; trancher d'abord la forme
-des règles de politique évaluables et la source des design tokens (D-5).
+**E7 — Day-2 Change Intelligence** ([`BACKLOG.md`](BACKLOG.md)) ; trancher d'abord la nature de l'impact
+calculé (contrat ou résultat dérivé) et la granularité du diff.
+
+---
+
+## Rapport de mission E6 — Organization Context & Design bindings (document 05 §11, Annexe A §16)
+
+- **Mission** : E6 — Organization Context & Design bindings.
+- **Date** : 2026-09-26.
+- **Branch / HEAD** : `claude/e6-organization-design`, base `94451db`.
+- **Objectif** : appliquer le contexte d'organisation à la compilation et relier les surfaces à un design
+  system gouverné, sans confondre thème et domaine.
+- **Scope** : `kernel/contracts` (A9, A4), `kernel/compiler` (politiques, design bindings, IR, plan,
+  façade), `kernel/extensions` (contexte d'adapter), `engine/materializer` (waiver expiré), golden,
+  outillage (`design:tokens`), CI (`kernel`).
+- **Out of scope** : Day-2 (E7), second adapter et surfaces générées (E8), Entity Profiles/Policy Packs
+  comme contrats, mockups.
+- **État initial** : E5 mergée ; A3 non appliqué ; Design System externe inexistant ; D-5 ouverte.
+- **Changements réalisés** : voir *Completed*.
+- **Fichiers touchés** : `kernel/contracts/{schemas/v1alpha1/{design-system,system-definition,common}.schema.json,src/**,test/**}` ;
+  `kernel/compiler/src/{policy,design,ir,plan,facade,index}.ts`, `kernel/compiler/test/{organization-design,compiler}.test.ts` ;
+  `kernel/extensions/src/adapter.ts` ; `engine/materializer/{src/materialize.ts,test/materializer.test.ts}` ;
+  `goldens/**` ; `docs/design/**` ; `tools/quality/design-tokens-check*.mjs` ; `package.json` ;
+  `.github/workflows/ci.yml` ; documentation et gouvernance.
+- **Contrats impactés** : nouveau contrat A9 ; A4 (`designSystem` épinglé, `region`) ; `common.schema.json`.
+- **Migrations** : aucune (v1alpha1, aucune donnée hors du golden, ADR-094).
+- **Tests exécutés / résultats** : voir *Tests*.
+- **Preuves** : `organization-design.test.ts` ; `design-system.test.ts` ; `materializer.test.ts` ;
+  `goldens/asteria/expected/compilation.json` (`policy`, `ir.designBindings`) ; `npm run design:tokens`.
+- **Risques résiduels** : voir *Known gaps*.
+- **Décisions** : ADR-100.
+- **Documentation** : CONTEXT (D-5), ROADMAP, BACKLOG, CURRENT_STATE, IMPLEMENTATION_MATRIX, DECISIONS,
+  CHANGELOG, registre ADR, README (racine, contrats, compiler, extensions, engine, golden, workflows,
+  design), runbook, modèle de PR.
+- **Statut** : PASS (theme ≠ domain ; une policy bloque ou produit un waiver) — localement.
+- **Prochaine action unique** : E7 — Day-2 Change Intelligence.
 
 ---
 

@@ -15,6 +15,8 @@ validate → System Closure → System IR → resolve (ResolvedSystem) → plan 
 | `resolve.ts` | Préférences de runtime dans l'ordre déclaré ; repli tracé ; UNSUPPORTED explicite, jamais de fallback silencieux |
 | `api-contract.ts` | Projection du Domain IR en contrat OpenAPI 3.1 partagé, par domaine et fournisseur ; autorisation = intention de domaine ; indépendant du catalogue (E5, [ADR-099](../../docs/adr/ADR-099-domain-contract-projection.md)) |
 | `proof-chain.ts` | Export et vérification de la proof chain v1 par rejeu (E4, [ADR-098](../../docs/adr/ADR-098-materialization-record-and-proof-chain.md)) |
+| `design.ts` | Design bindings : tokens résolus du contexte de chaque surface depuis son A9 épinglé ; indépendants du domaine (E6) |
+| `policy.ts` | Évaluation des politiques d'A3 (catalogue fermé) : SATISFIED, WAIVED, VIOLATED (bloque), NOT_APPLICABLE, NOT_EVALUATED ; `expiredWaivers` (E6, [ADR-100](../../docs/adr/ADR-100-organization-policies-and-design-system.md)) |
 | `plan.ts` | Plan agnostique, sans écriture : `MATERIALIZE`, `CONNECT_EXTERNAL`, `BIND_CAPABILITY`, `sharedContracts`, `ownerWork` (composants, opérations, invariants), obligations de preuve |
 | `facade.ts` | `createKernelFacade()` : `validate`, `resolve`, `plan` ; résultats JSON déterministes |
 
