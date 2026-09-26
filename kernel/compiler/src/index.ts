@@ -11,4 +11,5 @@ export { createKernelFacade, FACADE_VERSION, type CompileOptions, type KernelFac
 export { buildDomainIR, type DomainIR, type DomainTypeRef } from './domain-ir.ts';
 export { buildSystemIR, type IRComponent, type IRInteraction, type SystemIR } from './ir.ts';
 export { planSystem, type ExecutionPlan, type PlanStep } from './plan.ts';
+export { exportProofChain, PROOF_CHAIN_FORMAT, verifyProofChain, type ProofChain, type ProofChainInput } from './proof-chain.ts';
 export { resolveSystem, type ExtensionRef, type ResolvedCapability, type ResolvedComponent, type ResolvedSystem, type UnsupportedItem } from './resolve.ts';

@@ -7,7 +7,7 @@ secret GitHub, sans déploiement, sans registry ni publication. Déclenché sur 
 | Job (check requis) | Vérifie |
 |---|---|
 | `kernel` | `npm ci` · typecheck de tous les workspaces (`kernel/*`, `engine/*`, `extensions/runtimes/*`, `surfaces/*`, `goldens`) · tous les tests · golden Asteria régénéré à l'identique |
-| `adapters` | matérialisation du golden Asteria avec les extensions réelles (code 2 attendu : PARTIAL) · `verify --toolchain` : structure, install, build, démarrage + `/health`, audit · EvidenceRecords en artefact |
+| `adapters` | matérialisation du golden Asteria avec les extensions réelles (code 2 attendu : PARTIAL) · `verify --toolchain` : structure, install, build, démarrage + `/health`, audit · export de la proof chain puis `verify-bundle` (E4) · EvidenceRecords et proof chain en artefacts |
 | `secret-scan` | tests de `tools/quality/` · allowlist gitleaks justifiée et non expirée · gitleaks 8.30.1 (checksum vérifié) sur tout l'historique, sortie censurée |
 | `docs` | aucun lien interne mort dans la documentation vivante (`docs/archive/` exclu) |
 | `audit` | `npm audit --audit-level=high` |
@@ -24,7 +24,10 @@ npm run tools:test && npm run secrets:allowlist && npm run docs:links
 npm audit --audit-level=high
 # job adapters
 node surfaces/cli/src/cli.ts materialize goldens/asteria/contracts goldens/asteria/evidence --extensions extensions --out /tmp/ws
-node surfaces/cli/src/cli.ts verify /tmp/ws --extensions extensions --toolchain
+node surfaces/cli/src/cli.ts verify /tmp/ws --extensions extensions --toolchain --evidence-out /tmp/evidence
+node surfaces/cli/src/cli.ts export goldens/asteria/contracts goldens/asteria/evidence --extensions extensions \
+  --workspace /tmp/ws --evidence /tmp/evidence --out /tmp/proof-chain.json
+node surfaces/cli/src/cli.ts verify-bundle /tmp/proof-chain.json
 ```
 
 La CI de l'itération précédente (starters, golden runtime, images) a été supprimée avec son code

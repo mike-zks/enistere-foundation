@@ -5,8 +5,8 @@
  * framework (TA-04).
  */
 
+export { isSafeArtifactPath } from '@enistere/foundation-kernel-contracts';
 export {
-  isSafeArtifactPath,
   planArtifacts,
   type AdapterContext,
   type Artifact,

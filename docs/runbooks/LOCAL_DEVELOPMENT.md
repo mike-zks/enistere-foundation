@@ -40,6 +40,10 @@ node surfaces/cli/src/cli.ts materialize goldens/asteria/contracts goldens/aster
   --extensions extensions --out /tmp/asteria-ws        # PARTIAL (code 2) : authority-api matérialisée
 node surfaces/cli/src/cli.ts verify /tmp/asteria-ws --extensions extensions --toolchain \
   --evidence-out /tmp/evidence                         # structure, install, build, boot, audit
+node surfaces/cli/src/cli.ts export goldens/asteria/contracts goldens/asteria/evidence \
+  --extensions extensions --workspace /tmp/asteria-ws --evidence /tmp/evidence \
+  --out /tmp/proof-chain.json                          # proof chain (E4)
+node surfaces/cli/src/cli.ts verify-bundle /tmp/proof-chain.json   # 0 = VALID, 1 = INVALID
 ```
 
 `--toolchain` exige Node.js, npm et l'accès au registre npm. Codes de sortie :

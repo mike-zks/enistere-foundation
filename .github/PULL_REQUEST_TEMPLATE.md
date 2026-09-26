@@ -7,7 +7,7 @@ Décrire brièvement le changement.
 ## Mission et capacité
 
 - **Mission** : (E0 … E10 — voir [`BACKLOG.md`](../BACKLOG.md))
-- **Contrats / capacités** : (A1–A7, CAP-01 … CAP-16 — voir [`IMPLEMENTATION_MATRIX.md`](../IMPLEMENTATION_MATRIX.md))
+- **Contrats / capacités** : (A1–A8, CAP-01 … CAP-16 — voir [`IMPLEMENTATION_MATRIX.md`](../IMPLEMENTATION_MATRIX.md))
 - **ADR** : (ex. ADR-092 — ou « ADR à rédiger »)
 
 ## Zone concernée (document 03)

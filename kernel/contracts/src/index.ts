@@ -13,6 +13,7 @@ export * from './primitives/digest.ts';
 export * from './primitives/refs.ts';
 export * from './primitives/diagnostics.ts';
 export * from './primitives/versioning.ts';
+export * from './primitives/paths.ts';
 export * from './types.ts';
 export * from './identity.ts';
 export { authorityDiagnostics, type StateClass } from './authority.ts';

@@ -11,6 +11,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { buildAsteriaGolden, SURFACES } from '../asteria/harness.ts';
+import { verifyProofChain } from '../../kernel/compiler/src/index.ts';
 import { fileDigest, validateContractSet, type EvidenceRecord, type SystemDefinition } from '../../kernel/contracts/src/index.ts';
 import { GOLDEN_ROOT, golden, loadGolden, readGoldenFile } from '../../kernel/contracts/test/fixtures.ts';
 
@@ -19,8 +20,17 @@ const REPO_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 test('the committed golden is byte-identical to a fresh build (no drift, no hand edit)', () => {
   const { files } = buildAsteriaGolden();
   const committed = ['contracts', 'evidence'].flatMap((folder) => readdirSync(`${GOLDEN_ROOT}${folder}`).map((name) => `${folder}/${name}`));
-  assert.deepEqual([...committed, 'expected/compilation.json', 'expected/materialization.json', 'expected/report.json'].sort(), Object.keys(files).sort());
+  assert.deepEqual([...committed, 'expected/compilation.json', 'expected/materialization.json', 'expected/proof-chain.json', 'expected/report.json'].sort(), Object.keys(files).sort());
   for (const [path, content] of Object.entries(files)) assert.equal(readGoldenFile(path), content, path);
+});
+
+test('the committed proof chain verifies outside the repository: digest, closed set, replay (E4)', () => {
+  const bundle = JSON.parse(readGoldenFile('expected/proof-chain.json')) as { compilation: { plan: string }; materializations: { spec: { subject: { component: string } } }[] };
+  assert.deepEqual(verifyProofChain(bundle), { valid: true, diagnostics: [] });
+  assert.deepEqual(bundle.materializations.map((record) => record.spec.subject.component), ['authority-api']);
+  const tampered = structuredClone(bundle);
+  tampered.compilation.plan = `sha256:${'0'.repeat(64)}`;
+  assert.equal(verifyProofChain(tampered).valid, false);
 });
 
 test('the build is deterministic', () => {

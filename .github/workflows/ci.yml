@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Kernel (contrats A1–A7, compiler E1), CLI et golden Asteria.
+  # Kernel (contrats A1–A8, compiler, proof chain), CLI et golden Asteria.
   kernel:
     name: kernel
     runs-on: ubuntu-latest
@@ -33,7 +33,7 @@ jobs:
       - run: npm ci
       - name: typecheck (workspaces kernel/* et surfaces/*, golden Asteria)
         run: npm run foundation:typecheck
-      - name: tests (A1–A7, compiler, CLI, golden Asteria octet pour octet)
+      - name: tests (A1–A8, compiler, CLI, golden Asteria octet pour octet)
         run: npm run foundation:test
       - name: golden Asteria régénéré à l'identique (anti-dérive)
         run: |
@@ -67,12 +67,25 @@ jobs:
         run: |
           node surfaces/cli/src/cli.ts verify "$RUNNER_TEMP/asteria-ws" --extensions extensions \
             --toolchain --environment ci --evidence-out "$RUNNER_TEMP/evidence"
+      - name: proof chain (export puis vérification hors dépôt)
+        run: |
+          node surfaces/cli/src/cli.ts export goldens/asteria/contracts goldens/asteria/evidence \
+            --extensions extensions --workspace "$RUNNER_TEMP/asteria-ws" \
+            --evidence "$RUNNER_TEMP/evidence" --out "$RUNNER_TEMP/proof-chain.json"
+          node surfaces/cli/src/cli.ts verify-bundle "$RUNNER_TEMP/proof-chain.json"
       - name: EvidenceRecords
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: adapters-evidence
           path: ${{ runner.temp }}/evidence
+          if-no-files-found: ignore
+      - name: proof chain
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-chain
+          path: ${{ runner.temp }}/proof-chain.json
           if-no-files-found: ignore
 
   # Analyse de secrets (ADR-073) sur tout l'historique : un secret retiré du HEAD

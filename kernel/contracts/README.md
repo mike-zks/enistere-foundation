@@ -1,7 +1,8 @@
 # @enistere/foundation-kernel-contracts — E0 Contract Foundation
 
-Première brique du **Foundation Kernel** (document 03) : les sept contrats de première classe de la cible
-et leurs primitives partagées ([ADR-092](../../docs/adr/ADR-092-e0-contract-foundation.md)). Générique,
+Première brique du **Foundation Kernel** (document 03) : les huit contrats de première classe de la cible
+et leurs primitives partagées ([ADR-092](../../docs/adr/ADR-092-e0-contract-foundation.md) ; A8 :
+[ADR-098](../../docs/adr/ADR-098-materialization-record-and-proof-chain.md)). Générique,
 headless, déterministe, sans dépendance à un framework cible, un cloud ou un LLM.
 
 ## Contrats
@@ -15,6 +16,7 @@ headless, déterministe, sans dépendance à un framework cible, un cloud ou un 
 | A5 | `DomainContract` | AUTHORITATIVE | Desired | [`domain-contract.schema.json`](schemas/v1alpha1/domain-contract.schema.json) |
 | A6 | `ChangeRequest` | AUTHORITATIVE | Desired | [`change-request.schema.json`](schemas/v1alpha1/change-request.schema.json) |
 | A7 | `EvidenceRecord` | RECORD | Evidence | [`evidence-record.schema.json`](schemas/v1alpha1/evidence-record.schema.json) |
+| A8 | `MaterializationRecord` | RECORD | Evidence | [`materialization-record.schema.json`](schemas/v1alpha1/materialization-record.schema.json) |
 
 Primitives partagées : [`common.schema.json`](schemas/v1alpha1/common.schema.json) (identifiant,
 révision, digest, référence stable, acteur, provenance, acceptance, enveloppe).
@@ -36,7 +38,8 @@ révision, digest, référence stable, acteur, provenance, acceptance, enveloppe
 - **Référence stable** : `Kind/id@revision[#item]`, épinglée par digest ; pas de « latest ».
 - **Digest** : `sha256:` sur la sérialisation RFC 8785 du contenu (document sans `metadata.status`).
 - **Autorité** : DECIDE par un humain (ou le système sous Approval Policy) ; A3 recalculé par le
-  compilateur ; A7 produit par un checker ou un relecteur humain ; jamais par une IA.
+  compilateur ; A7 produit par un checker ou un relecteur humain ; A8 produit par le compilateur (COMPILE_APPLY) ;
+  jamais par une IA.
 - **Version** : `apiVersion` unique lisible ; toute autre version passe par une migration enregistrée ou
   est UNSUPPORTED.
 

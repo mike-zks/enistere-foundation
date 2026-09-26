@@ -2,7 +2,7 @@
   "name": "enistere-foundation",
   "version": "0.0.0",
   "private": true,
-  "description": "Enistere Foundation — Software System Engineering Platform (Governed System Compiler, Evidence-Driven System Evolution Engine). Kernel contracts A1–A7 and the Asteria golden; the previous iteration was removed (ADR-094; last state at commit f2590a8).",
+  "description": "Enistere Foundation — Software System Engineering Platform (Governed System Compiler, Evidence-Driven System Evolution Engine). Kernel contracts A1–A8 and the Asteria golden; the previous iteration was removed (ADR-094; last state at commit f2590a8).",
   "license": "UNLICENSED",
   "workspaces": [
     "kernel/*",

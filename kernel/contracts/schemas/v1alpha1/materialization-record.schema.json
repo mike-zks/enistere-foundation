@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/materialization-record.schema.json",
+  "title": "A8 — MaterializationRecord",
+  "description": "Record of one materialization of one component (COMPILE_APPLY): the pinned System Definition, the closure and plan digests, the adapter and its version, and every file with its ownership, digest and write decision (FR-CMP, FR-OWN). Append-only: each materialization is a new revision superseding the previous one; the latest revision is the component's ownership inventory. Produced by the compiler, never by an AI.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "MaterializationRecord" },
+    "metadata": {
+      "properties": { "status": { "enum": ["VALID", "SUPERSEDED"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "subject", "closure", "plan", "adapter", "producedBy", "outcome", "executedAt", "files"],
+      "properties": {
+        "system": { "$ref": "common.schema.json#/$defs/id" },
+        "subject": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["contract", "component"],
+          "properties": {
+            "contract": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
+            "component": { "$ref": "common.schema.json#/$defs/itemId" }
+          }
+        },
+        "closure": { "$ref": "common.schema.json#/$defs/digest" },
+        "plan": { "$ref": "common.schema.json#/$defs/digest" },
+        "adapter": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "version"],
+          "properties": {
+            "id": { "$ref": "common.schema.json#/$defs/id" },
+            "version": { "type": "string", "minLength": 1, "maxLength": 64 }
+          }
+        },
+        "producedBy": { "$ref": "common.schema.json#/$defs/actor" },
+        "outcome": { "enum": ["APPLIED", "CONFLICT"] },
+        "executedAt": { "$ref": "common.schema.json#/$defs/dateTime" },
+        "files": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "ownership", "digest", "decision"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1, "maxLength": 500 },
+              "ownership": { "enum": ["COMPILER_OWNED", "OWNER_SEEDED"] },
+              "digest": { "$ref": "common.schema.json#/$defs/digest" },
+              "decision": { "enum": ["CREATE", "UPDATE", "UNCHANGED", "KEEP_OWNER", "CONFLICT"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

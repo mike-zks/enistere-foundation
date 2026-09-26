@@ -43,6 +43,11 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
 8. Domain IR (E3) : l'IR compilé porte le Domain IR de `asteria-service-requests@1` et lie ses 10
    opérations (toutes implémentées par l'Authority API) et ses 4 événements aux composants ; les facets
    `offline-sync`, `scheduling` et `workflow` sont conservées mais listées non interprétées (avant E5).
+9. Proof chain (E4) : une première matérialisation de l'Authority API, en mémoire et à un instant injecté,
+   produit un MaterializationRecord (A8) ; le bundle `foundation.enistere.com/proof-chain/v1` (6 contrats
+   de la closure, catalogue, digests, A8) est vérifié par `verifyProofChain` : digest, ensemble fermé et
+   rejeu de la compilation. Le job CI `adapters` exporte et vérifie le bundle réel, avec les
+   EvidenceRecords toolchain.
 
 ## Fichiers
 
@@ -55,7 +60,8 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
 | `contracts/*.json`, `evidence/*.json` | **Générés** — 8 contrats et 9 EvidenceRecords |
 | `expected/compilation.json` | **Généré** — résultat de `plan` : closure, IR, ResolvedSystem, ExecutionPlan et digests (identique à la sortie de la CLI) |
 | `expected/materialization.json` | **Généré** — plan contre les extensions réelles et plans d'artefacts des adapters (chemins, ownership, digests), sans écriture de fichier |
-| `test/golden-asteria.test.ts` | Égalité octet pour octet, cinq surfaces, traçabilité, Day-2, sens des dépendances entre zones |
+| `expected/proof-chain.json` | **Généré** — proof chain v1 de la première matérialisation (A8 en mémoire, sans EvidenceRecord toolchain), vérifiée par le test |
+| `../test/golden-asteria.test.ts` | Égalité octet pour octet, cinq surfaces, traçabilité, Day-2, proof chain vérifiée, sens des dépendances entre zones |
 | `expected/report.json` | **Généré** — digests, surfaces, traçabilité, changements, preuves, compilation, diagnostics |
 
 Les tests du workspace `goldens` reconstruisent le golden et exigent une égalité **octet pour octet** avec les fichiers

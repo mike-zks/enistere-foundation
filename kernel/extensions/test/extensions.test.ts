@@ -22,7 +22,7 @@ const manifest = (): AdapterManifest => ({
   permissions: { filesystem: 'WORKSPACE_WRITE', network: 'NONE', secrets: 'NONE' },
   tools: [],
   determinism: 'DETERMINISTIC',
-  verification: [{ id: 'structure', level: 'STRUCTURAL', statement: 'Files match the inventory.' }],
+  verification: [{ id: 'structure', level: 'STRUCTURAL', statement: 'Files match the latest MaterializationRecord.' }],
   entry: './src/adapter.ts',
 });
 
@@ -72,7 +72,7 @@ test('manifests become E1 catalog descriptors, validated by the single catalog v
 
 test('artifact paths stay inside the component directory', () => {
   for (const path of ['package.json', 'src/main.ts', '.gitignore', 'a/b/c.ts']) assert.ok(isSafeArtifactPath(path), path);
-  for (const path of ['/etc/passwd', '../x', 'a/../../x', 'a//b', 'dir/', '.foundation/inventory.json', '']) assert.ok(!isSafeArtifactPath(path), path);
+  for (const path of ['/etc/passwd', '../x', 'a/../../x', 'a//b', 'dir/', '.foundation/records/x.json', '']) assert.ok(!isSafeArtifactPath(path), path);
   assert.throws(() => planArtifacts({ id: 'a', version: '1.0.0' }, component(), [{ path: '../x', content: '', ownership: 'COMPILER_OWNED' }]), /unsafe/);
   assert.throws(
     () => planArtifacts({ id: 'a', version: '1.0.0' }, component(), [

@@ -18,8 +18,8 @@
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { createKernelFacade, type PlanResult } from '../../kernel/compiler/src/index.ts';
-import { loadExtensions, planMaterialization } from '../../engine/materializer/src/index.ts';
+import { createKernelFacade, exportProofChain, type PlanResult } from '../../kernel/compiler/src/index.ts';
+import { loadExtensions, materializationRecord, planMaterialization } from '../../engine/materializer/src/index.ts';
 import {
   CURRENT_API_VERSION,
   CONTRACT_REGISTRY,
@@ -153,7 +153,7 @@ export function invalidate(record: EvidenceRecord, by: ContractRef, reason: stri
 }
 
 // ── Golden build ──────────────────────────────────────────────────────────
-export const CLOCK = Object.freeze({ sd1Check: '2026-09-17T12:00:00Z', sd2Check: '2026-09-22T12:00:00Z' });
+export const CLOCK = Object.freeze({ sd1Check: '2026-09-17T12:00:00Z', sd2Check: '2026-09-22T12:00:00Z', materialized: '2026-09-23T12:00:00Z' });
 
 export interface AsteriaGolden {
   documents: AnyContract[];
@@ -169,6 +169,7 @@ const KEBAB: Readonly<Record<string, string>> = Object.freeze({
   DomainContract: 'domain-contract',
   ChangeRequest: 'change-request',
   EvidenceRecord: 'evidence-record',
+  MaterializationRecord: 'materialization-record',
 });
 
 export function fileName(document: AnyContract): string {
@@ -193,6 +194,20 @@ export function materializationOf(documents: readonly AnyContract[]): Record<str
     artifactPlans: components.map((component) => component.plan),
     diagnostics: [...host.diagnostics, ...compilation.diagnostics, ...diagnostics],
   };
+}
+
+/**
+ * The proof chain of a first materialization of the golden set with the real
+ * extensions (E4): every planned file is created, in memory, at an injected
+ * instant. No toolchain EvidenceRecord is included (VERIFY needs a workspace).
+ */
+export function proofChainOf(documents: readonly AnyContract[]): Record<string, unknown> {
+  const compilation = createKernelFacade().plan(documents, { catalog: host.catalog });
+  const { components } = planMaterialization(compilation, host);
+  const materializations = components.map((planned) => materializationRecord(compilation, planned, new Map(), CLOCK.materialized, null));
+  const { bundle, diagnostics } = exportProofChain({ documents, catalog: host.catalog!, materializations, evidence: [] });
+  if (!bundle) throw new Error(`the golden proof chain cannot be exported: ${diagnostics.map((item) => item.code).join(', ')}`);
+  return bundle as unknown as Record<string, unknown>;
 }
 
 /** Compiles the golden set with the Kernel Façade against the synthetic catalog. */
@@ -298,6 +313,7 @@ export function buildAsteriaGolden(): AsteriaGolden {
   const compilation = compileAsteria(documents);
   files['expected/compilation.json'] = json(compilation);
   files['expected/materialization.json'] = json(materializationOf(documents));
+  files['expected/proof-chain.json'] = json(proofChainOf(documents));
   files['expected/report.json'] = json(report(documents, validation, sd2, compilation));
   return { documents, validation, files };
 }

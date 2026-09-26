@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.foundation.enistere.com/v1alpha1/common.schema.json",
   "title": "Enistere Foundation — shared contract primitives (v1alpha1)",
-  "description": "Shared primitives of the seven E0 contracts: stable identifier, revision, digest, stable reference, actor, provenance, acceptance and the common document envelope. Language-neutral: the TypeScript kernel interprets this document, it never restates it.",
+  "description": "Shared primitives of the eight first-class contracts (A1–A8): stable identifier, revision, digest, stable reference, actor, provenance, acceptance and the common document envelope. Language-neutral: the TypeScript kernel interprets this document, it never restates it.",
   "$defs": {
     "apiVersion": {
       "description": "Contract schema version. A single value per schema generation; older values are only accepted through an explicit migration.",
@@ -44,7 +44,8 @@
         "SystemDefinition",
         "DomainContract",
         "ChangeRequest",
-        "EvidenceRecord"
+        "EvidenceRecord",
+        "MaterializationRecord"
       ]
     },
     "contractRef": {

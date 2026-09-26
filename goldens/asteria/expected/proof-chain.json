@@ -1,0 +1,2974 @@
+{
+  "format": "foundation.enistere.com/proof-chain/v1",
+  "system": "asteria",
+  "definition": {
+    "ref": "SystemDefinition/asteria@2",
+    "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+  },
+  "catalog": {
+    "runtimeAdapters": [
+      {
+        "id": "nestjs",
+        "version": "0.1.0",
+        "componentKinds": [
+          "api-service"
+        ],
+        "runtime": "nestjs"
+      }
+    ],
+    "capabilityProviders": []
+  },
+  "compilation": {
+    "closure": "sha256:ec5b3ba19dfc195981cfe662c1a9e4c115c5207d36516f5db292e185c90f30be",
+    "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
+    "resolved": "sha256:059e19673f67fbd2deeed4929f27789adf387e64e755d8054b1e2d21b8033f5c",
+    "plan": "sha256:c5e57f703591224d996af93dec24477980832b6098c80f0f0a67530de266e34a"
+  },
+  "contracts": [
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "DecisionSet",
+      "metadata": {
+        "id": "asteria-decisions",
+        "revision": 1,
+        "title": "Asteria — architecture decisions",
+        "status": "ACCEPTED",
+        "owner": {
+          "team": "asteria-architecture"
+        },
+        "provenance": {
+          "origin": "HUMAN",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "derivedFrom": [
+            {
+              "kind": "RequirementBaseline",
+              "id": "asteria-requirements",
+              "revision": 1,
+              "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+            }
+          ]
+        },
+        "acceptance": {
+          "decision": "ACCEPTED",
+          "authority": "DECIDE",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "at": "2026-09-16T10:00:00Z"
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "requirementBaseline": {
+          "kind": "RequirementBaseline",
+          "id": "asteria-requirements",
+          "revision": 1,
+          "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+        },
+        "decisions": [
+          {
+            "id": "AD-001",
+            "title": "One Authority API as modular system of record",
+            "category": "ARCHITECTURE",
+            "status": "ACCEPTED",
+            "context": "Three client applications and one worker share one business context and one data model.",
+            "drivers": [
+              "FR-001",
+              "FR-002",
+              "FR-003",
+              "FR-004",
+              "SEC-001"
+            ],
+            "options": [
+              {
+                "id": "OPT-MODULAR-API",
+                "summary": "Single modular API owning the data, consumed by every client.",
+                "satisfies": [
+                  "FR-001",
+                  "FR-002",
+                  "FR-003",
+                  "FR-004",
+                  "SEC-001"
+                ],
+                "operationalComplexity": "LOW"
+              },
+              {
+                "id": "OPT-SERVICES",
+                "summary": "One service per client application with a shared database.",
+                "tradeoffs": [
+                  "Duplicated authorization rules",
+                  "Shared database coupling"
+                ],
+                "operationalComplexity": "HIGH"
+              }
+            ],
+            "chosenOption": "OPT-MODULAR-API",
+            "rationale": "One authority keeps authorization and state transitions in one place; nothing measured justifies distribution.",
+            "consequences": [
+              "Every client goes through the API; no client reads the database."
+            ]
+          },
+          {
+            "id": "AD-002",
+            "title": "Dedicated Async Worker fed by domain events",
+            "category": "OPERATIONS",
+            "status": "ACCEPTED",
+            "context": "Notifications, escalations and attachment analysis are slow or scheduled and must not block the API.",
+            "drivers": [
+              "NFR-001",
+              "FR-005",
+              "FR-006",
+              "SEC-002"
+            ],
+            "options": [
+              {
+                "id": "OPT-WORKER",
+                "summary": "Separate worker process consuming domain events published through a transactional outbox.",
+                "satisfies": [
+                  "NFR-001",
+                  "FR-005",
+                  "FR-006",
+                  "SEC-002"
+                ],
+                "operationalComplexity": "MEDIUM"
+              },
+              {
+                "id": "OPT-IN-PROCESS",
+                "summary": "Background jobs inside the API process.",
+                "tradeoffs": [
+                  "Slow jobs compete with requests",
+                  "Scaling the API scales the jobs"
+                ],
+                "risks": [
+                  "NFR-001 violated under load"
+                ],
+                "operationalComplexity": "LOW"
+              }
+            ],
+            "chosenOption": "OPT-WORKER",
+            "rationale": "Isolates slow and scheduled work from the request path and lets it scale independently.",
+            "consequences": [
+              "The worker is a first-class component with its own deployment unit.",
+              "The API publishes events through an outbox, never directly to the worker."
+            ]
+          },
+          {
+            "id": "AD-003",
+            "title": "Two distinct Web applications",
+            "category": "ARCHITECTURE",
+            "status": "ACCEPTED",
+            "context": "The public portal and the internal back-office have different audiences, exposure and accessibility obligations.",
+            "drivers": [
+              "UX-001",
+              "SEC-001",
+              "FR-003"
+            ],
+            "options": [
+              {
+                "id": "OPT-TWO-APPS",
+                "summary": "A public Requester Web and an internal Ops Web.",
+                "satisfies": [
+                  "UX-001",
+                  "SEC-001",
+                  "FR-003"
+                ]
+              },
+              {
+                "id": "OPT-ONE-APP",
+                "summary": "One Web application with role-based areas.",
+                "risks": [
+                  "Internal screens reachable from the public surface"
+                ]
+              }
+            ],
+            "chosenOption": "OPT-TWO-APPS",
+            "rationale": "Separate exposure surfaces reduce the attack surface of the back-office and let each app follow its own design context."
+          },
+          {
+            "id": "AD-004",
+            "title": "Offline-first Field Mobile with idempotent synchronization",
+            "category": "DATA",
+            "status": "ACCEPTED",
+            "context": "Field agents lose connectivity during their shift (AMB-001: up to 12 hours).",
+            "drivers": [
+              "FR-004"
+            ],
+            "options": [
+              {
+                "id": "OPT-OFFLINE-SYNC",
+                "summary": "Local store on the device and idempotent replay to the API at reconnection.",
+                "satisfies": [
+                  "FR-004"
+                ]
+              },
+              {
+                "id": "OPT-ONLINE-ONLY",
+                "summary": "Online-only mobile application.",
+                "risks": [
+                  "FR-004 not satisfied"
+                ]
+              }
+            ],
+            "chosenOption": "OPT-OFFLINE-SYNC",
+            "rationale": "Only option that satisfies FR-004 within the resolved offline window."
+          },
+          {
+            "id": "AD-005",
+            "title": "Shared Enistere OIDC provider, realm asteria",
+            "category": "SECURITY",
+            "status": "ACCEPTED",
+            "context": "The Enistere production policy provides a shared Keycloak with one realm per project.",
+            "drivers": [
+              "CON-001",
+              "SEC-001"
+            ],
+            "options": [
+              {
+                "id": "OPT-SHARED-REALM",
+                "summary": "Dedicated realm on the shared Enistere identity provider.",
+                "satisfies": [
+                  "CON-001",
+                  "SEC-001"
+                ]
+              },
+              {
+                "id": "OPT-OWN-IDP",
+                "summary": "Project-specific identity provider.",
+                "risks": [
+                  "Exception to the production policy requires an ADR"
+                ]
+              }
+            ],
+            "chosenOption": "OPT-SHARED-REALM",
+            "rationale": "Complies with the production policy without exception."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "DomainContract",
+      "metadata": {
+        "id": "asteria-service-requests",
+        "revision": 1,
+        "title": "Asteria — service requests domain contract",
+        "status": "ACCEPTED",
+        "owner": {
+          "team": "asteria-product"
+        },
+        "provenance": {
+          "origin": "HUMAN",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "derivedFrom": [
+            {
+              "kind": "RequirementBaseline",
+              "id": "asteria-requirements",
+              "revision": 1,
+              "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+            }
+          ]
+        },
+        "acceptance": {
+          "decision": "ACCEPTED",
+          "authority": "DECIDE",
+          "actor": {
+            "type": "HUMAN",
+            "id": "product-owner@asteria.example",
+            "role": "product-owner"
+          },
+          "at": "2026-09-16T14:00:00Z"
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "boundedContext": "service-requests",
+        "requirementBaseline": {
+          "kind": "RequirementBaseline",
+          "id": "asteria-requirements",
+          "revision": 1,
+          "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+        },
+        "types": [
+          {
+            "id": "ServiceRequest",
+            "kind": "ENTITY",
+            "fields": [
+              {
+                "name": "id",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "reference",
+                "type": "string",
+                "required": true
+              },
+              {
+                "name": "requesterId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "category",
+                "type": "RequestCategory",
+                "required": true
+              },
+              {
+                "name": "description",
+                "type": "text",
+                "required": true
+              },
+              {
+                "name": "location",
+                "type": "GeoLocation",
+                "required": true
+              },
+              {
+                "name": "status",
+                "type": "RequestStatus",
+                "required": true
+              },
+              {
+                "name": "priority",
+                "type": "Priority",
+                "required": false
+              },
+              {
+                "name": "createdAt",
+                "type": "datetime",
+                "required": true
+              },
+              {
+                "name": "attachments",
+                "type": "list<Attachment>",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "GeoLocation",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "latitude",
+                "type": "decimal",
+                "required": true
+              },
+              {
+                "name": "longitude",
+                "type": "decimal",
+                "required": true
+              },
+              {
+                "name": "address",
+                "type": "string",
+                "required": false,
+                "sensitive": true
+              }
+            ]
+          },
+          {
+            "id": "Attachment",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "id",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "file",
+                "type": "file-ref",
+                "required": true
+              },
+              {
+                "name": "mediaType",
+                "type": "string",
+                "required": true
+              },
+              {
+                "name": "scanStatus",
+                "type": "ScanStatus",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "Assignment",
+            "kind": "ENTITY",
+            "fields": [
+              {
+                "name": "id",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "requestId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "fieldAgentId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "dueAt",
+                "type": "datetime",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "InterventionReport",
+            "kind": "ENTITY",
+            "fields": [
+              {
+                "name": "id",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "assignmentId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "outcome",
+                "type": "InterventionOutcome",
+                "required": true
+              },
+              {
+                "name": "notes",
+                "type": "text",
+                "required": true
+              },
+              {
+                "name": "photos",
+                "type": "list<Attachment>",
+                "required": true
+              },
+              {
+                "name": "recordedAt",
+                "type": "datetime",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "RequestStatus",
+            "kind": "ENUM",
+            "values": [
+              "SUBMITTED",
+              "TRIAGED",
+              "ASSIGNED",
+              "IN_PROGRESS",
+              "RESOLVED",
+              "CLOSED",
+              "REJECTED"
+            ]
+          },
+          {
+            "id": "Priority",
+            "kind": "ENUM",
+            "values": [
+              "LOW",
+              "NORMAL",
+              "HIGH",
+              "URGENT"
+            ]
+          },
+          {
+            "id": "RequestCategory",
+            "kind": "ENUM",
+            "values": [
+              "LIGHTING",
+              "ROADWORKS",
+              "WASTE",
+              "WATER",
+              "OTHER"
+            ]
+          },
+          {
+            "id": "ScanStatus",
+            "kind": "ENUM",
+            "values": [
+              "PENDING",
+              "CLEAN",
+              "INFECTED"
+            ]
+          },
+          {
+            "id": "InterventionOutcome",
+            "kind": "ENUM",
+            "values": [
+              "RESOLVED",
+              "PARTIALLY_RESOLVED",
+              "NOT_RESOLVABLE"
+            ]
+          },
+          {
+            "id": "SubmitRequestInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "category",
+                "type": "RequestCategory",
+                "required": true
+              },
+              {
+                "name": "description",
+                "type": "text",
+                "required": true
+              },
+              {
+                "name": "location",
+                "type": "GeoLocation",
+                "required": true
+              },
+              {
+                "name": "attachmentIds",
+                "type": "list<uuid>",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "UploadAttachmentInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "file",
+                "type": "file-ref",
+                "required": true
+              },
+              {
+                "name": "mediaType",
+                "type": "string",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "TriageInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "requestId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "priority",
+                "type": "Priority",
+                "required": true
+              },
+              {
+                "name": "category",
+                "type": "RequestCategory",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "AssignInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "requestId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "fieldAgentId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "dueAt",
+                "type": "datetime",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "InterventionInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "assignmentId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "outcome",
+                "type": "InterventionOutcome",
+                "required": true
+              },
+              {
+                "name": "notes",
+                "type": "text",
+                "required": true
+              },
+              {
+                "name": "photoIds",
+                "type": "list<uuid>",
+                "required": true
+              },
+              {
+                "name": "clientReportId",
+                "type": "uuid",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "ScanResultInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "attachmentId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "scanStatus",
+                "type": "ScanStatus",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "EscalationInput",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "requestId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "dueAt",
+                "type": "datetime",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "RequestStatusChange",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "requestId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "from",
+                "type": "RequestStatus",
+                "required": true
+              },
+              {
+                "name": "to",
+                "type": "RequestStatus",
+                "required": true
+              },
+              {
+                "name": "at",
+                "type": "datetime",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "AttachmentReference",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "attachmentId",
+                "type": "uuid",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "AttachmentScan",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "attachmentId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "scanStatus",
+                "type": "ScanStatus",
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "Escalation",
+            "kind": "VALUE",
+            "fields": [
+              {
+                "name": "requestId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "supervisorId",
+                "type": "uuid",
+                "required": true
+              },
+              {
+                "name": "at",
+                "type": "datetime",
+                "required": true
+              }
+            ]
+          }
+        ],
+        "operations": [
+          {
+            "id": "upload-attachment",
+            "kind": "COMMAND",
+            "summary": "Upload a photo or document; it stays PENDING until analysed.",
+            "input": "UploadAttachmentInput",
+            "output": "Attachment",
+            "errors": [
+              "UNSUPPORTED_MEDIA_TYPE",
+              "FILE_TOO_LARGE"
+            ],
+            "authorization": {
+              "intent": "An authenticated requester or field agent uploads on their own behalf.",
+              "roles": [
+                "requester",
+                "field-agent"
+              ]
+            },
+            "emits": [
+              "AttachmentUploaded"
+            ],
+            "invariants": [
+              "INV-004"
+            ]
+          },
+          {
+            "id": "submit-request",
+            "kind": "COMMAND",
+            "summary": "Create a service request.",
+            "input": "SubmitRequestInput",
+            "output": "ServiceRequest",
+            "errors": [
+              "OUTSIDE_TERRITORY",
+              "ATTACHMENT_NOT_OWNED"
+            ],
+            "authorization": {
+              "intent": "An authenticated requester creates a request on their own behalf.",
+              "roles": [
+                "requester"
+              ]
+            },
+            "emits": [
+              "RequestStatusChanged"
+            ],
+            "invariants": [
+              "INV-001",
+              "INV-002"
+            ],
+            "idempotent": true
+          },
+          {
+            "id": "list-my-requests",
+            "kind": "QUERY",
+            "summary": "List the requests of the calling requester.",
+            "output": "list<ServiceRequest>",
+            "authorization": {
+              "intent": "A requester only reads their own requests.",
+              "roles": [
+                "requester"
+              ]
+            }
+          },
+          {
+            "id": "list-requests",
+            "kind": "QUERY",
+            "summary": "List and filter all requests.",
+            "output": "list<ServiceRequest>",
+            "authorization": {
+              "intent": "Operations staff read every request.",
+              "roles": [
+                "ops-agent",
+                "supervisor"
+              ]
+            }
+          },
+          {
+            "id": "triage-request",
+            "kind": "COMMAND",
+            "summary": "Qualify and prioritize a request.",
+            "input": "TriageInput",
+            "output": "ServiceRequest",
+            "errors": [
+              "INVALID_TRANSITION"
+            ],
+            "authorization": {
+              "intent": "An operations agent triages requests.",
+              "roles": [
+                "ops-agent"
+              ]
+            },
+            "emits": [
+              "RequestStatusChanged"
+            ],
+            "invariants": [
+              "INV-002"
+            ]
+          },
+          {
+            "id": "assign-request",
+            "kind": "COMMAND",
+            "summary": "Assign a triaged request to a field agent.",
+            "input": "AssignInput",
+            "output": "Assignment",
+            "errors": [
+              "INVALID_TRANSITION",
+              "AGENT_UNAVAILABLE"
+            ],
+            "authorization": {
+              "intent": "An operations agent assigns requests.",
+              "roles": [
+                "ops-agent"
+              ]
+            },
+            "emits": [
+              "RequestStatusChanged"
+            ],
+            "invariants": [
+              "INV-002",
+              "INV-003"
+            ]
+          },
+          {
+            "id": "list-assignments",
+            "kind": "QUERY",
+            "summary": "List the assignments of the calling field agent.",
+            "output": "list<Assignment>",
+            "authorization": {
+              "intent": "A field agent only reads their own assignments.",
+              "roles": [
+                "field-agent"
+              ]
+            }
+          },
+          {
+            "id": "record-intervention",
+            "kind": "COMMAND",
+            "summary": "Record the report of an intervention (replayable after offline work).",
+            "input": "InterventionInput",
+            "output": "InterventionReport",
+            "errors": [
+              "INVALID_TRANSITION",
+              "ASSIGNMENT_NOT_OWNED"
+            ],
+            "authorization": {
+              "intent": "The assigned field agent reports on their own assignment.",
+              "roles": [
+                "field-agent"
+              ]
+            },
+            "emits": [
+              "RequestStatusChanged"
+            ],
+            "invariants": [
+              "INV-002"
+            ],
+            "idempotent": true
+          },
+          {
+            "id": "record-scan-result",
+            "kind": "COMMAND",
+            "summary": "Record the malware analysis result of an attachment.",
+            "input": "ScanResultInput",
+            "output": "Attachment",
+            "authorization": {
+              "intent": "Only the platform worker identity records analysis results.",
+              "roles": [
+                "asteria-worker"
+              ]
+            },
+            "emits": [
+              "AttachmentScanned"
+            ],
+            "invariants": [
+              "INV-004"
+            ],
+            "idempotent": true
+          },
+          {
+            "id": "escalate-request",
+            "kind": "COMMAND",
+            "summary": "Escalate an overdue request to a supervisor.",
+            "input": "EscalationInput",
+            "output": "ServiceRequest",
+            "errors": [
+              "NOT_OVERDUE"
+            ],
+            "authorization": {
+              "intent": "Only the platform worker identity escalates, on schedule.",
+              "roles": [
+                "asteria-worker"
+              ]
+            },
+            "emits": [
+              "RequestEscalated"
+            ],
+            "idempotent": true
+          }
+        ],
+        "invariants": [
+          {
+            "id": "INV-001",
+            "statement": "A request is located inside the served territory.",
+            "appliesTo": [
+              "ServiceRequest"
+            ],
+            "enforcement": "OWNER_WORK"
+          },
+          {
+            "id": "INV-002",
+            "statement": "Status transitions follow SUBMITTED → TRIAGED → ASSIGNED → IN_PROGRESS → RESOLVED → CLOSED; REJECTED only from SUBMITTED or TRIAGED.",
+            "appliesTo": [
+              "ServiceRequest"
+            ],
+            "enforcement": "DETERMINISTIC"
+          },
+          {
+            "id": "INV-003",
+            "statement": "An assignment targets exactly one active field agent and one request that is TRIAGED or ASSIGNED.",
+            "appliesTo": [
+              "Assignment"
+            ],
+            "enforcement": "OWNER_WORK"
+          },
+          {
+            "id": "INV-004",
+            "statement": "An attachment is never exposed before its scan status is CLEAN.",
+            "appliesTo": [
+              "Attachment"
+            ],
+            "enforcement": "DETERMINISTIC"
+          }
+        ],
+        "events": [
+          {
+            "id": "RequestStatusChanged",
+            "version": 1,
+            "payload": "RequestStatusChange",
+            "description": "Published through the transactional outbox on every status transition."
+          },
+          {
+            "id": "AttachmentUploaded",
+            "version": 1,
+            "payload": "AttachmentReference"
+          },
+          {
+            "id": "AttachmentScanned",
+            "version": 1,
+            "payload": "AttachmentScan"
+          },
+          {
+            "id": "RequestEscalated",
+            "version": 1,
+            "payload": "Escalation"
+          }
+        ],
+        "acceptance": [
+          {
+            "id": "ACC-001",
+            "scenario": "A requester uploads a photo, submits a geolocated request and sees it SUBMITTED.",
+            "operations": [
+              "upload-attachment",
+              "submit-request",
+              "list-my-requests"
+            ],
+            "requirements": [
+              "FR-001",
+              "FR-002"
+            ]
+          },
+          {
+            "id": "ACC-002",
+            "scenario": "An operations agent triages and assigns a request; the field agent sees the assignment.",
+            "operations": [
+              "triage-request",
+              "assign-request",
+              "list-assignments"
+            ],
+            "requirements": [
+              "FR-003",
+              "FR-004"
+            ]
+          },
+          {
+            "id": "ACC-003",
+            "scenario": "A report recorded offline is replayed twice after reconnection and stored once.",
+            "operations": [
+              "record-intervention"
+            ],
+            "requirements": [
+              "FR-004"
+            ]
+          },
+          {
+            "id": "ACC-004",
+            "scenario": "An infected attachment is never exposed to any role.",
+            "operations": [
+              "upload-attachment",
+              "record-scan-result"
+            ],
+            "requirements": [
+              "SEC-002"
+            ]
+          },
+          {
+            "id": "ACC-005",
+            "scenario": "An overdue request is escalated once to a supervisor.",
+            "operations": [
+              "escalate-request"
+            ],
+            "requirements": [
+              "FR-006"
+            ]
+          },
+          {
+            "id": "ACC-006",
+            "scenario": "Each status transition produces exactly one requester notification.",
+            "operations": [
+              "triage-request",
+              "assign-request",
+              "record-intervention"
+            ],
+            "requirements": [
+              "FR-005"
+            ]
+          }
+        ],
+        "facets": [
+          {
+            "id": "offline-sync",
+            "version": "1",
+            "appliesTo": [
+              "record-intervention",
+              "list-assignments"
+            ],
+            "configuration": {
+              "maxOfflineHours": 12,
+              "conflictPolicy": "server-wins-with-owner-review"
+            }
+          },
+          {
+            "id": "scheduling",
+            "version": "1",
+            "appliesTo": [
+              "escalate-request"
+            ],
+            "configuration": {
+              "interval": "PT5M"
+            }
+          },
+          {
+            "id": "workflow",
+            "version": "1",
+            "appliesTo": [
+              "ServiceRequest"
+            ],
+            "configuration": {
+              "stateField": "status",
+              "invariant": "INV-002"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "EffectiveOrganizationContext",
+      "metadata": {
+        "id": "asteria-context",
+        "revision": 1,
+        "title": "Asteria — effective organization context",
+        "status": "CURRENT",
+        "provenance": {
+          "origin": "COMPILER",
+          "actor": {
+            "type": "COMPILER",
+            "id": "foundation-kernel-contracts"
+          },
+          "tool": {
+            "name": "@enistere/foundation-kernel-contracts",
+            "version": "0.1.0"
+          }
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "derivation": {
+          "algorithm": "foundation.effective-organization-context",
+          "version": "1"
+        },
+        "layers": [
+          {
+            "id": "L-ORGANIZATION",
+            "scope": "ORGANIZATION",
+            "precedence": 0,
+            "source": {
+              "type": "EntityProfile",
+              "id": "operator-organization",
+              "version": "1.0.0"
+            },
+            "rules": [
+              {
+                "id": "runtime.api.allowed",
+                "category": "RUNTIME",
+                "value": [
+                  "nestjs",
+                  "spring",
+                  "fastapi"
+                ]
+              },
+              {
+                "id": "runtime.web.allowed",
+                "category": "RUNTIME",
+                "value": [
+                  "nextjs",
+                  "angular"
+                ]
+              },
+              {
+                "id": "runtime.mobile.allowed",
+                "category": "RUNTIME",
+                "value": [
+                  "react-native",
+                  "flutter"
+                ]
+              },
+              {
+                "id": "security.identity.provider",
+                "category": "SECURITY",
+                "value": "enistere-shared-oidc",
+                "locked": true,
+                "rationale": "Production policy: shared Keycloak, one realm per project."
+              },
+              {
+                "id": "deployment.image.reference",
+                "category": "DEPLOYMENT",
+                "value": "digest",
+                "locked": true,
+                "rationale": "Production policy: images are deployed by immutable digest, never latest."
+              },
+              {
+                "id": "ai.decide.allowed",
+                "category": "AI",
+                "value": false,
+                "locked": true,
+                "rationale": "AI proposes; humans decide."
+              },
+              {
+                "id": "quality.accessibility.level",
+                "category": "QUALITY",
+                "value": "WCAG-2.2-A"
+              },
+              {
+                "id": "evidence.retention.days",
+                "category": "EVIDENCE",
+                "value": 365
+              },
+              {
+                "id": "data.residency",
+                "category": "DATA",
+                "value": "eu"
+              }
+            ]
+          },
+          {
+            "id": "L-CLIENT",
+            "scope": "CLIENT",
+            "precedence": 10,
+            "source": {
+              "type": "EntityProfile",
+              "id": "asteria-operator",
+              "version": "3.0.0"
+            },
+            "rules": [
+              {
+                "id": "security.identity.provider",
+                "category": "SECURITY",
+                "value": "client-directory",
+                "rationale": "Client asked to reuse its own directory."
+              },
+              {
+                "id": "quality.accessibility.level",
+                "category": "QUALITY",
+                "value": "WCAG-2.2-AA"
+              },
+              {
+                "id": "data.residency",
+                "category": "DATA",
+                "value": "eu-west"
+              }
+            ]
+          },
+          {
+            "id": "L-SYSTEM",
+            "scope": "SYSTEM",
+            "precedence": 20,
+            "source": {
+              "type": "PolicyPack",
+              "id": "asteria-system-policies",
+              "version": "1.0.0"
+            },
+            "rules": [
+              {
+                "id": "evidence.retention.days",
+                "category": "EVIDENCE",
+                "value": 730
+              },
+              {
+                "id": "runtime.web.allowed",
+                "category": "RUNTIME",
+                "value": [
+                  "nextjs",
+                  "angular"
+                ]
+              }
+            ]
+          }
+        ],
+        "waivers": [
+          {
+            "id": "W-001",
+            "rule": "data.residency",
+            "value": [
+              "eu-west",
+              "eu-central"
+            ],
+            "reason": "Object storage replica in eu-central during the hosting migration window.",
+            "approvedBy": {
+              "type": "HUMAN",
+              "id": "platform-admin@operator.example",
+              "role": "platform-admin"
+            },
+            "expiresAt": "2027-03-31T23:59:59Z"
+          }
+        ],
+        "effective": [
+          {
+            "rule": "ai.decide.allowed",
+            "category": "AI",
+            "value": false,
+            "locked": true,
+            "source": {
+              "type": "LAYER",
+              "id": "L-ORGANIZATION"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": false,
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "data.residency",
+            "category": "DATA",
+            "value": [
+              "eu-west",
+              "eu-central"
+            ],
+            "locked": false,
+            "source": {
+              "type": "WAIVER",
+              "id": "W-001"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": "eu",
+                "outcome": "OVERRIDDEN"
+              },
+              {
+                "from": "LAYER",
+                "id": "L-CLIENT",
+                "value": "eu-west",
+                "outcome": "OVERRIDDEN"
+              },
+              {
+                "from": "WAIVER",
+                "id": "W-001",
+                "value": [
+                  "eu-west",
+                  "eu-central"
+                ],
+                "outcome": "WAIVED",
+                "reason": "Object storage replica in eu-central during the hosting migration window."
+              }
+            ]
+          },
+          {
+            "rule": "deployment.image.reference",
+            "category": "DEPLOYMENT",
+            "value": "digest",
+            "locked": true,
+            "source": {
+              "type": "LAYER",
+              "id": "L-ORGANIZATION"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": "digest",
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "evidence.retention.days",
+            "category": "EVIDENCE",
+            "value": 730,
+            "locked": false,
+            "source": {
+              "type": "LAYER",
+              "id": "L-SYSTEM"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": 365,
+                "outcome": "OVERRIDDEN"
+              },
+              {
+                "from": "LAYER",
+                "id": "L-SYSTEM",
+                "value": 730,
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "quality.accessibility.level",
+            "category": "QUALITY",
+            "value": "WCAG-2.2-AA",
+            "locked": false,
+            "source": {
+              "type": "LAYER",
+              "id": "L-CLIENT"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": "WCAG-2.2-A",
+                "outcome": "OVERRIDDEN"
+              },
+              {
+                "from": "LAYER",
+                "id": "L-CLIENT",
+                "value": "WCAG-2.2-AA",
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "runtime.api.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "nestjs",
+              "spring",
+              "fastapi"
+            ],
+            "locked": false,
+            "source": {
+              "type": "LAYER",
+              "id": "L-ORGANIZATION"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": [
+                  "nestjs",
+                  "spring",
+                  "fastapi"
+                ],
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "runtime.mobile.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "react-native",
+              "flutter"
+            ],
+            "locked": false,
+            "source": {
+              "type": "LAYER",
+              "id": "L-ORGANIZATION"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": [
+                  "react-native",
+                  "flutter"
+                ],
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "runtime.web.allowed",
+            "category": "RUNTIME",
+            "value": [
+              "nextjs",
+              "angular"
+            ],
+            "locked": false,
+            "source": {
+              "type": "LAYER",
+              "id": "L-SYSTEM"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": [
+                  "nextjs",
+                  "angular"
+                ],
+                "outcome": "OVERRIDDEN"
+              },
+              {
+                "from": "LAYER",
+                "id": "L-SYSTEM",
+                "value": [
+                  "nextjs",
+                  "angular"
+                ],
+                "outcome": "APPLIED"
+              }
+            ]
+          },
+          {
+            "rule": "security.identity.provider",
+            "category": "SECURITY",
+            "value": "enistere-shared-oidc",
+            "locked": true,
+            "source": {
+              "type": "LAYER",
+              "id": "L-ORGANIZATION"
+            },
+            "trace": [
+              {
+                "from": "LAYER",
+                "id": "L-ORGANIZATION",
+                "value": "enistere-shared-oidc",
+                "outcome": "APPLIED"
+              },
+              {
+                "from": "LAYER",
+                "id": "L-CLIENT",
+                "value": "client-directory",
+                "outcome": "REFUSED_LOCKED",
+                "reason": "locked by layer 'L-ORGANIZATION'"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "RequirementBaseline",
+      "metadata": {
+        "id": "asteria-requirements",
+        "revision": 1,
+        "title": "Asteria — accepted requirement baseline",
+        "status": "ACCEPTED",
+        "owner": {
+          "team": "asteria-product"
+        },
+        "provenance": {
+          "origin": "AI_PROPOSAL",
+          "actor": {
+            "type": "AI_AGENT",
+            "id": "foundation-intake-assistant",
+            "role": "analyst-assistant"
+          },
+          "tool": {
+            "name": "foundation-intake-assistant",
+            "version": "0.0.0-synthetic"
+          },
+          "sources": [
+            {
+              "id": "SRC-BRIEF",
+              "type": "BRIEF",
+              "uri": "goldens/asteria/sources/brief.md",
+              "digest": "sha256:d077e19c83a2f24de03f0bad11c095777b2ddf14bb41cc37ecf1615f423e4c19",
+              "title": "Asteria — brief client (synthétique)"
+            }
+          ],
+          "confidence": 0.82
+        },
+        "acceptance": {
+          "decision": "ACCEPTED",
+          "authority": "DECIDE",
+          "actor": {
+            "type": "HUMAN",
+            "id": "product-owner@asteria.example",
+            "role": "product-owner"
+          },
+          "at": "2026-09-15T09:00:00Z",
+          "rationale": "Extracted candidates reviewed one by one; ambiguity AMB-001 resolved in workshop, AMB-002 deferred."
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "sources": [
+          {
+            "id": "SRC-BRIEF",
+            "type": "BRIEF",
+            "uri": "goldens/asteria/sources/brief.md",
+            "digest": "sha256:d077e19c83a2f24de03f0bad11c095777b2ddf14bb41cc37ecf1615f423e4c19",
+            "title": "Asteria — brief client (synthétique)"
+          }
+        ],
+        "goals": [
+          {
+            "id": "G-1",
+            "statement": "Requesters submit and follow service requests without phone calls."
+          },
+          {
+            "id": "G-2",
+            "statement": "Operations triage and dispatch every request within its service level."
+          },
+          {
+            "id": "G-3",
+            "statement": "Field agents execute interventions even without connectivity."
+          }
+        ],
+        "actors": [
+          {
+            "id": "requester",
+            "name": "Requester",
+            "description": "Member of the public who reports an issue."
+          },
+          {
+            "id": "ops-agent",
+            "name": "Operations agent",
+            "description": "Qualifies, prioritizes and assigns requests."
+          },
+          {
+            "id": "field-agent",
+            "name": "Field agent",
+            "description": "Executes interventions on site."
+          },
+          {
+            "id": "supervisor",
+            "name": "Supervisor",
+            "description": "Receives escalations of overdue requests."
+          }
+        ],
+        "requirements": [
+          {
+            "id": "FR-001",
+            "type": "FUNCTIONAL",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "goals": [
+              "G-1"
+            ],
+            "actors": [
+              "requester"
+            ],
+            "statement": "A requester submits a geolocated service request with a category, a description and photos.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-1"
+              }
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "AC-001-1",
+                "statement": "A submitted request is stored with status SUBMITTED, its location and its attachments."
+              }
+            ]
+          },
+          {
+            "id": "FR-002",
+            "type": "FUNCTIONAL",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "goals": [
+              "G-1"
+            ],
+            "actors": [
+              "requester"
+            ],
+            "statement": "A requester follows the status of their own requests.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-1"
+              }
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "AC-002-1",
+                "statement": "The requester lists their requests with their current status and nothing else."
+              }
+            ]
+          },
+          {
+            "id": "FR-003",
+            "type": "FUNCTIONAL",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "goals": [
+              "G-2"
+            ],
+            "actors": [
+              "ops-agent"
+            ],
+            "statement": "An operations agent triages, prioritizes and assigns requests to field agents.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-2"
+              }
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "AC-003-1",
+                "statement": "A triaged request carries a priority; an assigned request names one field agent and a due date."
+              }
+            ]
+          },
+          {
+            "id": "FR-004",
+            "type": "FUNCTIONAL",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "goals": [
+              "G-3"
+            ],
+            "actors": [
+              "field-agent"
+            ],
+            "dependsOn": [
+              "FR-003"
+            ],
+            "statement": "A field agent receives assignments and records an intervention report with photos, including while offline.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-3"
+              }
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "AC-004-1",
+                "statement": "A report recorded offline is synchronized once, without duplicate, after reconnection."
+              }
+            ]
+          },
+          {
+            "id": "FR-005",
+            "type": "FUNCTIONAL",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "goals": [
+              "G-1"
+            ],
+            "actors": [
+              "requester"
+            ],
+            "statement": "A requester is notified by e-mail of every status change of their requests.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-4"
+              }
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "AC-005-1",
+                "statement": "Each status change produces exactly one notification to the requester."
+              }
+            ]
+          },
+          {
+            "id": "FR-006",
+            "type": "FUNCTIONAL",
+            "priority": "SHOULD",
+            "status": "ACCEPTED",
+            "goals": [
+              "G-2"
+            ],
+            "actors": [
+              "supervisor"
+            ],
+            "dependsOn": [
+              "FR-003"
+            ],
+            "statement": "A request that exceeds its service level is escalated automatically to a supervisor.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-5"
+              }
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "AC-006-1",
+                "statement": "An overdue request is escalated once and the supervisor is identified."
+              }
+            ]
+          },
+          {
+            "id": "FR-007",
+            "type": "FUNCTIONAL",
+            "priority": "COULD",
+            "status": "DEFERRED",
+            "goals": [
+              "G-1"
+            ],
+            "statement": "A public anonymized map shows open requests.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "hors-besoin-immediat"
+              }
+            ]
+          },
+          {
+            "id": "NFR-001",
+            "type": "NON_FUNCTIONAL",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "statement": "Long-running processing (notifications, escalations, attachment analysis) is asynchronous and never blocks a request to the API.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-7"
+              }
+            ]
+          },
+          {
+            "id": "SEC-001",
+            "type": "SECURITY",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "actors": [
+              "requester",
+              "field-agent"
+            ],
+            "statement": "Requesters only see their own requests; field agents only see their own assignments.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-1"
+              }
+            ]
+          },
+          {
+            "id": "SEC-002",
+            "type": "SECURITY",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "statement": "An uploaded attachment is analysed for malware before it becomes visible to anyone.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-6"
+              }
+            ]
+          },
+          {
+            "id": "UX-001",
+            "type": "UX_ACCESSIBILITY",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "actors": [
+              "requester"
+            ],
+            "statement": "The public requester portal meets WCAG 2.2 level AA.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-8"
+              }
+            ]
+          },
+          {
+            "id": "CON-001",
+            "type": "CONSTRAINT",
+            "priority": "MUST",
+            "status": "ACCEPTED",
+            "statement": "Authentication uses the shared Enistere OIDC provider with a dedicated realm for the project.",
+            "sourceRefs": [
+              {
+                "source": "SRC-BRIEF",
+                "locator": "besoin-exprime-9"
+              }
+            ]
+          }
+        ],
+        "ambiguities": [
+          {
+            "id": "AMB-001",
+            "impact": "HIGH",
+            "status": "RESOLVED",
+            "relatedRequirements": [
+              "FR-004"
+            ],
+            "question": "How long must a field agent be able to work offline?",
+            "resolution": "One shift (at most 12 hours); synchronization at reconnection."
+          },
+          {
+            "id": "AMB-002",
+            "impact": "DEFERRABLE",
+            "status": "DEFERRED",
+            "relatedRequirements": [
+              "FR-005"
+            ],
+            "question": "Which notification channels are needed besides e-mail?"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "SystemDefinition",
+      "metadata": {
+        "id": "asteria",
+        "revision": 1,
+        "title": "Asteria — system definition",
+        "status": "SUPERSEDED",
+        "owner": {
+          "team": "asteria-architecture"
+        },
+        "provenance": {
+          "origin": "HUMAN",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "derivedFrom": [
+            {
+              "kind": "RequirementBaseline",
+              "id": "asteria-requirements",
+              "revision": 1,
+              "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+            },
+            {
+              "kind": "DecisionSet",
+              "id": "asteria-decisions",
+              "revision": 1,
+              "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+            },
+            {
+              "kind": "DomainContract",
+              "id": "asteria-service-requests",
+              "revision": 1,
+              "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+            }
+          ]
+        },
+        "acceptance": {
+          "decision": "ACCEPTED",
+          "authority": "DECIDE",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "at": "2026-09-17T09:00:00Z"
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "purpose": "Collect, dispatch and resolve field service requests, from the public portal to the intervention report.",
+        "inputs": {
+          "requirementBaseline": {
+            "kind": "RequirementBaseline",
+            "id": "asteria-requirements",
+            "revision": 1,
+            "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+          },
+          "decisionSet": {
+            "kind": "DecisionSet",
+            "id": "asteria-decisions",
+            "revision": 1,
+            "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+          },
+          "organizationContext": {
+            "kind": "EffectiveOrganizationContext",
+            "id": "asteria-context",
+            "revision": 1,
+            "digest": "sha256:736c950ebaa7a3aa2ee016628203ea8364cb8b10606f2edc24c6053829b840da"
+          },
+          "domainContracts": [
+            {
+              "kind": "DomainContract",
+              "id": "asteria-service-requests",
+              "revision": 1,
+              "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+            }
+          ]
+        },
+        "components": [
+          {
+            "id": "requester-web",
+            "name": "Requester Web",
+            "kind": "web-application",
+            "audience": "PUBLIC",
+            "responsibilities": [
+              "Lets requesters submit geolocated requests with photos.",
+              "Lets requesters follow their own requests."
+            ],
+            "requirements": [
+              "FR-001",
+              "FR-002",
+              "UX-001"
+            ],
+            "decisions": [
+              "AD-003"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#upload-attachment",
+                  "asteria-service-requests#submit-request",
+                  "asteria-service-requests#list-my-requests"
+                ]
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "files"
+              }
+            ],
+            "runtime": {
+              "preferences": [
+                "nextjs"
+              ]
+            },
+            "experience": {
+              "designContext": "public-portal",
+              "designSystem": {
+                "type": "DesignSystem",
+                "id": "operator-design-system",
+                "version": "1.0.0"
+              },
+              "accessibilityProfile": "wcag-2-2-aa"
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-web"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "ops-web",
+            "name": "Internal Ops Web",
+            "kind": "web-application",
+            "audience": "INTERNAL",
+            "responsibilities": [
+              "Lets operations agents triage, prioritize and assign requests."
+            ],
+            "requirements": [
+              "FR-003"
+            ],
+            "decisions": [
+              "AD-003"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#list-requests",
+                  "asteria-service-requests#triage-request",
+                  "asteria-service-requests#assign-request"
+                ]
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "authorization"
+              }
+            ],
+            "runtime": {
+              "preferences": [
+                "angular"
+              ]
+            },
+            "experience": {
+              "designContext": "back-office",
+              "designSystem": {
+                "type": "DesignSystem",
+                "id": "operator-design-system",
+                "version": "1.0.0"
+              }
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-web"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "field-mobile",
+            "name": "Field Mobile",
+            "kind": "mobile-application",
+            "audience": "FIELD",
+            "responsibilities": [
+              "Shows assignments to field agents, online or offline.",
+              "Records intervention reports with photos and replays them at reconnection."
+            ],
+            "requirements": [
+              "FR-004"
+            ],
+            "decisions": [
+              "AD-004"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#list-assignments",
+                  "asteria-service-requests#record-intervention",
+                  "asteria-service-requests#upload-attachment"
+                ]
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "files"
+              }
+            ],
+            "runtime": {
+              "preferences": [
+                "flutter"
+              ]
+            },
+            "experience": {
+              "designContext": "field",
+              "designSystem": {
+                "type": "DesignSystem",
+                "id": "operator-design-system",
+                "version": "1.0.0"
+              },
+              "offline": true
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-mobile"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "authority-api",
+            "name": "Authority API",
+            "kind": "api-service",
+            "audience": "SYSTEM",
+            "responsibilities": [
+              "Single system of record of service requests, assignments and reports.",
+              "Enforces authorization intents and status transitions.",
+              "Publishes domain events through a transactional outbox.",
+              "Analyses uploaded attachments synchronously before exposing them."
+            ],
+            "requirements": [
+              "FR-001",
+              "FR-002",
+              "FR-003",
+              "FR-004",
+              "SEC-001",
+              "SEC-002",
+              "CON-001"
+            ],
+            "decisions": [
+              "AD-001",
+              "AD-005"
+            ],
+            "implements": [
+              "asteria-service-requests#upload-attachment",
+              "asteria-service-requests#submit-request",
+              "asteria-service-requests#list-my-requests",
+              "asteria-service-requests#list-requests",
+              "asteria-service-requests#triage-request",
+              "asteria-service-requests#assign-request",
+              "asteria-service-requests#list-assignments",
+              "asteria-service-requests#record-intervention",
+              "asteria-service-requests#record-scan-result",
+              "asteria-service-requests#escalate-request"
+            ],
+            "data": [
+              {
+                "store": "asteria-db",
+                "access": "OWNER"
+              },
+              {
+                "store": "asteria-objects",
+                "access": "OWNER"
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "authorization"
+              },
+              {
+                "id": "files"
+              }
+            ],
+            "integrations": [
+              "enistere-oidc",
+              "malware-scanner"
+            ],
+            "runtime": {
+              "preferences": [
+                "nestjs"
+              ]
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-backend"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "async-worker",
+            "name": "Async Worker",
+            "kind": "async-worker",
+            "audience": "SYSTEM",
+            "responsibilities": [
+              "Notifies requesters of every status change.",
+              "Escalates overdue requests on schedule."
+            ],
+            "requirements": [
+              "FR-005",
+              "FR-006",
+              "NFR-001"
+            ],
+            "decisions": [
+              "AD-002"
+            ],
+            "subscribes": [
+              "asteria-service-requests#RequestStatusChanged"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#escalate-request"
+                ]
+              },
+              {
+                "component": "authority-api",
+                "interaction": "EVENT_STREAM"
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "notifications"
+              }
+            ],
+            "integrations": [
+              "smtp-relay"
+            ],
+            "runtime": {
+              "preferences": [
+                "nestjs"
+              ],
+              "constraints": [
+                "Horizontal scaling independent from the API."
+              ]
+            },
+            "ownership": {
+              "class": "OWNER_MANAGED",
+              "team": "asteria-backend"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "asteria-db",
+            "name": "Asteria transactional store",
+            "kind": "datastore",
+            "responsibilities": [
+              "Transactional storage of requests, assignments, reports and the outbox."
+            ],
+            "runtime": {
+              "preferences": [
+                "postgresql"
+              ]
+            },
+            "ownership": {
+              "class": "EXTERNAL",
+              "team": "enistere-platform"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "asteria-objects",
+            "name": "Asteria attachment store",
+            "kind": "object-store",
+            "responsibilities": [
+              "Stores attachments; never exposed before analysis."
+            ],
+            "runtime": {
+              "preferences": [
+                "s3-compatible"
+              ]
+            },
+            "ownership": {
+              "class": "EXTERNAL",
+              "team": "enistere-platform"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          }
+        ],
+        "integrations": [
+          {
+            "id": "enistere-oidc",
+            "kind": "oidc-provider",
+            "direction": "OUTBOUND",
+            "purpose": "Authentication through the shared Enistere identity provider, realm asteria.",
+            "provider": "enistere-shared-keycloak"
+          },
+          {
+            "id": "smtp-relay",
+            "kind": "email-delivery",
+            "direction": "OUTBOUND",
+            "purpose": "Requester notifications."
+          },
+          {
+            "id": "malware-scanner",
+            "kind": "malware-analysis",
+            "direction": "OUTBOUND",
+            "purpose": "Analysis of uploaded attachments."
+          }
+        ],
+        "environments": [
+          {
+            "id": "local",
+            "kind": "LOCAL",
+            "deploymentMode": "LOCAL"
+          },
+          {
+            "id": "ci",
+            "kind": "CI",
+            "deploymentMode": "LOCAL"
+          },
+          {
+            "id": "staging",
+            "kind": "STAGING",
+            "deploymentMode": "SELF_HOSTED"
+          },
+          {
+            "id": "production",
+            "kind": "PRODUCTION",
+            "deploymentMode": "SELF_HOSTED"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "SystemDefinition",
+      "metadata": {
+        "id": "asteria",
+        "revision": 2,
+        "title": "Asteria — system definition",
+        "status": "ACCEPTED",
+        "owner": {
+          "team": "asteria-architecture"
+        },
+        "provenance": {
+          "origin": "HUMAN",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "derivedFrom": [
+            {
+              "kind": "RequirementBaseline",
+              "id": "asteria-requirements",
+              "revision": 1,
+              "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+            },
+            {
+              "kind": "DecisionSet",
+              "id": "asteria-decisions",
+              "revision": 1,
+              "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+            },
+            {
+              "kind": "DomainContract",
+              "id": "asteria-service-requests",
+              "revision": 1,
+              "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+            }
+          ]
+        },
+        "acceptance": {
+          "decision": "ACCEPTED",
+          "authority": "DECIDE",
+          "actor": {
+            "type": "HUMAN",
+            "id": "architect@asteria.example",
+            "role": "architect"
+          },
+          "at": "2026-09-22T10:00:00Z",
+          "rationale": "Applies change request asteria-cr-001."
+        },
+        "supersedes": {
+          "kind": "SystemDefinition",
+          "id": "asteria",
+          "revision": 1,
+          "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "purpose": "Collect, dispatch and resolve field service requests, from the public portal to the intervention report.",
+        "inputs": {
+          "requirementBaseline": {
+            "kind": "RequirementBaseline",
+            "id": "asteria-requirements",
+            "revision": 1,
+            "digest": "sha256:63b88cc13d3ad2074e777ee23e00dd0edb9ed724324eaca24056027b5247890b"
+          },
+          "decisionSet": {
+            "kind": "DecisionSet",
+            "id": "asteria-decisions",
+            "revision": 1,
+            "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+          },
+          "organizationContext": {
+            "kind": "EffectiveOrganizationContext",
+            "id": "asteria-context",
+            "revision": 1,
+            "digest": "sha256:736c950ebaa7a3aa2ee016628203ea8364cb8b10606f2edc24c6053829b840da"
+          },
+          "domainContracts": [
+            {
+              "kind": "DomainContract",
+              "id": "asteria-service-requests",
+              "revision": 1,
+              "digest": "sha256:b92655df6d41f559760cd44d04a4281414b11037def4515e70dcbb25f5914b0a"
+            }
+          ]
+        },
+        "components": [
+          {
+            "id": "requester-web",
+            "name": "Requester Web",
+            "kind": "web-application",
+            "audience": "PUBLIC",
+            "responsibilities": [
+              "Lets requesters submit geolocated requests with photos.",
+              "Lets requesters follow their own requests."
+            ],
+            "requirements": [
+              "FR-001",
+              "FR-002",
+              "UX-001"
+            ],
+            "decisions": [
+              "AD-003"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#upload-attachment",
+                  "asteria-service-requests#submit-request",
+                  "asteria-service-requests#list-my-requests"
+                ]
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "files"
+              }
+            ],
+            "runtime": {
+              "preferences": [
+                "nextjs"
+              ]
+            },
+            "experience": {
+              "designContext": "public-portal",
+              "designSystem": {
+                "type": "DesignSystem",
+                "id": "operator-design-system",
+                "version": "1.0.0"
+              },
+              "accessibilityProfile": "wcag-2-2-aa"
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-web"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "ops-web",
+            "name": "Internal Ops Web",
+            "kind": "web-application",
+            "audience": "INTERNAL",
+            "responsibilities": [
+              "Lets operations agents triage, prioritize and assign requests."
+            ],
+            "requirements": [
+              "FR-003"
+            ],
+            "decisions": [
+              "AD-003"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#list-requests",
+                  "asteria-service-requests#triage-request",
+                  "asteria-service-requests#assign-request"
+                ]
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "authorization"
+              }
+            ],
+            "runtime": {
+              "preferences": [
+                "angular"
+              ]
+            },
+            "experience": {
+              "designContext": "back-office",
+              "designSystem": {
+                "type": "DesignSystem",
+                "id": "operator-design-system",
+                "version": "1.0.0"
+              }
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-web"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "field-mobile",
+            "name": "Field Mobile",
+            "kind": "mobile-application",
+            "audience": "FIELD",
+            "responsibilities": [
+              "Shows assignments to field agents, online or offline.",
+              "Records intervention reports with photos and replays them at reconnection."
+            ],
+            "requirements": [
+              "FR-004"
+            ],
+            "decisions": [
+              "AD-004"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#list-assignments",
+                  "asteria-service-requests#record-intervention",
+                  "asteria-service-requests#upload-attachment"
+                ]
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "files"
+              }
+            ],
+            "runtime": {
+              "preferences": [
+                "flutter"
+              ]
+            },
+            "experience": {
+              "designContext": "field",
+              "designSystem": {
+                "type": "DesignSystem",
+                "id": "operator-design-system",
+                "version": "1.0.0"
+              },
+              "offline": true
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-mobile"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "authority-api",
+            "name": "Authority API",
+            "kind": "api-service",
+            "audience": "SYSTEM",
+            "responsibilities": [
+              "Single system of record of service requests, assignments and reports.",
+              "Enforces authorization intents and status transitions.",
+              "Publishes domain events through a transactional outbox."
+            ],
+            "requirements": [
+              "FR-001",
+              "FR-002",
+              "FR-003",
+              "FR-004",
+              "SEC-001",
+              "SEC-002",
+              "CON-001"
+            ],
+            "decisions": [
+              "AD-001",
+              "AD-005"
+            ],
+            "implements": [
+              "asteria-service-requests#upload-attachment",
+              "asteria-service-requests#submit-request",
+              "asteria-service-requests#list-my-requests",
+              "asteria-service-requests#list-requests",
+              "asteria-service-requests#triage-request",
+              "asteria-service-requests#assign-request",
+              "asteria-service-requests#list-assignments",
+              "asteria-service-requests#record-intervention",
+              "asteria-service-requests#record-scan-result",
+              "asteria-service-requests#escalate-request"
+            ],
+            "data": [
+              {
+                "store": "asteria-db",
+                "access": "OWNER"
+              },
+              {
+                "store": "asteria-objects",
+                "access": "OWNER"
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "authentication"
+              },
+              {
+                "id": "authorization"
+              },
+              {
+                "id": "files"
+              }
+            ],
+            "integrations": [
+              "enistere-oidc"
+            ],
+            "runtime": {
+              "preferences": [
+                "nestjs"
+              ]
+            },
+            "ownership": {
+              "class": "SHARED_CONTROLLED",
+              "team": "asteria-backend"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "async-worker",
+            "name": "Async Worker",
+            "kind": "async-worker",
+            "audience": "SYSTEM",
+            "responsibilities": [
+              "Notifies requesters of every status change.",
+              "Escalates overdue requests on schedule.",
+              "Analyses uploaded attachments for malware and records the result."
+            ],
+            "requirements": [
+              "FR-005",
+              "FR-006",
+              "NFR-001",
+              "SEC-002"
+            ],
+            "decisions": [
+              "AD-002"
+            ],
+            "subscribes": [
+              "asteria-service-requests#RequestStatusChanged",
+              "asteria-service-requests#AttachmentUploaded"
+            ],
+            "consumes": [
+              {
+                "component": "authority-api",
+                "interaction": "SYNC_REQUEST",
+                "operations": [
+                  "asteria-service-requests#escalate-request",
+                  "asteria-service-requests#record-scan-result"
+                ]
+              },
+              {
+                "component": "authority-api",
+                "interaction": "EVENT_STREAM"
+              }
+            ],
+            "platformCapabilities": [
+              {
+                "id": "notifications"
+              }
+            ],
+            "integrations": [
+              "smtp-relay",
+              "malware-scanner"
+            ],
+            "runtime": {
+              "preferences": [
+                "nestjs"
+              ],
+              "constraints": [
+                "Horizontal scaling independent from the API."
+              ]
+            },
+            "ownership": {
+              "class": "OWNER_MANAGED",
+              "team": "asteria-backend"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ],
+            "data": [
+              {
+                "store": "asteria-objects",
+                "access": "READ"
+              }
+            ]
+          },
+          {
+            "id": "asteria-db",
+            "name": "Asteria transactional store",
+            "kind": "datastore",
+            "responsibilities": [
+              "Transactional storage of requests, assignments, reports and the outbox."
+            ],
+            "runtime": {
+              "preferences": [
+                "postgresql"
+              ]
+            },
+            "ownership": {
+              "class": "EXTERNAL",
+              "team": "enistere-platform"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          },
+          {
+            "id": "asteria-objects",
+            "name": "Asteria attachment store",
+            "kind": "object-store",
+            "responsibilities": [
+              "Stores attachments; never exposed before analysis."
+            ],
+            "runtime": {
+              "preferences": [
+                "s3-compatible"
+              ]
+            },
+            "ownership": {
+              "class": "EXTERNAL",
+              "team": "enistere-platform"
+            },
+            "environments": [
+              "local",
+              "ci",
+              "staging",
+              "production"
+            ]
+          }
+        ],
+        "integrations": [
+          {
+            "id": "enistere-oidc",
+            "kind": "oidc-provider",
+            "direction": "OUTBOUND",
+            "purpose": "Authentication through the shared Enistere identity provider, realm asteria.",
+            "provider": "enistere-shared-keycloak"
+          },
+          {
+            "id": "smtp-relay",
+            "kind": "email-delivery",
+            "direction": "OUTBOUND",
+            "purpose": "Requester notifications."
+          },
+          {
+            "id": "malware-scanner",
+            "kind": "malware-analysis",
+            "direction": "OUTBOUND",
+            "purpose": "Analysis of uploaded attachments."
+          }
+        ],
+        "environments": [
+          {
+            "id": "local",
+            "kind": "LOCAL",
+            "deploymentMode": "LOCAL"
+          },
+          {
+            "id": "ci",
+            "kind": "CI",
+            "deploymentMode": "LOCAL"
+          },
+          {
+            "id": "staging",
+            "kind": "STAGING",
+            "deploymentMode": "SELF_HOSTED"
+          },
+          {
+            "id": "production",
+            "kind": "PRODUCTION",
+            "deploymentMode": "SELF_HOSTED"
+          }
+        ]
+      }
+    }
+  ],
+  "materializations": [
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "MaterializationRecord",
+      "metadata": {
+        "id": "asteria-authority-api-materialization",
+        "revision": 1,
+        "title": "authority-api — materialization by nestjs@0.1.0",
+        "status": "VALID",
+        "provenance": {
+          "origin": "COMPILER",
+          "actor": {
+            "type": "COMPILER",
+            "id": "foundation-engine-materializer"
+          },
+          "tool": {
+            "name": "@enistere/foundation-engine-materializer",
+            "version": "0.2.0"
+          }
+        }
+      },
+      "spec": {
+        "system": "asteria",
+        "subject": {
+          "contract": {
+            "kind": "SystemDefinition",
+            "id": "asteria",
+            "revision": 2,
+            "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+          },
+          "component": "authority-api"
+        },
+        "closure": "sha256:ec5b3ba19dfc195981cfe662c1a9e4c115c5207d36516f5db292e185c90f30be",
+        "plan": "sha256:c5e57f703591224d996af93dec24477980832b6098c80f0f0a67530de266e34a",
+        "adapter": {
+          "id": "nestjs",
+          "version": "0.1.0"
+        },
+        "producedBy": {
+          "type": "COMPILER",
+          "id": "foundation-engine-materializer"
+        },
+        "outcome": "APPLIED",
+        "executedAt": "2026-09-23T12:00:00Z",
+        "files": [
+          {
+            "path": ".dockerignore",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:d5099bc1ff3c3f5a6b5e2fa815878a0d86c1a235882f0a18787338418c44c1c3",
+            "decision": "CREATE"
+          },
+          {
+            "path": ".gitignore",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:e8bc935ce727f1809c792f4c5d26c5fc75ba2b7df7fc9390c56c8892f6a6007f",
+            "decision": "CREATE"
+          },
+          {
+            "path": "Dockerfile",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:6d1a022a7d4552f540d82588dcd04b269c4fab7105d68727cf12bb75024eb83b",
+            "decision": "CREATE"
+          },
+          {
+            "path": "README.md",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:1f5478d0aa170dc28ecc7fe51ccf5cee8ed6b9337ef6be41b4b3dfd6f8a1b770",
+            "decision": "CREATE"
+          },
+          {
+            "path": "package.json",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:988afc6e07ec3c4873547aff707ea5de2d85044668168240841a19d2ad8396a4",
+            "decision": "CREATE"
+          },
+          {
+            "path": "src/app.module.ts",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:deda77c40c010e2e15485004337f5e866691fe1b00668cb19266039ac1de3309",
+            "decision": "CREATE"
+          },
+          {
+            "path": "src/extension/extension.module.ts",
+            "ownership": "OWNER_SEEDED",
+            "digest": "sha256:ab5018a79e1eaaa899235eab8811e72d25e94d892a3484040c97c457f478bc2f",
+            "decision": "CREATE"
+          },
+          {
+            "path": "src/health/health.controller.ts",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:014806919a7e6beae488b1569498d356d07454e290bb1fd5e2abd3cdd7f1beba",
+            "decision": "CREATE"
+          },
+          {
+            "path": "src/main.ts",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:f6550cf0ef913c72726d586ad792230dd080215c2e8fcf8d84db535a894b41b2",
+            "decision": "CREATE"
+          },
+          {
+            "path": "tsconfig.json",
+            "ownership": "COMPILER_OWNED",
+            "digest": "sha256:1b9db6e14c176dbcdd9e0fdf85ef44bf896474539e84fdcbceb8117722f3ac38",
+            "decision": "CREATE"
+          }
+        ]
+      }
+    }
+  ],
+  "evidence": [],
+  "digest": "sha256:7f18aa8b4581e280b9aa77f9c22dfc62cc01e579c2ddd915605e5ffd690f0c4d"
+}

@@ -18,7 +18,7 @@
  */
 
 import type { DomainIR, IRComponent } from '@enistere/foundation-kernel-compiler';
-import { digestOf, fileDigest, type Digest } from '@enistere/foundation-kernel-contracts';
+import { digestOf, fileDigest, isSafeArtifactPath, type Digest } from '@enistere/foundation-kernel-contracts';
 
 /** Ownership of a generated file (document 02 FR-OWN). */
 export type ArtifactOwnership = 'COMPILER_OWNED' | 'OWNER_SEEDED';
@@ -80,12 +80,6 @@ export interface ArtifactPlan {
   ownership: string;
   artifacts: PlannedArtifact[];
   digest: Digest;
-}
-
-const SAFE_PATH = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\/\/)[A-Za-z0-9_.@-][A-Za-z0-9_.@/-]*$/;
-
-export function isSafeArtifactPath(path: string): boolean {
-  return SAFE_PATH.test(path) && !path.endsWith('/') && !path.startsWith('.foundation/');
 }
 
 /**
