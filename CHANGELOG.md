@@ -4,6 +4,17 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E4 — Ownership & Evidence — 2026-09-26
+
+- Contrat A8 `MaterializationRecord` (schéma, registre, autorité COMPILE_APPLY, validation d'ensemble)
+  ([ADR-098](docs/adr/ADR-098-materialization-record-and-proof-chain.md)).
+- Engine : un A8 par matérialisation dans `.foundation/records/` (révision n+1, supersedes) ; inventaire
+  local supprimé ; VERIFY cite l'A8 ; instant `executedAt` injecté.
+- `exportProofChain` / `verifyProofChain` (format `foundation.enistere.com/proof-chain/v1`, rejeu).
+- CLI : `export`, `verify-bundle`. CI `adapters` : export et vérification du bundle, publié en artefact.
+- Golden : `expected/proof-chain.json`. Codes `MATERIALIZATION_*`, `PROOF_*`, `AUTHORITY_*_APPLY`.
+  Tests : 117.
+
 ### E3 — Domain IR — 2026-09-26
 
 - `buildDomainIR` : Domain IR dérivé du Domain Contract (types résolus, références épinglées, défauts
