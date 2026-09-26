@@ -57,7 +57,7 @@ export function planMaterialization(result: PlanResult, host: ExtensionHost): { 
   const found: Diagnostic[] = [];
   const components: PlannedComponent[] = [];
   if (!result.plan || !result.ir || !result.definition) return { components, diagnostics: [] };
-  const context = { system: result.ir.system, definition: result.definition.ref };
+  const context = { system: result.ir.system, definition: result.definition.ref, domains: result.ir.domains };
   for (const step of result.plan.steps) {
     if (step.action !== 'MATERIALIZE') continue;
     const ref = result.definition.ref;

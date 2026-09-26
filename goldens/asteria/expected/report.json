@@ -430,9 +430,9 @@
       "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
     },
     "closure": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad",
-    "ir": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0",
-    "resolved": "sha256:20d68f3ab8d1aa788c41af8478a43b6d4d21f349fb67c5eef3e31cf4761f15df",
-    "plan": "sha256:ad0c721c0753a742fd53b6ba00ac3af3a0969332a26e2bde1955efe6541764f7",
+    "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
+    "resolved": "sha256:2e9340c8f476fdd4e7d2598001090ee28cbc2ef47d5ee63fd9db3bdc27ec34bd",
+    "plan": "sha256:49ee6e4cf725e245b48e459b4edf3c1fd6c0ed28e587545b1f13a08e667a216c",
     "unsupported": [
       {
         "component": "asteria-objects",
@@ -443,6 +443,26 @@
         "component": "async-worker",
         "capability": "notifications",
         "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      }
+    ],
+    "domains": [
+      {
+        "contract": "DomainContract/asteria-service-requests@1",
+        "digest": "sha256:266fc209c60e29a5331a887f701de615c740053407514702896f0302e02c7bc7"
+      }
+    ],
+    "unsupportedIntent": [
+      {
+        "item": "DomainContract/asteria-service-requests@1#offline-sync",
+        "code": "IR_FACET_NOT_INTERPRETED"
+      },
+      {
+        "item": "DomainContract/asteria-service-requests@1#scheduling",
+        "code": "IR_FACET_NOT_INTERPRETED"
+      },
+      {
+        "item": "DomainContract/asteria-service-requests@1#workflow",
+        "code": "IR_FACET_NOT_INTERPRETED"
       }
     ]
   },

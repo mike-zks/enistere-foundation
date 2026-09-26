@@ -150,6 +150,10 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   MATERIALIZE_CONFLICT: spec('MATERIALIZATION_CONFLICT', 'error', 'A compiler-owned file was changed outside the compiler: restore it or move the change into an owner-managed file; nothing was overwritten.'),
   VERIFY_INVENTORY_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'The workspace no longer matches its materialization inventory: re-materialize or review the change.'),
   VERIFY_TOOLCHAIN_UNAVAILABLE: spec('WORKER_ENV_FAILURE', 'error', 'Install the tools the adapter manifest requires, then verify again.'),
+  // E3 Domain IR: domain intent the IR cannot realize.
+  IR_OPERATION_UNIMPLEMENTED: spec('UNSUPPORTED', 'warning', 'Allocate the operation to a component (implements) or remove it from the Domain Contract.'),
+  IR_EVENT_UNPUBLISHED: spec('UNSUPPORTED', 'warning', 'Let a component publish the event, directly or by implementing an operation that emits it.'),
+  IR_FACET_NOT_INTERPRETED: spec('UNSUPPORTED', 'warning', 'Domain facets are carried but not interpreted before the domain projection (E5); review what they require.'),
   // E1 Kernel Façade.
   FACADE_NO_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Provide an accepted System Definition in the contract set (or name an existing one).'),
   FACADE_AMBIGUOUS_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Name the System Definition to compile: several are in force.'),

@@ -9,8 +9,9 @@
  * Invariants:
  * - an invalid contract set or an invalid catalog is never resolved;
  * - only the System Definition in force (ACCEPTED) is compiled;
- * - UNSUPPORTED components or capabilities make the result PARTIAL and stay
- *   listed; they are never dropped;
+ * - UNSUPPORTED components or capabilities, and unrealized domain intent
+ *   (operation without implementer, event without publisher, facet not
+ *   interpreted), make the result PARTIAL and stay listed; never dropped;
  * - results are plain JSON: the same inputs give the same bytes, whatever the
  *   order of the documents.
  */
@@ -28,6 +29,7 @@ import {
   type ContractIndex,
   type Diagnostic,
   type Digest,
+  type DomainContract,
   type SystemDefinition,
 } from '@enistere/foundation-kernel-contracts';
 
@@ -83,6 +85,12 @@ export interface KernelFacade {
 
 const FACADE_LAYER = { layer: 'kernel.facade' } as const;
 
+const IR_REASONS: Readonly<Record<SystemIR['unsupported'][number]['code'], string>> = {
+  IR_OPERATION_UNIMPLEMENTED: 'no component implements this operation',
+  IR_EVENT_UNPUBLISHED: 'no component publishes this event',
+  IR_FACET_NOT_INTERPRETED: 'domain facets are not interpreted before the domain projection (E5)',
+};
+
 function selectDefinition(documents: readonly AnyContract[], index: ContractIndex, wanted: string | undefined): SystemDefinition | Diagnostic {
   const ids = [...new Set(documents.filter((document) => document.kind === 'SystemDefinition').map((document) => document.metadata.id))]
     .filter((id) => index.inForceRevision('SystemDefinition', id) !== undefined)
@@ -137,14 +145,17 @@ export function createKernelFacade(): KernelFacade {
       return { result: { ...base, diagnostics: sortDiagnostics([...base.diagnostics, selected as Diagnostic]) }, plan: null };
     }
     const definition = selected;
-    const { closure } = buildClosure(definition, index, catalog.digest as Digest);
-    const ir = buildSystemIR(definition);
+    const { closure, documents: inputs } = buildClosure(definition, index, catalog.digest as Digest);
+    const ir = buildSystemIR(definition, inputs.filter((document): document is DomainContract => document.kind === 'DomainContract'));
+    const intent = ir.unsupported.map((item) =>
+      diagnostic(item.code, `${item.item} is not realized: ${IR_REASONS[item.code]}`, { layer: 'kernel.compiler', ref: ir.definition, details: { item: item.item } }),
+    );
     const { resolved, diagnostics } = resolveSystem(ir, catalog.catalog, catalog.digest);
     const plan = planSystem(closure, ir, resolved);
-    const all = sortDiagnostics([...base.diagnostics, ...diagnostics]);
+    const all = sortDiagnostics([...base.diagnostics, ...intent, ...diagnostics]);
     const result: ResolveResult = {
       ...base,
-      status: hasErrors(all) ? 'INVALID' : resolved.unsupported.length > 0 ? 'PARTIAL' : 'RESOLVED',
+      status: hasErrors(all) ? 'INVALID' : resolved.unsupported.length > 0 || ir.unsupported.length > 0 ? 'PARTIAL' : 'RESOLVED',
       definition: { ref: documentRef(definition), digest: contractDigest(definition) },
       closure,
       ir,

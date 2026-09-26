@@ -12,8 +12,8 @@
     "system": "asteria",
     "inputs": {
       "closure": "sha256:ec5b3ba19dfc195981cfe662c1a9e4c115c5207d36516f5db292e185c90f30be",
-      "ir": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0",
-      "resolved": "sha256:20e1d5dfce0e7dc24f12ef2153cd418e0c32ee331b9f62fdde96c5fe10828f59"
+      "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
+      "resolved": "sha256:059e19673f67fbd2deeed4929f27789adf387e64e755d8054b1e2d21b8033f5c"
     },
     "steps": [
       {
@@ -78,6 +78,20 @@
         "component": "requester-web",
         "capability": null,
         "code": "RESOLVE_NO_ADAPTER"
+      }
+    ],
+    "unsupportedIntent": [
+      {
+        "item": "DomainContract/asteria-service-requests@1#offline-sync",
+        "code": "IR_FACET_NOT_INTERPRETED"
+      },
+      {
+        "item": "DomainContract/asteria-service-requests@1#scheduling",
+        "code": "IR_FACET_NOT_INTERPRETED"
+      },
+      {
+        "item": "DomainContract/asteria-service-requests@1#workflow",
+        "code": "IR_FACET_NOT_INTERPRETED"
       }
     ],
     "ownerWork": [
@@ -147,7 +161,7 @@
         "requirement": "SEC-002"
       }
     ],
-    "digest": "sha256:61548549338845613f688c631ec0e457f9a664bdb2f841de2d9d9c9f7c02b445"
+    "digest": "sha256:c5e57f703591224d996af93dec24477980832b6098c80f0f0a67530de266e34a"
   },
   "artifactPlans": [
     {
@@ -213,6 +227,45 @@
     }
   ],
   "diagnostics": [
+    {
+      "code": "IR_FACET_NOT_INTERPRETED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "DomainContract/asteria-service-requests@1#offline-sync is not realized: domain facets are not interpreted before the domain projection (E5)",
+      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "item": "DomainContract/asteria-service-requests@1#offline-sync"
+      }
+    },
+    {
+      "code": "IR_FACET_NOT_INTERPRETED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "DomainContract/asteria-service-requests@1#scheduling is not realized: domain facets are not interpreted before the domain projection (E5)",
+      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "item": "DomainContract/asteria-service-requests@1#scheduling"
+      }
+    },
+    {
+      "code": "IR_FACET_NOT_INTERPRETED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "DomainContract/asteria-service-requests@1#workflow is not realized: domain facets are not interpreted before the domain projection (E5)",
+      "remediation": "Domain facets are carried but not interpreted before the domain projection (E5); review what they require.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "item": "DomainContract/asteria-service-requests@1#workflow"
+      }
+    },
     {
       "code": "RESOLVE_NO_ADAPTER",
       "class": "UNSUPPORTED",
