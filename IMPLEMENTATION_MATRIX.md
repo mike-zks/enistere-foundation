@@ -2,10 +2,10 @@
 
 > Couverture **prouvée** (document 05 §2E). Un contrat ou une capacité n'est VERIFIED que si une preuve
 > adaptée existe (test automatisé, golden, conformance, audit) — jamais sur déclaration. Mise à jour :
-> 2026-09-26, fin de E3 (ADR-097 : Domain IR). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
+> 2026-09-26, fin de E4 (ADR-098 : A8 MaterializationRecord et proof chain). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
 > CONFORMANT · VERIFIED (document 02 annexe B).
 
-## Contrats E0 (A1–A7)
+## Contrats (A1–A7 : E0 ; A8 : E4)
 
 | Contrat | Zone | Implemented | Tested | Production-ready | Niveau | Evidence | Mission | Notes |
 |---|---|---|---|---|---|---|---|---|
@@ -16,14 +16,16 @@
 | A4 System Definition | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `contracts.test.ts` (A4), `contract-set.test.ts`, `goldens/test/golden-asteria.test.ts` ; `system-definition--asteria--r1/r2.json` | E0 | Kinds ouverts (Async Worker accepté) ; pas encore d'IR (E3) |
 | A5 Domain Contract | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `contracts.test.ts` (A5) ; `domain-contract--asteria-service-requests--r1.json` | E0 | Facets offline-sync, scheduling, workflow ; projection vers runtimes en E5 |
 | A6 Change Request | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `contracts.test.ts` (A6), `contract-set.test.ts` ; `change-request--asteria-cr-001/002--r1.json` | E0 | Cohérence base → proposé vérifiée ; calcul d'impact automatique en E7 |
-| A7 EvidenceRecord | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `contracts.test.ts` (A7), `contract-set.test.ts` (péremption, historique) ; 9 fichiers `goldens/asteria/evidence/` | E0 | Produits par le checker du golden ; export de proof chain en E4 |
+| A7 EvidenceRecord | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `contracts.test.ts` (A7), `contract-set.test.ts` (péremption, historique) ; 9 fichiers `goldens/asteria/evidence/` | E0 | Produits par le checker du golden et par VERIFY (citent l'A8 vérifié) ; exportés dans la proof chain (E4) |
+| A8 MaterializationRecord | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `kernel/contracts/test/materialization-record.test.ts` (schéma, chemins, outcome, autorité, ensemble) ; `materializer.test.ts` ; `goldens/asteria/expected/proof-chain.json` | E4 | Produit par le compilateur seulement ; stocké par composant dans `.foundation/records/` |
+| Proof chain v1 (export, vérification par rejeu) | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden + CI) | `kernel/compiler/test/proof-chain.test.ts` ; `goldens/test/golden-asteria.test.ts` ; `surfaces/cli/test/cli.test.ts` (altération → code 1) ; job CI `adapters` (`verify-bundle`) | E4 | Pas de signature ni d'enveloppe in-toto/SLSA |
 | Golden Asteria (5 surfaces dont Async Worker) | Goldens | Oui | Oui | N/A | VERIFIED (golden byte-identique) | `goldens/test/golden-asteria.test.ts` ; `goldens/asteria/expected/report.json` ; job CI `kernel` | E0 | Ne dépend que du Kernel (test d'imports) ; aucune matérialisation avant E2 |
 
 ## Compilation E1 (Kernel Façade)
 
 | Élément | Zone | Implemented | Tested | Production-ready | Niveau | Evidence | Mission | Notes |
 |---|---|---|---|---|---|---|---|---|
-| System Closure | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `kernel/compiler/test/compiler.test.ts` (fermeture exacte, digest sensible à chaque entrée) | E1 | Pas encore de record d'exécution persistant (E4) |
+| System Closure | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `kernel/compiler/test/compiler.test.ts` (fermeture exacte, digest sensible à chaque entrée) | E1 | Digest cité par chaque A8 (E4) |
 | System IR | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (normalisation, indépendance à l'ordre) ; `goldens/asteria/expected/compilation.json` | E1, E3 | Porte les Domain IR et les bindings ; intention non réalisée listée |
 | Domain IR | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `kernel/compiler/test/domain-ir.test.ts` (types résolus, références épinglées, ordre, facets, bindings, PARTIAL) ; `expected/compilation.json` | E3 | Facets non interprétées ; pas de projection vers un runtime (E5) |
 | Catalogue d'extensions (données) | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `compiler.test.ts` (invalides, doublons, chevauchements refusés) | E1 | Descripteurs seulement ; manifests d'adapter en E2 |
@@ -39,7 +41,7 @@
 | Manifest d'adapter v0 et conversion en catalogue | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `kernel/extensions/test/extensions.test.ts` | E2 | Pas de signature ni provenance (TA-06) |
 | Règle d'ownership `decideWrite` | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `extensions.test.ts` ; `engine/materializer/test/materializer.test.ts` (conflit sans écriture, owner-seeded préservé) | E2 | — |
 | Hôte d'extensions (TRUSTED_IN_PROCESS) | Engine | Oui | Oui | N/A | VERIFIED (tests) | `materializer.test.ts` (modes non supportés et identités contradictoires écartés) | E2 | Isolation process/conteneur avec les Workers |
-| MATERIALIZE (inventaire, idempotence) | Engine | Oui | Oui | N/A | VERIFIED (tests) | `materializer.test.ts` ; `surfaces/cli/test/cli.test.ts` | E2 | Pas encore de MaterializationRecord persistant (E4) |
+| MATERIALIZE (A8, idempotence, owner change préservé) | Engine | Oui | Oui | N/A | VERIFIED (tests) | `materializer.test.ts` (dont gate E4 : adapter v1 → v2, changement de l'équipe préservé) ; `surfaces/cli/test/cli.test.ts` | E2, E4 | — |
 | VERIFY → EvidenceRecords | Engine | Oui | Oui | N/A | VERIFIED (tests + CI) | `materializer.test.ts` (PASS, FAIL, INCONCLUSIVE) ; job CI `adapters` | E2 | — |
 | Adapter NestJS (`api-service`) | Extensions | Oui | Oui | N/A | BOOTABLE (CI) | `extensions/runtimes/nestjs/test/adapter.test.ts` ; job CI `adapters` (install, build, `/health` = 200, audit) ; `goldens/asteria/expected/materialization.json` | E2 | Pas de lockfile ; pas de domaine (E5) ni de capabilities |
 
@@ -61,7 +63,7 @@ L'itération précédente (générateur, 7 starters, capabilities auth/rbac/file
 | CAP-09 Design System & Experience Governance | Knowledge & Decision / Compilation | Non | Non | Non | — | E6 | `design-tokens.json` du doc 04 absent (CONTEXT D-5) |
 | CAP-10 System Compiler | System Compilation / Kernel, Engine | Partiel (closure → IR → résolution → plan → matérialisation → vérification) | Oui | Non | `compiler.test.ts`, `materializer.test.ts`, `expected/materialization.json`, job CI `adapters` | E1 → E3 | Domain IR (E3) ; projection du domaine (E5) |
 | CAP-11 AI Engineering Assistant | Transversal / AI Gateway | Non (invariants d'autorité IA seulement) | Oui (invariants) | Non | Invariants d'autorité IA dans A1–A7 (`authority.test.ts`) | V1+ | Pas d'AI Gateway ni d'AgentActionRecord |
-| CAP-12 Conformance, Evidence & Assurance | Assurance & Evolution / Kernel Evidence, Checkers | Partiel (A7, checker du golden, VERIFY des adapters) | Oui | Non | A7, `goldens/test/golden-asteria.test.ts`, `materializer.test.ts` | E4 | Pas d'Evidence Graph ni de proof profiles |
+| CAP-12 Conformance, Evidence & Assurance | Assurance & Evolution / Kernel Evidence, Checkers | Partiel (A7, A8, checker du golden, VERIFY des adapters, proof chain v1 exportable) | Oui | Non | A7, A8, `goldens/test/golden-asteria.test.ts`, `materializer.test.ts`, `proof-chain.test.ts`, job CI `adapters` | E4 | Pas d'Evidence Graph, de proof profiles ni de signature |
 | CAP-13 Lifecycle & System Evolution | Assurance & Evolution / Engine, Workers | Partiel (contrat A6) | Oui (contrat) | Non | A6, cohérence et péremption | E7 | Pas de calcul d'impact |
 | CAP-14 Brownfield / Existing System Adoption | Assurance & Evolution / Workers, Observers | Non | Non | Non | — | V3 | Hors périmètre R0 |
 | CAP-15 Surfaces & Collaboration | Transversal / Surfaces | Partiel (CLI headless) | Oui | Non | `surfaces/cli/test/cli.test.ts` | E1, V1 | Pas de Workbench, API ni SDK |

@@ -4,23 +4,24 @@
 
 | Champ | Valeur |
 |---|---|
-| Commit / branche | Base `b196bdd` (`main`, fusion de la PR #258) ; travail sur `claude/e3-domain-ir` |
+| Commit / branche | Base `c28c6f1` (`main`, fusion de la PR #259) ; travail sur `claude/e4-ownership-evidence` |
 | Date | 2026-09-26 |
-| Mission | E3 — Domain IR (ADR-097) ; les missions techniques de R0 (E0–E3) sont livrées |
-| Résultat | E3 **PASS** localement sur la gate du document 06 (IR déterministe ; unsupported explicite) ; CI de la PR à confirmer |
+| Mission | E4 — Ownership & Evidence Extraction (ADR-098) ; première mission de l'horizon V1 |
+| Résultat | E4 **PASS** localement sur la gate du document 06 (owner change survit ; proof chain exportable) ; CI de la PR à confirmer |
 
 ## Completed
 
-- **Kernel** : contrats A1–A7 (E0) ; compiler et façade (E1) ; Adapter Protocol v0 (E2) ; **Domain IR**
-  (E3) — `buildDomainIR` (types résolus, références épinglées, défauts explicites, facets conservées mais
-  non interprétées) ; IR système avec `domains`, `operationBindings`, `eventBindings` et `unsupported`
-  (intention non réalisée) ; plan avec `unsupportedIntent` ; `AdapterContext.domains`.
-- **Engine, extensions, CLI** (E2) inchangés dans leur comportement : les plans d'artefacts de l'adapter
-  NestJS sont identiques.
-- **Golden Asteria** : Domain IR de `asteria-service-requests@1` ; 10 opérations liées (implémentées par
-  l'Authority API, consommées par les surfaces et le Worker) ; 4 événements publiés via les opérations
-  émettrices ; facets `offline-sync`, `scheduling`, `workflow` listées non interprétées.
-- Missions antérieures : E0, R0-C, R0-D, E1, E2 — rapports ci-dessous ; documents 03 et 06 v1.1.
+- **Kernel** : contrats A1–A7 (E0) et **A8 `MaterializationRecord`** (E4 : schéma, registre, autorité
+  COMPILE_APPLY par le compilateur, règles de chemins et d'outcome, validation d'ensemble) ; compiler,
+  façade (E1), Adapter Protocol v0 (E2), Domain IR (E3) ; **proof chain v1** (`exportProofChain`,
+  `verifyProofChain` : digest, ensemble fermé, rejeu de la compilation, liens A8/A7).
+- **Engine** : un A8 par matérialisation (`.foundation/records/`, révision n+1, supersedes) — l'inventaire
+  local est supprimé, le dernier A8 est l'unique inventaire ; VERIFY cite l'A8 vérifié ; `executedAt`
+  injecté.
+- **CLI** : `export`, `verify-bundle`. **CI** `adapters` : export et vérification du bundle réel, publié en
+  artefact.
+- **Golden Asteria** : `expected/proof-chain.json` vérifié par le test (et altération refusée).
+- Missions antérieures : E0, R0-C, R0-D, E1, E2, E3 — rapports ci-dessous ; documents 03 et 06 v1.1.
 
 ## In progress
 
@@ -30,34 +31,68 @@ Aucun.
 
 Aucun. Rappel : `adapters` doit figurer dans les checks requis de `protect-main` (ADR-096).
 
-## Tests (exécutés le 2026-09-26 sur `claude/e3-domain-ir`)
+## Tests (exécutés le 2026-09-26 sur `claude/e4-ownership-evidence`)
 
 | Commande | Résultat |
 |---|---|
-| `npm ci` | OK |
 | `npm run foundation:typecheck` (7 workspaces) | OK (0 erreur) |
-| `npm run foundation:test` | 103/103 PASS — compiler 21 (dont Domain IR 8), contracts 48, extensions 6, materializer 8, adapter 5, CLI 7, goldens 8 |
-| `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 20 fichiers, 0 diagnostic ; plans d'artefacts identiques à E2 |
-| CLI `plan --extensions` | PARTIAL ; 1 Domain IR, 10 bindings d'opération, 3 facets en `unsupportedIntent` |
-| `npm run tools:test` · `npm run docs:links` · `npm audit --audit-level=high` | OK · OK · 0 vulnérabilité |
+| `npm run foundation:test` | 117/117 PASS — compiler 27 (dont proof chain 6), contracts 53 (dont A8 5), extensions 6, materializer 9 (dont gate E4), adapter 5, CLI 8, goldens 9 |
+| `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 21 fichiers, 0 diagnostic |
+| CLI `materialize` → `verify --toolchain` → `export` → `verify-bundle` | 2 (PARTIAL) → 0 (PASS) → 0 (EXPORTED : 6 contrats, 1 A8, 5 A7) → 0 (VALID) ; bundle altéré → INVALID |
+| `npm run tools:test` · `npm run docs:links` · `npm audit --audit-level=high` · actionlint | OK · OK · 0 vulnérabilité · OK |
 
 **NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture, dont le job `adapters`).
 
 ## Known gaps
 
+- Pas de signature ni d'enveloppe in-toto/SLSA de la proof chain ; pas d'Evidence Graph ni de proof
+  profiles (V1+) ; le bundle porte les digests des fichiers, pas leur contenu.
 - Pas de projection du domaine vers un runtime (E5) ; facets et invariants non interprétés.
-- Pas de record de matérialisation persistant ni d'export de la proof chain (E4) ; pas d'Evidence Graph.
 - Un seul runtime (NestJS, `api-service`) ; pas de lockfile généré ; pas de signature des extensions.
 - Contexte d'organisation non appliqué (E6) ; aucun Control Plane, Workbench, Worker, Registry, AI Gateway.
 
 ## Decisions
 
-ADR-091 à ADR-096, **ADR-097** (Domain IR) — voir [`DECISIONS.md`](DECISIONS.md).
+ADR-091 à ADR-097, **ADR-098** (A8 MaterializationRecord et proof chain v1) — voir
+[`DECISIONS.md`](DECISIONS.md).
 
 ## Next single action
 
-**E4 — Ownership & Evidence Extraction** ([`BACKLOG.md`](BACKLOG.md)) ; trancher d'abord le format
-d'export de la proof chain et la place du record.
+**E5 — Domain Contract Projection** ([`BACKLOG.md`](BACKLOG.md)) ; trancher d'abord le format de projection
+de l'API et le périmètre des invariants exécutables.
+
+---
+
+## Rapport de mission E4 — Ownership & Evidence Extraction (document 05 §11, Annexe A §16)
+
+- **Mission** : E4 — Ownership & Evidence Extraction.
+- **Date** : 2026-09-26.
+- **Branch / HEAD** : `claude/e4-ownership-evidence`, base `c28c6f1`.
+- **Objectif** : rendre l'ownership durable (un changement de l'équipe survit à toute re-matérialisation)
+  et la chaîne de preuve exportable et vérifiable hors du dépôt.
+- **Scope** : `kernel/contracts` (A8), `kernel/compiler` (proof chain), `kernel/extensions`
+  (réexport), `engine/materializer`, CLI, golden, CI.
+- **Out of scope** : signature, in-toto/SLSA, Evidence Graph, proof profiles, Control Plane.
+- **État initial** : E3 mergée ; inventaire local `.foundation/inventory.json` hors modèle de contrats ;
+  EvidenceRecords non chaînés.
+- **Changements réalisés** : voir *Completed*.
+- **Fichiers touchés** : `kernel/contracts/{schemas/v1alpha1/{materialization-record,common}.schema.json,src/**,test/**}` ;
+  `kernel/compiler/src/{proof-chain,index}.ts`, `kernel/compiler/test/proof-chain.test.ts` ;
+  `kernel/extensions/src/{adapter,index,ownership}.ts` ; `engine/materializer/{src,test}/**` ;
+  `surfaces/cli/**` ; `goldens/**` ; `extensions/runtimes/nestjs/manifest.json` ;
+  `.github/workflows/**` ; documentation et gouvernance.
+- **Contrats impactés** : nouveau contrat A8 ; `common.schema.json` (kind `MaterializationRecord`) ;
+  A1–A7 inchangés.
+- **Migrations** : aucune (aucun workspace matérialisé hors des tests, ADR-094).
+- **Tests exécutés / résultats** : voir *Tests*.
+- **Preuves** : `materializer.test.ts` (gate owner change) ; `proof-chain.test.ts` ;
+  `goldens/asteria/expected/proof-chain.json` ; job CI `adapters` (`verify-bundle`).
+- **Risques résiduels** : voir *Known gaps*.
+- **Décisions** : ADR-098.
+- **Documentation** : CONTEXT, ROADMAP, BACKLOG, CURRENT_STATE, IMPLEMENTATION_MATRIX, DECISIONS,
+  CHANGELOG, registre ADR, README (racine, contrats, engine, CLI, golden, workflows), runbook.
+- **Statut** : PASS (owner change survit ; proof chain exportable) — localement.
+- **Prochaine action unique** : E5 — Domain Contract Projection.
 
 ---
 

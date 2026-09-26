@@ -3,7 +3,8 @@
  * outcome as an EvidenceRecord (A7), produced by a CHECKER, never by an AI.
  *
  * - STRUCTURAL checks run in-process: the component directory must match its
- *   inventory (every compiler-owned file present and unchanged, every seeded
+ *   latest MaterializationRecord (A8) — every compiler-owned file present and
+ *   unchanged, every seeded
  *   file present).
  * - TOOLCHAIN checks run the commands the adapter declares, without shell, in
  *   the component directory, with a timeout and a minimal environment (no
@@ -19,20 +20,22 @@ import { join, resolve } from 'node:path';
 
 import {
   CURRENT_API_VERSION,
+  contractDigest,
   diagnostic,
+  documentRef,
   fileDigest,
-  parseRef,
+  pinnedRef,
   sortDiagnostics,
   validateContract,
-  type ContractRef,
   type Diagnostic,
   type EvidenceRecord,
   type EvidenceResult,
+  type MaterializationRecord,
 } from '@enistere/foundation-kernel-contracts';
 import type { ToolchainCommand, ToolchainProbe, VerificationCheck } from '@enistere/foundation-kernel-extensions';
 
 import type { ExtensionHost, LoadedExtension } from './host.ts';
-import { INVENTORY_PATH, type Inventory } from './materialize.ts';
+import { latestRecord, RECORDS_DIRECTORY } from './materialize.ts';
 
 export const VERIFIER = Object.freeze({ id: 'foundation-engine-materializer', version: '0.1.0' });
 const LAYER = { layer: 'engine.materializer' } as const;
@@ -65,17 +68,17 @@ function minimalEnvironment(extra: Record<string, string> = {}): Record<string, 
   return { ...env, ...extra };
 }
 
-function structural(directory: string, inventory: Inventory): { outcome: Outcome; mismatches: string[] } {
+function structural(directory: string, record: MaterializationRecord): { outcome: Outcome; mismatches: string[] } {
   const mismatches: string[] = [];
-  for (const file of inventory.files) {
+  for (const file of record.spec.files) {
     const path = join(directory, file.path);
     if (!existsSync(path)) mismatches.push(`${file.path}: missing`);
     else if (file.ownership === 'COMPILER_OWNED' && fileDigest(readFileSync(path)) !== file.digest) mismatches.push(`${file.path}: changed`);
   }
   return {
     outcome: mismatches.length === 0
-      ? { result: 'PASS', summary: `${inventory.files.length} files match the inventory.` }
-      : { result: 'FAIL', summary: `${mismatches.length} of ${inventory.files.length} files differ from the inventory: ${mismatches.join('; ')}` },
+      ? { result: 'PASS', summary: `${record.spec.files.length} files match materialization record revision ${record.metadata.revision}.` }
+      : { result: 'FAIL', summary: `${mismatches.length} of ${record.spec.files.length} files differ from materialization record revision ${record.metadata.revision}: ${mismatches.join('; ')}` },
     mismatches,
   };
 }
@@ -143,31 +146,40 @@ function addDays(instant: string, days: number): string {
   return new Date(Date.parse(instant) + days * 86_400_000).toISOString().replace(/\.\d{3}Z$/, 'Z');
 }
 
-function evidence(inventory: Inventory, definition: ContractRef, check: VerificationCheck, outcome: Outcome, options: VerifyOptions): EvidenceRecord {
+function evidence(materialization: MaterializationRecord, check: VerificationCheck, outcome: Outcome, options: VerifyOptions): EvidenceRecord {
+  const { system, subject, adapter } = materialization.spec;
+  const definition = subject.contract;
+  const component = subject.component;
   const actor = { type: 'CHECKER' as const, id: VERIFIER.id };
   return {
     apiVersion: CURRENT_API_VERSION,
     kind: 'EvidenceRecord',
     metadata: {
-      id: `${inventory.system}-${inventory.component}-${check.id}`,
+      id: `${system}-${component}-${check.id}`,
       revision: 1,
-      title: `${inventory.component} — ${check.id} (${inventory.adapter.id}@${inventory.adapter.version})`,
+      title: `${component} — ${check.id} (${adapter.id}@${adapter.version})`,
       status: 'VALID',
       provenance: { origin: 'CHECKER', actor, tool: { name: '@enistere/foundation-engine-materializer', version: VERIFIER.version } },
     },
     spec: {
-      system: inventory.system,
-      subject: { contract: definition, component: inventory.component },
+      system,
+      subject: { contract: definition, component },
       obligation: { id: check.id, statement: check.statement, source: definition },
-      checker: { id: `${inventory.adapter.id}.${check.id}`, version: inventory.adapter.version, mode: 'AUTOMATED' },
+      checker: { id: `${adapter.id}.${check.id}`, version: adapter.version, mode: 'AUTOMATED' },
       producedBy: actor,
       environment: { id: options.environment.id, kind: options.environment.kind, attributes: { level: check.level } },
       result: outcome.result,
       summary: outcome.summary,
       observedAt: options.observedAt,
       expiresAt: addDays(options.observedAt, 90),
-      inputs: [definition],
-      artifacts: [{ uri: `workspace:${inventory.component}/${INVENTORY_PATH}`, mediaType: 'application/json', digest: inventory.artifactPlan }],
+      inputs: [definition, pinnedRef(materialization)],
+      artifacts: [
+        {
+          uri: `workspace:${component}/${RECORDS_DIRECTORY}/materialization-record--${materialization.metadata.id}--r${materialization.metadata.revision}.json`,
+          mediaType: 'application/json',
+          digest: contractDigest(materialization),
+        },
+      ],
     },
   };
 }
@@ -178,28 +190,27 @@ export async function verifyWorkspace(workspace: string, host: ExtensionHost, op
   const found: Diagnostic[] = [];
   const records: EvidenceRecord[] = [];
   const components = readdirSync(root, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && existsSync(join(root, entry.name, INVENTORY_PATH)))
+    .filter((entry) => entry.isDirectory() && existsSync(join(root, entry.name, RECORDS_DIRECTORY)))
     .map((entry) => entry.name)
     .sort();
   for (const name of components) {
     const directory = join(root, name);
-    const inventory = JSON.parse(readFileSync(join(directory, INVENTORY_PATH), 'utf8')) as Inventory;
-    const parsed = parseRef(inventory.definition.ref);
-    if (!parsed) throw new Error(`inventory of '${name}' names an invalid definition reference`);
-    const definition: ContractRef = { ...parsed, digest: inventory.definition.digest };
-    const extension = host.get(inventory.adapter.id);
-    if (!extension || extension.manifest.version !== inventory.adapter.version) {
-      found.push(diagnostic('MATERIALIZE_ADAPTER_MISSING', `adapter '${inventory.adapter.id}@${inventory.adapter.version}' is not loaded: '${name}' cannot be verified`, { ...LAYER, details: { component: name } }));
+    const materialization = latestRecord(directory);
+    if (!materialization) continue;
+    const { adapter } = materialization.spec;
+    const extension = host.get(adapter.id);
+    if (!extension || extension.manifest.version !== adapter.version) {
+      found.push(diagnostic('MATERIALIZE_ADAPTER_MISSING', `adapter '${adapter.id}@${adapter.version}' is not loaded: '${name}' cannot be verified`, { ...LAYER, details: { component: name } }));
       continue;
     }
     let blocked = false;
     for (const check of extension.manifest.verification) {
       let outcome: Outcome;
       if (check.level === 'STRUCTURAL') {
-        const { outcome: structuralOutcome, mismatches } = structural(directory, inventory);
+        const { outcome: structuralOutcome, mismatches } = structural(directory, materialization);
         outcome = structuralOutcome;
         if (mismatches.length > 0) {
-          found.push(diagnostic('VERIFY_INVENTORY_MISMATCH', `'${name}' differs from its inventory`, { ...LAYER, ref: inventory.definition.ref, details: { component: name, mismatches } }));
+          found.push(diagnostic('VERIFY_INVENTORY_MISMATCH', `'${name}' differs from its materialization record`, { ...LAYER, ref: documentRef(materialization), details: { component: name, mismatches } }));
         }
       } else if (!options.toolchain) {
         continue;
@@ -212,7 +223,7 @@ export async function verifyWorkspace(workspace: string, host: ExtensionHost, op
         }
       }
       if (outcome.result !== 'PASS' && check.level === 'TOOLCHAIN') blocked = true;
-      const record = evidence(inventory, definition, check, outcome, options);
+      const record = evidence(materialization, check, outcome, options);
       const validation = validateContract(record);
       if (validation.diagnostics.some((item) => item.severity === 'error')) {
         throw new Error(`verifier produced an invalid EvidenceRecord: ${validation.diagnostics.map((item) => item.message).join('; ')}`);

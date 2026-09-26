@@ -15,7 +15,7 @@
  */
 
 import { diagnostic, type Diagnostic } from './primitives/diagnostics.ts';
-import type { Actor, ContractDocument, EvidenceRecordSpec } from './types.ts';
+import type { Actor, ContractDocument, EvidenceRecordSpec, MaterializationRecordSpec } from './types.ts';
 
 export type StateClass = 'AUTHORITATIVE' | 'DERIVED' | 'RECORD';
 
@@ -100,7 +100,27 @@ function verifyActor(actor: Actor, mode: string, path: string, ref: string): Dia
   return [];
 }
 
+/** COMPILE_APPLY: a materialization is recorded by the compiler only. */
+function applyActor(actor: Actor, path: string, ref: string): Diagnostic[] {
+  if (actor.type === 'AI_AGENT') return [diagnostic('AUTHORITY_AI_CANNOT_APPLY', `AI agent '${actor.id}' cannot exercise COMPILE_APPLY`, { ref, path })];
+  if (actor.type !== 'COMPILER') return [diagnostic('AUTHORITY_ACTOR_CANNOT_APPLY', `a materialization is recorded by the COMPILER, not ${actor.type} '${actor.id}'`, { ref, path })];
+  return [];
+}
+
 function record(document: ContractDocument, ref: string): Diagnostic[] {
+  if (document.kind === 'MaterializationRecord') {
+    const found = [
+      ...applyActor((document.spec as MaterializationRecordSpec).producedBy, '/spec/producedBy', ref),
+      ...applyActor(document.metadata.provenance.actor, '/metadata/provenance/actor', ref),
+    ];
+    if (document.metadata.provenance.origin !== 'COMPILER') {
+      found.push(diagnostic('AUTHORITY_ACTOR_CANNOT_APPLY', `a materialization record originates from the COMPILER, not ${document.metadata.provenance.origin}`, { ref, path: '/metadata/provenance/origin' }));
+    }
+    if (document.metadata.acceptance) {
+      found.push(diagnostic('AUTHORITY_ACCEPTANCE_INCONSISTENT', 'a materialization record is applied, never accepted', { ref, path: '/metadata/acceptance' }));
+    }
+    return found;
+  }
   const spec = document.spec as EvidenceRecordSpec;
   const found = verifyActor(spec.producedBy, spec.checker.mode, '/spec/producedBy', ref);
   found.push(...verifyActor(document.metadata.provenance.actor, spec.checker.mode, '/metadata/provenance/actor', ref));

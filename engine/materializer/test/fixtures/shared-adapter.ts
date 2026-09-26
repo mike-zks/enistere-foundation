@@ -1,12 +1,12 @@
 /** Test adapter: realizes `api-service` components with a tiny Node HTTP server (no dependency, no network). */
 import type { RuntimeAdapter } from '@enistere/foundation-kernel-extensions';
 
-export function makeAdapter(options: { id: string; version: string; runExit: number; describeAs?: string }): RuntimeAdapter {
+export function makeAdapter(options: { id: string; version: string; runExit: number; describeAs?: string; readmeNote?: string }): RuntimeAdapter {
   return {
     describe: () => ({ id: options.describeAs ?? options.id, version: options.version }),
     validateIntent: (component) => (component.kind === 'api-service' ? [] : [`kind ${component.kind} unsupported`]),
     plan: (component, context) => [
-      { path: 'README.md', content: `# ${component.id}\n\nSystem ${context.system}, from ${context.definition}.\n`, ownership: 'COMPILER_OWNED' },
+      { path: 'README.md', content: `# ${component.id}\n\nSystem ${context.system}, from ${context.definition}.\n${options.readmeNote ?? ''}`, ownership: 'COMPILER_OWNED' },
       {
         path: 'server.mjs',
         content: [

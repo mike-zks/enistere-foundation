@@ -15,6 +15,7 @@ export const CONTRACT_KINDS = [
   'DomainContract',
   'ChangeRequest',
   'EvidenceRecord',
+  'MaterializationRecord',
 ] as const;
 
 export type ContractKind = (typeof CONTRACT_KINDS)[number];

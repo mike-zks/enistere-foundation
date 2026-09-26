@@ -6,5 +6,15 @@
  */
 
 export { loadExtensions, type ExtensionHost, type LoadedExtension } from './host.ts';
-export { INVENTORY_PATH, materialize, planMaterialization, type Inventory, type MaterializationRecord, type PlannedComponent } from './materialize.ts';
+export {
+  latestRecord,
+  materialize,
+  MATERIALIZER,
+  materializationRecord,
+  planMaterialization,
+  readRecords,
+  RECORDS_DIRECTORY,
+  type MaterializeOptions,
+  type PlannedComponent,
+} from './materialize.ts';
 export { ENVIRONMENT_ALLOWLIST, VERIFIER, verifyWorkspace, type VerifyOptions } from './verify.ts';

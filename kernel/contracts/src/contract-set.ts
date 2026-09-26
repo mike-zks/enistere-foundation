@@ -27,6 +27,7 @@ import type {
   DecisionSet,
   DomainContract,
   EvidenceRecord,
+  MaterializationRecord,
   RequirementBaseline,
   SystemDefinition,
 } from './types.ts';
@@ -194,6 +195,14 @@ function crossValidate(document: AnyContract, index: ContractIndex): Diagnostic[
             }),
           );
         }
+      }
+      break;
+    }
+    case 'MaterializationRecord': {
+      const record = document as MaterializationRecord;
+      const subject = expectKind(record.spec.subject.contract, 'SystemDefinition', '/spec/subject/contract', owner, index, found);
+      if (subject && subject.kind === 'SystemDefinition' && !subject.spec.components.some((component) => component.id === record.spec.subject.component)) {
+        found.push(diagnostic('REF_ITEM_UNRESOLVED', `unknown component '${record.spec.subject.component}'`, { ref: owner, path: '/spec/subject/component' }));
       }
       break;
     }

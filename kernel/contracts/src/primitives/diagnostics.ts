@@ -51,7 +51,7 @@ const spec = (failureClass: FailureClass, severity: Severity, remediation: strin
 export const DIAGNOSTIC_CODES = Object.freeze({
   // Envelope, schema and versioning.
   CONTRACT_NOT_AN_OBJECT: spec('INVALID_INPUT', 'error', 'Provide a JSON object with apiVersion, kind, metadata and spec.'),
-  CONTRACT_UNKNOWN_KIND: spec('UNSUPPORTED', 'error', 'Use one of the seven E0 contract kinds.'),
+  CONTRACT_UNKNOWN_KIND: spec('UNSUPPORTED', 'error', 'Use one of the eight contract kinds (A1–A8).'),
   CONTRACT_UNSUPPORTED_API_VERSION: spec('UNSUPPORTED', 'error', 'Migrate the document with a registered migration; unknown versions are never read by fallback.'),
   CONTRACT_SCHEMA_VIOLATION: spec('INVALID_INPUT', 'error', 'Fix the document so that it satisfies the published JSON Schema.'),
   CONTRACT_NOT_CANONICAL_JSON: spec('INVALID_INPUT', 'error', 'Remove non-JSON values (undefined, non-finite numbers, class instances).'),
@@ -67,6 +67,8 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   AUTHORITY_SYSTEM_DECISION_WITHOUT_POLICY: spec('POLICY_DENIED', 'error', 'An automatic decision must reference the approval policy that allows it.'),
   AUTHORITY_AI_CANNOT_VERIFY: spec('POLICY_DENIED', 'error', 'Evidence must be produced by a checker or a human reviewer, never by an AI answer.'),
   AUTHORITY_ACTOR_CANNOT_VERIFY: spec('POLICY_DENIED', 'error', 'Only a checker or a human reviewer may exercise VERIFY.'),
+  AUTHORITY_AI_CANNOT_APPLY: spec('POLICY_DENIED', 'error', 'Only the compiler exercises COMPILE_APPLY; an AI agent may propose, never apply.'),
+  AUTHORITY_ACTOR_CANNOT_APPLY: spec('POLICY_DENIED', 'error', 'A materialization record is produced by the compiler (origin and actor COMPILER).'),
   AUTHORITY_DERIVED_NOT_COMPILED: spec('POLICY_DENIED', 'error', 'A derived contract is produced by the deterministic compiler, not edited by hand.'),
   // References between contracts.
   REF_UNRESOLVED: spec('INVALID_INPUT', 'error', 'Add the referenced revision to the contract set or fix the reference.'),
@@ -130,6 +132,10 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   EVIDENCE_SECRET_IN_URI: spec('POLICY_DENIED', 'error', 'Artifacts are referenced without credentials; secrets never enter Evidence.'),
   EVIDENCE_WAIVER_WITHOUT_FAILURE: spec('INVALID_INPUT', 'warning', 'A waiver only makes sense for a FAIL or INCONCLUSIVE result.'),
   EVIDENCE_STALE: spec('EVIDENCE_INCONCLUSIVE', 'warning', 'Re-run the checker against the current revision; the proof no longer describes it.'),
+  // A8 MaterializationRecord.
+  MATERIALIZATION_UNSAFE_PATH: spec('INVALID_INPUT', 'error', 'Record only paths relative to the component directory, outside the reserved .foundation/ directory.'),
+  MATERIALIZATION_DUPLICATE_PATH: spec('INVALID_INPUT', 'error', 'Record each file once.'),
+  MATERIALIZATION_OUTCOME_INCONSISTENT: spec('INVALID_INPUT', 'error', 'Align the outcome with the decisions: a conflict writes nothing, an applied materialization has no conflict, a seeded file is never updated.'),
   // E1 Extension catalog (descriptors of runtime adapters and capability providers, as data).
   CATALOG_INVALID: spec('INVALID_INPUT', 'error', 'Provide a catalog object with runtimeAdapters and capabilityProviders arrays of well-formed descriptors.'),
   CATALOG_DUPLICATE_ID: spec('INVALID_INPUT', 'error', 'Give every catalog descriptor a unique id.'),
@@ -148,12 +154,18 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   ADAPTER_INTENT_REJECTED: spec('UNSUPPORTED', 'warning', 'The adapter cannot realize this component as declared; the component is not materialized.'),
   MATERIALIZE_ADAPTER_MISSING: spec('UNSUPPORTED', 'warning', 'The plan names an adapter that is not loaded; the component is not materialized.'),
   MATERIALIZE_CONFLICT: spec('MATERIALIZATION_CONFLICT', 'error', 'A compiler-owned file was changed outside the compiler: restore it or move the change into an owner-managed file; nothing was overwritten.'),
-  VERIFY_INVENTORY_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'The workspace no longer matches its materialization inventory: re-materialize or review the change.'),
+  VERIFY_INVENTORY_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'The workspace no longer matches its latest MaterializationRecord: re-materialize or review the change.'),
   VERIFY_TOOLCHAIN_UNAVAILABLE: spec('WORKER_ENV_FAILURE', 'error', 'Install the tools the adapter manifest requires, then verify again.'),
   // E3 Domain IR: domain intent the IR cannot realize.
   IR_OPERATION_UNIMPLEMENTED: spec('UNSUPPORTED', 'warning', 'Allocate the operation to a component (implements) or remove it from the Domain Contract.'),
   IR_EVENT_UNPUBLISHED: spec('UNSUPPORTED', 'warning', 'Let a component publish the event, directly or by implementing an operation that emits it.'),
   IR_FACET_NOT_INTERPRETED: spec('UNSUPPORTED', 'warning', 'Domain facets are carried but not interpreted before the domain projection (E5); review what they require.'),
+  // E4 Proof chain (self-contained bundle, replayed on verification).
+  PROOF_MALFORMED: spec('INVALID_INPUT', 'error', 'Provide a proof-chain bundle produced by the Foundation export.'),
+  PROOF_DIGEST_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'The bundle was altered after export: export it again from the trusted sources.'),
+  PROOF_REPLAY_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'Replaying the compilation gives other digests: the recorded compilation cannot be reproduced from the bundled contracts and catalog.'),
+  PROOF_RECORD_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'A current materialization record describes another compilation: re-materialize or export the matching bundle.'),
+  PROOF_EVIDENCE_UNLINKED: spec('VERIFICATION_FAILED', 'error', 'Evidence about a component must cite the materialization record it verified.'),
   // E1 Kernel Façade.
   FACADE_NO_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Provide an accepted System Definition in the contract set (or name an existing one).'),
   FACADE_AMBIGUOUS_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Name the System Definition to compile: several are in force.'),

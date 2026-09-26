@@ -1,5 +1,5 @@
 /**
- * The contract registry: one entry per E0 contract kind (A1–A7).
+ * The contract registry: one entry per contract kind (A1–A7 from E0, A8 from E4).
  *
  * Each entry states the Desired/Resolved/Observed class of the contract, its
  * schema, its intra-document semantic rules and the items a stable reference may
@@ -12,6 +12,7 @@ import { decisionSetItems, validateDecisionSet } from './contracts/decision-set.
 import { domainContractItems, validateDomainContract } from './contracts/domain-contract.ts';
 import { effectiveContextItems, validateEffectiveOrganizationContext } from './contracts/effective-organization-context.ts';
 import { evidenceRecordItems, validateEvidenceRecord } from './contracts/evidence-record.ts';
+import { materializationRecordItems, validateMaterializationRecord } from './contracts/materialization-record.ts';
 import { requirementBaselineItems, validateRequirementBaseline } from './contracts/requirement-baseline.ts';
 import { systemDefinitionItems, validateSystemDefinition } from './contracts/system-definition.ts';
 import type { Diagnostic } from './primitives/diagnostics.ts';
@@ -21,7 +22,7 @@ import type { AnyContract } from './types.ts';
 
 export interface KindDefinition {
   readonly kind: ContractKind;
-  readonly code: 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'A7';
+  readonly code: 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'A7' | 'A8';
   readonly stateClass: StateClass;
   /** Desired (authoritative intent), Derived (recomputable) or Record (append-only proof). */
   readonly plane: 'DESIRED' | 'DERIVED' | 'EVIDENCE';
@@ -122,5 +123,15 @@ export const CONTRACT_REGISTRY: Readonly<Record<ContractKind, KindDefinition>> =
     reliable: ['VALID'],
     validate: validateEvidenceRecord,
     items: evidenceRecordItems,
+  }),
+  MaterializationRecord: define({
+    kind: 'MaterializationRecord',
+    code: 'A8',
+    stateClass: 'RECORD',
+    plane: 'EVIDENCE',
+    inForce: ['VALID'],
+    reliable: ['VALID', 'SUPERSEDED'],
+    validate: validateMaterializationRecord,
+    items: materializationRecordItems,
   }),
 });

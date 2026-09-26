@@ -11,7 +11,7 @@
   "tools": [{ "name": "node", "version": ">=22" }],
   "determinism": "DETERMINISTIC",
   "verification": [
-    { "id": "structure", "level": "STRUCTURAL", "statement": "Files match the inventory." },
+    { "id": "structure", "level": "STRUCTURAL", "statement": "Files match the latest MaterializationRecord." },
     { "id": "run", "level": "TOOLCHAIN", "statement": "A command succeeds." },
     { "id": "probe", "level": "TOOLCHAIN", "statement": "The service answers GET /health with HTTP 200." }
   ],

@@ -8,7 +8,7 @@
  * | COMPILER_OWNED  | CREATE      | UPDATE (or UNCHANGED)      | CONFLICT — never written |
  * | OWNER_SEEDED    | CREATE      | KEEP — owner's from now on | KEEP                     |
  *
- * A file present without any inventory entry was not written by the
+ * A file present absent from the latest MaterializationRecord was not written by the
  * compiler: a compiler-owned artifact at that path is a conflict.
  */
 

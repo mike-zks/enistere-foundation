@@ -35,7 +35,7 @@
     {
       "id": "structure",
       "level": "STRUCTURAL",
-      "statement": "The component directory matches its materialization inventory: every compiler-owned file is present and unchanged."
+      "statement": "The component directory matches its latest MaterializationRecord: every compiler-owned file is present and unchanged."
     },
     {
       "id": "install",

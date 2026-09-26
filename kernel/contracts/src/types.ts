@@ -1,5 +1,5 @@
 /**
- * TypeScript view of the seven E0 contracts. The JSON Schemas under
+ * TypeScript view of the eight first-class contracts (A1–A7 from E0, A8 from E4). The JSON Schemas under
  * `schemas/v1alpha1/` are the language-neutral source of the shape; these types
  * are the reference implementation's reading of it and are only trusted after
  * `validateContract` has accepted a document.
@@ -325,6 +325,22 @@ export interface EvidenceRecordSpec {
 }
 export type EvidenceRecord = ContractDocument<'EvidenceRecord', EvidenceRecordSpec, 'VALID' | 'EXPIRED' | 'INVALIDATED'>;
 
+// ── A8 MaterializationRecord ──────────────────────────────────────────────
+export type WriteDecision = 'CREATE' | 'UPDATE' | 'UNCHANGED' | 'KEEP_OWNER' | 'CONFLICT';
+
+export interface MaterializationRecordSpec {
+  system: string;
+  subject: { contract: ContractRef; component: string };
+  closure: Digest;
+  plan: Digest;
+  adapter: { id: string; version: string };
+  producedBy: Actor;
+  outcome: 'APPLIED' | 'CONFLICT';
+  executedAt: string;
+  files: { path: string; ownership: 'COMPILER_OWNED' | 'OWNER_SEEDED'; digest: Digest; decision: WriteDecision }[];
+}
+export type MaterializationRecord = ContractDocument<'MaterializationRecord', MaterializationRecordSpec, 'VALID' | 'SUPERSEDED'>;
+
 export type AnyContract =
   | RequirementBaseline
   | DecisionSet
@@ -332,4 +348,5 @@ export type AnyContract =
   | SystemDefinition
   | DomainContract
   | ChangeRequest
-  | EvidenceRecord;
+  | EvidenceRecord
+  | MaterializationRecord;

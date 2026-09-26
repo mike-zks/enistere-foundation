@@ -25,3 +25,4 @@ ARB-08 et ARB-09 : [`ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
 ## Divergences documentaires signalées
 
 Tenues dans [`CONTEXT.md`](CONTEXT.md#divergences-documentaires-ouvertes) (D-1 à D-9).
+| 2026-09-26 | E4 : contrat A8 `MaterializationRecord` (RECORD, COMPILE_APPLY par le compilateur, jamais une IA) ; le dernier A8 du composant remplace l'inventaire local ; A7 de VERIFY cite l'A8 ; proof chain v1 en JSON auto-porteur vérifiée par rejeu de la compilation ; CLI `export`, `verify-bundle`. Baseline : huit contrats. | [ADR-098](docs/adr/ADR-098-materialization-record-and-proof-chain.md) | Accepté | Responsable du projet |

@@ -72,11 +72,11 @@ test('materialize then verify: PARTIAL (2), idempotent, structural PASS (0), con
     assert.equal(first.status, 2, first.stderr);
     const result = JSON.parse(first.stdout);
     assert.equal(result.status, 'PARTIAL');
-    assert.deepEqual(result.records.map((record: { component: string; status: string }) => [record.component, record.status]), [['authority-api', 'APPLIED']]);
+    assert.deepEqual(result.records.map((record: { spec: { subject: { component: string }; outcome: string } }) => [record.spec.subject.component, record.spec.outcome]), [['authority-api', 'APPLIED']]);
     assert.ok(result.unsupported.some((item: { capability: string | null }) => item.capability === 'authentication'), 'capabilities are listed, never dropped');
 
     const again = JSON.parse(cli('materialize', ...SET, '--extensions', EXTENSIONS, '--out', directory).stdout);
-    assert.ok(again.records[0].files.every((file: { decision: string }) => ['UNCHANGED', 'KEEP_OWNER'].includes(file.decision)));
+    assert.ok(again.records[0].spec.files.every((file: { decision: string }) => ['UNCHANGED', 'KEEP_OWNER'].includes(file.decision)));
 
     const verified = cli('verify', directory, '--extensions', EXTENSIONS);
     assert.equal(verified.status, 0, verified.stdout);
@@ -95,4 +95,29 @@ test('materialize and verify refuse incomplete invocations (exit 64)', () => {
   assert.equal(cli('materialize', ...SET, '--out', '/tmp/x').status, 64);
   assert.equal(cli('verify', '/tmp/a', '/tmp/b', '--extensions', EXTENSIONS).status, 64);
   assert.equal(cli('plan', ...SET, '--catalog', CATALOG, '--extensions', EXTENSIONS).status, 64);
+});
+
+test('export then verify-bundle: the proof chain is valid, and any alteration is detected', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'enistere-cli-proof-'));
+  try {
+    const workspace = join(directory, 'ws');
+    const evidence = join(directory, 'evidence');
+    const bundle = join(directory, 'bundle.json');
+    assert.equal(cli('materialize', ...SET, '--extensions', EXTENSIONS, '--out', workspace).status, 2);
+    assert.equal(cli('verify', workspace, '--extensions', EXTENSIONS, '--evidence-out', evidence).status, 0);
+    const exported = cli('export', ...SET, '--extensions', EXTENSIONS, '--workspace', workspace, '--evidence', evidence, '--out', bundle);
+    assert.equal(exported.status, 0, exported.stdout);
+    assert.equal(JSON.parse(exported.stdout).materializations, 1);
+    const verified = cli('verify-bundle', bundle);
+    assert.equal(verified.status, 0, verified.stdout);
+
+    const tampered = JSON.parse(readFileSync(bundle, 'utf8'));
+    tampered.compilation.plan = `sha256:${'0'.repeat(64)}`;
+    writeFileSync(bundle, JSON.stringify(tampered));
+    const refused = cli('verify-bundle', bundle);
+    assert.equal(refused.status, 1);
+    assert.ok(JSON.parse(refused.stdout).diagnostics.some((item: { code: string }) => item.code === 'PROOF_DIGEST_MISMATCH'));
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
