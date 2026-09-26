@@ -4,21 +4,23 @@
 
 ## Mission active
 
-**Aucune.** E0 (PASS), R0-C, R0-D, E1 (ADR-095) et E2 — Adapter Protocol v0 (ADR-096) sont terminées ;
-rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
+**Aucune.** E0 à E3 (ADR-092 à ADR-097, avec R0-C et R0-D) sont terminées : les missions techniques de
+l'horizon R0 sont livrées ; rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## Prochaine mission unique
 
-### E3 — Domain IR et enrichissement de l'IR (horizon R0)
+### E4 — Ownership & Evidence Extraction (horizon V1)
 
-- **Objectif** : dériver du Domain Contract (A5) une représentation interne normalisée et déterministe
-  (types, opérations, événements, invariants, scénarios d'acceptance) et la relier à l'IR système :
-  opérations implémentées et consommées, événements publiés et souscrits, par composant.
-- **In scope** : `buildDomainIR` dans `kernel/compiler` (digest, indépendance à l'ordre) ; IR système
-  référençant le Domain IR ; UNSUPPORTED explicite pour ce que le Kernel ne sait pas encore représenter ;
-  Domain IR transmis aux adapters dans leur contexte, sans génération de code métier (E5) ; golden Asteria.
-- **Out of scope** : projection du domaine vers un runtime (E5), capabilities, Control Plane.
-- **Critères de PASS (document 06)** : IR déterministe ; unsupported explicite.
+- **Objectif** : rendre l'ownership et les preuves durables et exportables : un changement fait par
+  l'équipe propriétaire survit à toute re-matérialisation, et la chaîne de preuve (closure → plan →
+  matérialisation → EvidenceRecords) est exportable et vérifiable hors du dépôt.
+- **In scope** : MaterializationRecord comme record persistant et versionné ; inventaire d'ownership
+  consolidé par système ; export de la proof chain (digests liés, signature ultérieure) ; golden Asteria :
+  changement owner-managed préservé après une nouvelle version d'adapter.
+- **Out of scope** : Evidence Graph complet et proof profiles (V1+), Control Plane.
+- **Critères de PASS (document 06)** : owner change survit ; proof chain exportable.
+- **À trancher avant de lancer** : format d'export de la proof chain (JSON auto-porteur ou bundle
+  in-toto/SLSA) et place du record (nouveau contrat A8 ou extension d'A7).
 
 ## En attente de validation humaine
 

@@ -4,6 +4,14 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E3 — Domain IR — 2026-09-26
+
+- `buildDomainIR` : Domain IR dérivé du Domain Contract (types résolus, références épinglées, défauts
+  explicites, facets listées non interprétées) ([ADR-097](docs/adr/ADR-097-domain-ir.md)).
+- IR système : `domains`, `operationBindings`, `eventBindings`, `unsupported` ; plan : `unsupportedIntent`.
+- Codes `IR_OPERATION_UNIMPLEMENTED`, `IR_EVENT_UNPUBLISHED`, `IR_FACET_NOT_INTERPRETED`.
+- `AdapterContext.domains` (additif). Golden régénéré ; plans d'artefacts inchangés. Tests : 103.
+
 ### E2 — Adapter Protocol v0 — 2026-09-25
 
 - `kernel/extensions` : schéma de manifest v0, conversion en catalogue, contrat `RuntimeAdapter`,

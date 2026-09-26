@@ -21,10 +21,11 @@ Ajout libre ; suppression ou réécriture d'un ADR accepté = validation humaine
 | [ADR-094](ADR-094-clean-slate.md) | Repartir propre : suppression de l'itération précédente | Accepté |
 | [ADR-095](ADR-095-e1-kernel-facade.md) | E1 Kernel Façade : chaîne de compilation native, catalogue d'extensions en données | Accepté |
 | [ADR-096](ADR-096-adapter-protocol-v0.md) | Adapter Protocol v0 et premier adapter NestJS | Accepté |
+| [ADR-097](ADR-097-domain-ir.md) | Domain IR et liaison à l'IR système | Accepté |
 
 Les ADR 001–090 de l'itération précédente (sauf ADR-073) sont archivés dans
 [`archive/laboratory/adr/`](../archive/laboratory/adr/) : histoire, sans autorité (ADR-094). La
-numérotation continue à partir d'ADR-097.
+numérotation continue à partir d'ADR-098.
 
 ## Gabarit
 

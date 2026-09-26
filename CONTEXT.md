@@ -1,7 +1,7 @@
 # CONTEXT — Enistere Foundation
 
 > Reflet vivant du projet (document 05 §2E). Ne recopie pas les documents sources : il y renvoie.
-> Dernière mise à jour : 2026-09-25, fin de la mission E2 (Adapter Protocol v0, ADR-096).
+> Dernière mise à jour : 2026-09-26, fin de la mission E3 (Domain IR, ADR-097).
 
 ## Vision
 
@@ -48,7 +48,7 @@ transversal. Dans le dépôt :
 
 | Zone cible | Présent aujourd'hui |
 |---|---|
-| Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) ; [`kernel/compiler/`](kernel/compiler/README.md) — Kernel Façade et chaîne closure → IR → résolution → plan (E1) ; [`kernel/extensions/`](kernel/extensions/README.md) — Adapter Protocol v0 (E2) |
+| Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) ; [`kernel/compiler/`](kernel/compiler/README.md) — Kernel Façade et chaîne closure → IR (avec Domain IR, E3) → résolution → plan (E1) ; [`kernel/extensions/`](kernel/extensions/README.md) — Adapter Protocol v0 (E2) |
 | Engine | [`engine/materializer/`](engine/materializer/README.md) — hôte d'extensions, MATERIALIZE, VERIFY (E2) |
 | Extensions | [`extensions/runtimes/nestjs/`](extensions/runtimes/nestjs/README.md) — premier Runtime Adapter (E2) |
 | Surfaces | [`surfaces/cli/`](surfaces/cli/README.md) — CLI headless `enistere-foundation` (E1, E2) |
@@ -72,15 +72,15 @@ déployé à ce jour.
 
 Voir [`DECISIONS.md`](DECISIONS.md). Décisions de la reprise : ADR-091 (autorité du dossier), ADR-092 (E0
 Contract Foundation), ADR-093 (R0-C), ADR-094 (suppression de l'itération précédente, qui prévaut sur les passages
-du dossier supposant une couche de compatibilité) ADR-095 (E1, chaîne de compilation native) et ADR-096 (E2, Adapter Protocol v0).
+du dossier supposant une couche de compatibilité) ADR-095 (E1, chaîne de compilation native), ADR-096 (E2, Adapter Protocol v0) et ADR-097 (E3, Domain IR).
 
 ## Mission
 
 - **Missions terminées** : E0 — Contract Foundation (PASS, P1–P10 validés), R0-C — Repository
-  Realignment (ADR-093), R0-D — repartir propre (ADR-094) et E1 — Kernel Façade (ADR-095) et E2 — Adapter Protocol v0 (ADR-096). Résultats :
+  Realignment (ADR-093), R0-D — repartir propre (ADR-094) et E1 — Kernel Façade (ADR-095) E2 — Adapter Protocol v0 (ADR-096) et E3 — Domain IR (ADR-097). Résultats :
   [`CURRENT_STATE.md`](CURRENT_STATE.md).
 - **Périmètre retenu** : greenfield, modèle de contrats ; brownfield et lifecycle complet hors périmètre.
-- **Prochaine mission unique** : **E3 — Domain IR** ([`BACKLOG.md`](BACKLOG.md)).
+- **Prochaine mission unique** : **E4 — Ownership & Evidence Extraction** (horizon V1, [`BACKLOG.md`](BACKLOG.md)).
 
 ## Divergences documentaires ouvertes
 

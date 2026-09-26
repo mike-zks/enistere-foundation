@@ -2,7 +2,7 @@
 
 > Couverture **prouvée** (document 05 §2E). Un contrat ou une capacité n'est VERIFIED que si une preuve
 > adaptée existe (test automatisé, golden, conformance, audit) — jamais sur déclaration. Mise à jour :
-> 2026-09-25, fin de E2 (ADR-096 : Adapter Protocol v0 et premier adapter). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
+> 2026-09-26, fin de E3 (ADR-097 : Domain IR). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
 > CONFORMANT · VERIFIED (document 02 annexe B).
 
 ## Contrats E0 (A1–A7)
@@ -24,7 +24,8 @@
 | Élément | Zone | Implemented | Tested | Production-ready | Niveau | Evidence | Mission | Notes |
 |---|---|---|---|---|---|---|---|---|
 | System Closure | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `kernel/compiler/test/compiler.test.ts` (fermeture exacte, digest sensible à chaque entrée) | E1 | Pas encore de record d'exécution persistant (E4) |
-| System IR | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (normalisation, indépendance à l'ordre) ; `goldens/asteria/expected/compilation.json` | E1 | Pas de Domain IR (E3) |
+| System IR | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (normalisation, indépendance à l'ordre) ; `goldens/asteria/expected/compilation.json` | E1, E3 | Porte les Domain IR et les bindings ; intention non réalisée listée |
+| Domain IR | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `kernel/compiler/test/domain-ir.test.ts` (types résolus, références épinglées, ordre, facets, bindings, PARTIAL) ; `expected/compilation.json` | E3 | Facets non interprétées ; pas de projection vers un runtime (E5) |
 | Catalogue d'extensions (données) | Kernel | Oui | Oui | N/A | VERIFIED (tests) | `compiler.test.ts` (invalides, doublons, chevauchements refusés) | E1 | Descripteurs seulement ; manifests d'adapter en E2 |
 | Résolution (ResolvedSystem) | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` (catalogue vide → UNSUPPORTED, repli tracé, capability sans fournisseur) ; golden PARTIAL | E1 | Politiques d'organisation non appliquées (E6) ; compatibilité de versions (E2) |
 | ExecutionPlan | Kernel | Oui | Oui | N/A | VERIFIED (tests + golden) | `compiler.test.ts` ; `expected/compilation.json` | E1 | Aucun artefact de fichier ni écriture (E2) |
@@ -53,8 +54,8 @@ L'itération précédente (générateur, 7 starters, capabilities auth/rbac/file
 | CAP-02 Requirements Engineering | Knowledge & Decision / Control Plane | Partiel (contrat A1) | Oui (contrat) | Non | A1 | E0 → V1 | Pas de surface ni de workflow |
 | CAP-03 Architecture Intelligence & Decision Support | Knowledge & Decision / Control Plane | Partiel (contrat A2) | Oui (contrat) | Non | A2 | E0 → V1 | Pas d'évaluation de patterns |
 | CAP-04 Organization / Entity Governance | Knowledge & Decision / Control Plane, Kernel policy | Partiel (A3 dérivé) | Oui (contrat) | Non | A3 | E6, V2 | Entity Profiles/Policy Packs non modélisés |
-| CAP-05 System Definition | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A4 + closure + IR) | Oui | Non | A4, golden, `compiler.test.ts` | E0 → E3 | Pas de Domain IR |
-| CAP-06 Domain Contract & Business Semantics | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A5) | Oui | Non | A5, golden | E5 | Pas de projection vers un runtime |
+| CAP-05 System Definition | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A4 + closure + IR + bindings de domaine) | Oui | Non | A4, golden, `compiler.test.ts`, `domain-ir.test.ts` | E0 → E3 | Politiques d'organisation non appliquées (E6) |
+| CAP-06 Domain Contract & Business Semantics | Knowledge & Decision ↔ Compilation / Kernel | Partiel (contrat A5 + Domain IR) | Oui | Non | A5, golden, `domain-ir.test.ts` | E3 → E5 | Pas de projection vers un runtime ; facets non interprétées |
 | CAP-07 Runtime & Technology Ecosystem | System Compilation / Registry, Adapters | Partiel (Adapter Protocol v0, un adapter NestJS) | Oui | Non | `extensions.test.ts`, `adapter.test.ts`, job CI `adapters` | E2, E8 | Une seule famille de runtime ; substitution en E8 |
 | CAP-08 Platform Capabilities | System Compilation / Capability Adapters | Non | Non | Non | — | E2+ | À exprimer via manifests d'extension |
 | CAP-09 Design System & Experience Governance | Knowledge & Decision / Compilation | Non | Non | Non | — | E6 | `design-tokens.json` du doc 04 absent (CONTEXT D-5) |

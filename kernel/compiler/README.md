@@ -9,7 +9,8 @@ validate → System Closure → System IR → resolve (ResolvedSystem) → plan 
 | Module | Rôle |
 |---|---|
 | `closure.ts` | Fermeture transitive des références épinglées de la System Definition en vigueur (A1, A2, A3, A5), version du compiler et digest du catalogue ; exclut Change Requests et Evidence |
-| `ir.ts` | Représentation normalisée (triée, défauts explicites, items de domaine épinglés) ; indépendante de l'ordre d'écriture |
+| `ir.ts` | Représentation normalisée (triée, défauts explicites, items de domaine épinglés) ; indépendante de l'ordre d'écriture ; porte les Domain IR et les bindings opérations/événements ↔ composants ; liste l'intention non réalisée (E3) |
+| `domain-ir.ts` | Domain IR dérivé d'un Domain Contract : types résolus, références épinglées, facets conservées mais non interprétées (E3, [ADR-097](../../docs/adr/ADR-097-domain-ir.md)) |
 | `catalog.ts` | Catalogue d'extensions **en données** (adapters de runtime, fournisseurs de capabilities) ; refuse doublons et chevauchements |
 | `resolve.ts` | Préférences de runtime dans l'ordre déclaré ; repli tracé ; UNSUPPORTED explicite, jamais de fallback silencieux |
 | `plan.ts` | Plan agnostique, sans écriture : `MATERIALIZE`, `CONNECT_EXTERNAL`, `BIND_CAPABILITY`, `ownerWork`, obligations de preuve |
