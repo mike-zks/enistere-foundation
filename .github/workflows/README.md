@@ -7,7 +7,7 @@ secret GitHub, sans déploiement, sans registry ni publication. Déclenché sur 
 | Job (check requis) | Vérifie |
 |---|---|
 | `kernel` | `npm ci` · typecheck de tous les workspaces (`kernel/*`, `engine/*`, `extensions/runtimes/*`, `surfaces/*`, `goldens`) · tous les tests · golden Asteria régénéré à l'identique |
-| `adapters` | matérialisation du golden Asteria avec les extensions réelles (code 2 attendu : PARTIAL) · `verify --toolchain` : structure, install, build, démarrage + `/health`, audit · export de la proof chain puis `verify-bundle` (E4) · EvidenceRecords et proof chain en artefacts |
+| `adapters` | matérialisation du golden Asteria avec les extensions réelles (code 2 attendu : PARTIAL) · `verify --toolchain` : structure, install, build, démarrage + `/health`, contrat partagé (E5), audit · export de la proof chain puis `verify-bundle` (E4) · EvidenceRecords et proof chain en artefacts |
 | `secret-scan` | tests de `tools/quality/` · allowlist gitleaks justifiée et non expirée · gitleaks 8.30.1 (checksum vérifié) sur tout l'historique, sortie censurée |
 | `docs` | aucun lien interne mort dans la documentation vivante (`docs/archive/` exclu) |
 | `audit` | `npm audit --audit-level=high` |

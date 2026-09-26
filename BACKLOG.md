@@ -4,22 +4,24 @@
 
 ## Mission active
 
-**Aucune.** E0 à E4 (ADR-092 à ADR-098, avec R0-C et R0-D) sont terminées ; rapports dans
+**Aucune.** E0 à E5 (ADR-092 à ADR-099, avec R0-C et R0-D) sont terminées ; rapports dans
 [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## Prochaine mission unique
 
-### E5 — Domain Contract Projection (horizon V1)
+### E6 — Organization Context & Design bindings (horizon V1)
 
-- **Objectif** : projeter le Domain IR (E3) vers les runtimes par les adapters, sans confondre domaine et
-  capability : un même Domain Contract partagé par plusieurs composants produit des artefacts cohérents.
-- **In scope** : projection des types, opérations et événements du Domain IR par l'adapter NestJS
-  (contrat d'API, types, squelettes owner-seeded des opérations) ; traçabilité item de domaine →
-  artefact (A8) ; interprétation explicite ou UNSUPPORTED des facets ; golden Asteria.
-- **Out of scope** : second adapter (E8), contexte d'organisation et design (E6), impact Day-2 (E7).
-- **Critères de PASS (document 06)** : domaine distinct de capability ; contrat partagé.
-- **À trancher avant de lancer** : format de projection de l'API (OpenAPI généré ou types seuls) et
-  périmètre des invariants exécutables en E5.
+- **Objectif** : appliquer le contexte d'organisation effectif (A3 : Entity Profile, Policy Packs,
+  précédence, verrous, dérogations) à la compilation, et relier la gouvernance de design aux surfaces, sans
+  confondre thème et domaine.
+- **In scope** : évaluation des politiques d'A3 à la résolution et au plan (blocage explicite ou waiver
+  tracé) ; design bindings des surfaces (tokens, thème) distincts du contrat de domaine ; golden Asteria
+  (verrou refusant l'IdP du client, dérogation W-001 datée).
+- **Out of scope** : Day-2 change (E7), second adapter (E8), Workbench.
+- **Critères de PASS (document 06)** : theme ≠ domain ; une policy bloque ou produit un waiver.
+- **À trancher avant de lancer** : forme des règles de politique évaluables (langage de règles ou
+  prédicats déclaratifs fermés) et source des design tokens (D-5 : `design-tokens.json` et mockups
+  absents du dépôt).
 
 ## En attente de validation humaine
 

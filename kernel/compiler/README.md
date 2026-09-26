@@ -13,7 +13,9 @@ validate → System Closure → System IR → resolve (ResolvedSystem) → plan 
 | `domain-ir.ts` | Domain IR dérivé d'un Domain Contract : types résolus, références épinglées, facets conservées mais non interprétées (E3, [ADR-097](../../docs/adr/ADR-097-domain-ir.md)) |
 | `catalog.ts` | Catalogue d'extensions **en données** (adapters de runtime, fournisseurs de capabilities) ; refuse doublons et chevauchements |
 | `resolve.ts` | Préférences de runtime dans l'ordre déclaré ; repli tracé ; UNSUPPORTED explicite, jamais de fallback silencieux |
-| `plan.ts` | Plan agnostique, sans écriture : `MATERIALIZE`, `CONNECT_EXTERNAL`, `BIND_CAPABILITY`, `ownerWork`, obligations de preuve |
+| `api-contract.ts` | Projection du Domain IR en contrat OpenAPI 3.1 partagé, par domaine et fournisseur ; autorisation = intention de domaine ; indépendant du catalogue (E5, [ADR-099](../../docs/adr/ADR-099-domain-contract-projection.md)) |
+| `proof-chain.ts` | Export et vérification de la proof chain v1 par rejeu (E4, [ADR-098](../../docs/adr/ADR-098-materialization-record-and-proof-chain.md)) |
+| `plan.ts` | Plan agnostique, sans écriture : `MATERIALIZE`, `CONNECT_EXTERNAL`, `BIND_CAPABILITY`, `sharedContracts`, `ownerWork` (composants, opérations, invariants), obligations de preuve |
 | `facade.ts` | `createKernelFacade()` : `validate`, `resolve`, `plan` ; résultats JSON déterministes |
 
 Invariants prouvés par `test/compiler.test.ts` : un ensemble ou un catalogue invalide n'est jamais

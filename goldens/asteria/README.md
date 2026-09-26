@@ -36,18 +36,23 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
    éléments **UNSUPPORTED** listés (object store sans adapter, capability `notifications` sans
    fournisseur). Aucun adapter réel n'existe avant E2 : rien n'est matérialisé.
 7. Matérialisation (E2) : compilé contre les **extensions réelles** (`extensions/`), le système ne
-   planifie que l'Authority API, réalisée par l'adapter `nestjs@0.1.0` (10 fichiers, dont un point
+   planifie que l'Authority API, réalisée par l'adapter `nestjs` (E2 : 10 fichiers, dont un point
    d'extension owner-seeded) ; tout le reste — dont les capabilities authentication, authorization et
    files — est listé UNSUPPORTED. Le job CI `adapters` matérialise réellement ce plan, puis l'installe, le
    compile, le démarre (`/health` = 200) et l'audite.
 8. Domain IR (E3) : l'IR compilé porte le Domain IR de `asteria-service-requests@1` et lie ses 10
    opérations (toutes implémentées par l'Authority API) et ses 4 événements aux composants ; les facets
-   `offline-sync`, `scheduling` et `workflow` sont conservées mais listées non interprétées (avant E5).
+   `offline-sync`, `scheduling` et `workflow` sont conservées mais listées non interprétées.
 9. Proof chain (E4) : une première matérialisation de l'Authority API, en mémoire et à un instant injecté,
    produit un MaterializationRecord (A8) ; le bundle `foundation.enistere.com/proof-chain/v1` (6 contrats
    de la closure, catalogue, digests, A8) est vérifié par `verifyProofChain` : digest, ensemble fermé et
    rejeu de la compilation. Le job CI `adapters` exporte et vérifie le bundle réel, avec les
    EvidenceRecords toolchain.
+10. Projection du domaine (E5) : le Kernel projette `asteria-service-requests@1` en un contrat OpenAPI 3.1
+    `authority-api.service-requests` (10 opérations) ; le fournisseur et ses 4 consommateurs
+    (`requester-web`, `ops-web`, `field-mobile`, `async-worker`) citent le même digest, identique avec le
+    catalogue synthétique et les extensions réelles. L'adapter `nestjs@0.2.0` l'embarque, valide les entrées
+    et laisse 10 handlers owner-seeded (501) ; le job CI `adapters` exécute le check `contract`.
 
 ## Fichiers
 

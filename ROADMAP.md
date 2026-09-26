@@ -10,7 +10,7 @@
 | Horizon | Fenêtre cible | Preuve attendue | État |
 |---|---|---|---|
 | R0 | sept.–nov. 2026 | Nouveau Kernel / extension / System Definition ; golden Asteria préservé | **En cours** — E0, R0-C, R0-D, E1, E2 et E3 livrés : gates techniques de R0 franchis (voir `CURRENT_STATE.md`) |
-| V1 | déc. 2026–mai 2027 | Création gouvernée + premier changement contrôlé ; ≥ 2 stacks ; golden compétitif | **En cours** — E4 livré |
+| V1 | déc. 2026–mai 2027 | Création gouvernée + premier changement contrôlé ; ≥ 2 stacks ; golden compétitif | **En cours** — E4 et E5 livrés |
 | V2 | juin 2027–fév. 2028 | Réutilisation organisationnelle sur ≥ 3 systèmes | Non démarré |
 | V3 | mars 2028–fév. 2029 | Évolution, drift et brownfield | Non démarré |
 | V4 | mars 2029–fév. 2030 | Enterprise / souverain / écosystème | Non démarré |
@@ -27,8 +27,8 @@
 | E2 | R0 | Adapter Protocol v0 + premier adapter (écrit de zéro, ADR-094) ; manifests → catalogue (ADR-095) | Discovery/resolve/plan/materialize/verify par manifest ; aucune capability perdue | **Livré** (ADR-096 ; NestJS, Authority API, BOOTABLE) |
 | E3 | R0 | Domain IR et enrichissement de l'IR (pont de base livré par E1, ADR-095) | IR déterministe ; unsupported explicite | **Livré** (ADR-097) |
 | E4 | V1 | Ownership & Evidence extraction | Owner change survit ; proof chain exportable | **Livré** (ADR-098 ; A8, proof chain v1) |
-| E5 | V1 | Domain Contract projection | Domain distinct de capability ; contrat partagé | Prochaine mission |
-| E6 | V1 | Organization Context & Design bindings | Theme ≠ Domain ; policy bloque ou produit waiver | — |
+| E5 | V1 | Domain Contract projection | Domain distinct de capability ; contrat partagé | **Livré** (ADR-099 ; contrat OpenAPI partagé) |
+| E6 | V1 | Organization Context & Design bindings | Theme ≠ Domain ; policy bloque ou produit waiver | Prochaine mission |
 | E7 | V1 | Day-2 Change Intelligence | Impact/diff avant apply ; Evidence périmée visible | — |
 | E8 | V1 | Second Adapter substitution | Aucun `if framework` dans le Kernel | — |
 | E9 | V1 | Competitive golden run | CONTINUE / SIMPLIFY / REPOSITION / STOP | — |

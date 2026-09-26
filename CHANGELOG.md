@@ -4,6 +4,16 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E5 — Domain Contract Projection — 2026-09-26
+
+- `projectApiContracts` : contrat OpenAPI 3.1 par domaine et fournisseur, dérivé du Domain IR
+  ([ADR-099](docs/adr/ADR-099-domain-contract-projection.md)).
+- Plan : `sharedContracts`, `contracts` sur le step MATERIALIZE, `ownerWork` des opérations et
+  invariants ; `PlanResult.apiContracts` ; `AdapterContext.apiContracts` (additif).
+- Adapter NestJS 0.2.0 : contrat embarqué et servi, routes validées (Ajv), Problem Details, handlers
+  owner-seeded (501), check TOOLCHAIN `contract`.
+- Golden régénéré (contrat partagé par 5 composants). Tests : 129.
+
 ### E4 — Ownership & Evidence — 2026-09-26
 
 - Contrat A8 `MaterializationRecord` (schéma, registre, autorité COMPILE_APPLY, validation d'ensemble)
