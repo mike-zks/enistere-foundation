@@ -2,7 +2,7 @@
   "name": "enistere-foundation",
   "version": "0.0.0",
   "private": true,
-  "description": "Enistere Foundation — Software System Engineering Platform (Governed System Compiler, Evidence-Driven System Evolution Engine). Kernel contracts A1–A8 and the Asteria golden; the previous iteration was removed (ADR-094; last state at commit f2590a8).",
+  "description": "Enistere Foundation — Software System Engineering Platform (Governed System Compiler, Evidence-Driven System Evolution Engine). Kernel contracts A1–A9 and the Asteria golden; the previous iteration was removed (ADR-094; last state at commit f2590a8).",
   "license": "UNLICENSED",
   "workspaces": [
     "kernel/*",
@@ -17,7 +17,8 @@
     "golden:asteria:update": "node goldens/asteria/update.ts",
     "tools:test": "node --test tools/quality/*.test.mjs",
     "docs:links": "node tools/quality/docs-link-check.mjs",
-    "secrets:allowlist": "node tools/quality/secret-allowlist-check.mjs"
+    "secrets:allowlist": "node tools/quality/secret-allowlist-check.mjs",
+    "design:tokens": "node tools/quality/design-tokens-check.mjs"
   },
   "engines": {
     "node": ">=22.18"

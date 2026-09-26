@@ -21,7 +21,7 @@
       "kind": "EvidenceRecord",
       "id": "asteria-sd1-worker-extensibility",
       "revision": 1,
-      "digest": "sha256:6019125d8521f483f126fb3b1e6af1c2a89868e4374b749333660e7e0494f674"
+      "digest": "sha256:0c475aa5f2167b5a839095e915add47a39891410eced363ea84c40c3fd5c87d9"
     }
   },
   "spec": {
@@ -31,7 +31,7 @@
         "kind": "SystemDefinition",
         "id": "asteria",
         "revision": 1,
-        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+        "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
       },
       "component": "async-worker"
     },
@@ -74,6 +74,12 @@
         "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
       },
       {
+        "kind": "DesignSystem",
+        "id": "operator-design-system",
+        "revision": 1,
+        "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
+      },
+      {
         "kind": "DomainContract",
         "id": "asteria-service-requests",
         "revision": 1,
@@ -95,7 +101,7 @@
         "kind": "SystemDefinition",
         "id": "asteria",
         "revision": 1,
-        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+        "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
       }
     ],
     "artifacts": [],
@@ -105,7 +111,7 @@
         "kind": "ChangeRequest",
         "id": "asteria-cr-001",
         "revision": 1,
-        "digest": "sha256:96cb84e570627926fa80ace646281a76e031137fa096c8c233e060e17ce9edce"
+        "digest": "sha256:20d47149a0a38b1167468de794f8750f836a95c6eda20621331adb1557a97fd7"
       }
     }
   }

@@ -3,7 +3,7 @@
   "system": "asteria",
   "definition": {
     "ref": "SystemDefinition/asteria@2",
-    "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+    "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
   },
   "catalog": {
     "runtimeAdapters": [
@@ -19,10 +19,10 @@
     "capabilityProviders": []
   },
   "compilation": {
-    "closure": "sha256:1d876236955f90f89b1f5bb22ccb588e8e021565d220b75ef212c39d153fda05",
-    "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
-    "resolved": "sha256:a962e101e477a694c6af993b9b5ad2cf088620460ef1ccd5e03b04349b4d138d",
-    "plan": "sha256:002748b645e70e264e69c88617b2afcf589dc02b00e14df3abaf215ee3fc9f97"
+    "closure": "sha256:9d7763324af901876b426a5887ce3a65c3b2c4dc8fa4607f021d4eaada03db0b",
+    "ir": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b",
+    "resolved": "sha256:bdbe3d6ad4e0616213ffb5a7bdc92c6c5d2bf6d944f858258cd8d146ef520a53",
+    "plan": "sha256:68e536dea1545c0f6a7795ba08484226fc9961fde31cd4bd2b0646cf5c9d059f"
   },
   "contracts": [
     {
@@ -247,6 +247,179 @@
             ],
             "chosenOption": "OPT-SHARED-REALM",
             "rationale": "Complies with the production policy without exception."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "foundation.enistere.com/v1alpha1",
+      "kind": "DesignSystem",
+      "metadata": {
+        "id": "operator-design-system",
+        "revision": 1,
+        "title": "Operator design system",
+        "status": "ACCEPTED",
+        "owner": {
+          "team": "operator-design"
+        },
+        "provenance": {
+          "origin": "HUMAN",
+          "actor": {
+            "type": "HUMAN",
+            "id": "design-lead@operator.example",
+            "role": "design-lead"
+          }
+        },
+        "acceptance": {
+          "decision": "ACCEPTED",
+          "authority": "DECIDE",
+          "actor": {
+            "type": "HUMAN",
+            "id": "design-lead@operator.example",
+            "role": "design-lead"
+          },
+          "at": "2026-09-15T09:00:00Z"
+        }
+      },
+      "spec": {
+        "tokens": {
+          "color": {
+            "brand": {
+              "primary": {
+                "$type": "color",
+                "$value": "#0B3D5C"
+              },
+              "accent": {
+                "$type": "color",
+                "$value": "#1F7A8C"
+              }
+            },
+            "surface": {
+              "default": {
+                "$type": "color",
+                "$value": "#FFFFFF"
+              },
+              "subtle": {
+                "$type": "color",
+                "$value": "#F2F5F7"
+              }
+            },
+            "text": {
+              "primary": {
+                "$type": "color",
+                "$value": "#14212B"
+              },
+              "secondary": {
+                "$type": "color",
+                "$value": "#4A5A66"
+              },
+              "inverse": {
+                "$type": "color",
+                "$value": "#FFFFFF"
+              }
+            },
+            "status": {
+              "success": {
+                "$type": "color",
+                "$value": "#1E7B4F"
+              },
+              "warning": {
+                "$type": "color",
+                "$value": "#8A5A00"
+              },
+              "danger": {
+                "$type": "color",
+                "$value": "#B3261E"
+              }
+            },
+            "action": {
+              "primary": {
+                "$type": "color",
+                "$value": "{color.brand.primary}"
+              }
+            }
+          },
+          "space": {
+            "100": {
+              "$type": "dimension",
+              "$value": "8px"
+            },
+            "200": {
+              "$type": "dimension",
+              "$value": "16px"
+            },
+            "300": {
+              "$type": "dimension",
+              "$value": "24px"
+            }
+          },
+          "radius": {
+            "control": {
+              "$type": "dimension",
+              "$value": "6px"
+            }
+          },
+          "font": {
+            "family": {
+              "body": {
+                "$type": "fontFamily",
+                "$value": [
+                  "Inter",
+                  "Arial",
+                  "sans-serif"
+                ]
+              }
+            },
+            "weight": {
+              "regular": {
+                "$type": "fontWeight",
+                "$value": 400
+              },
+              "strong": {
+                "$type": "fontWeight",
+                "$value": 600
+              }
+            },
+            "size": {
+              "body": {
+                "$type": "dimension",
+                "$value": "16px"
+              }
+            }
+          },
+          "motion": {
+            "standard": {
+              "$type": "duration",
+              "$value": "200ms"
+            }
+          }
+        },
+        "accessibility": {
+          "standard": "WCAG-2.2",
+          "level": "AA"
+        },
+        "contexts": [
+          {
+            "id": "public-portal",
+            "title": "Public portal: welcoming, large touch targets.",
+            "overrides": {
+              "font.size.body": "18px"
+            }
+          },
+          {
+            "id": "back-office",
+            "title": "Back-office: dense work queues.",
+            "overrides": {
+              "space.200": "12px"
+            }
+          },
+          {
+            "id": "field",
+            "title": "Field: outdoor readability, high contrast.",
+            "overrides": {
+              "color.surface.default": "#FFFFFF",
+              "color.text.primary": "#000000"
+            }
           }
         ]
       }
@@ -1993,9 +2166,10 @@
             "experience": {
               "designContext": "public-portal",
               "designSystem": {
-                "type": "DesignSystem",
+                "kind": "DesignSystem",
                 "id": "operator-design-system",
-                "version": "1.0.0"
+                "revision": 1,
+                "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
               },
               "accessibilityProfile": "wcag-2-2-aa"
             },
@@ -2051,9 +2225,10 @@
             "experience": {
               "designContext": "back-office",
               "designSystem": {
-                "type": "DesignSystem",
+                "kind": "DesignSystem",
                 "id": "operator-design-system",
-                "version": "1.0.0"
+                "revision": 1,
+                "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
               }
             },
             "ownership": {
@@ -2109,9 +2284,10 @@
             "experience": {
               "designContext": "field",
               "designSystem": {
-                "type": "DesignSystem",
+                "kind": "DesignSystem",
                 "id": "operator-design-system",
-                "version": "1.0.0"
+                "revision": 1,
+                "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
               },
               "offline": true
             },
@@ -2316,7 +2492,7 @@
             "kind": "oidc-provider",
             "direction": "OUTBOUND",
             "purpose": "Authentication through the shared Enistere identity provider, realm asteria.",
-            "provider": "enistere-shared-keycloak"
+            "provider": "enistere-shared-oidc"
           },
           {
             "id": "smtp-relay",
@@ -2345,12 +2521,14 @@
           {
             "id": "staging",
             "kind": "STAGING",
-            "deploymentMode": "SELF_HOSTED"
+            "deploymentMode": "SELF_HOSTED",
+            "region": "eu-central"
           },
           {
             "id": "production",
             "kind": "PRODUCTION",
-            "deploymentMode": "SELF_HOSTED"
+            "deploymentMode": "SELF_HOSTED",
+            "region": "eu-west"
           }
         ]
       }
@@ -2409,7 +2587,7 @@
           "kind": "SystemDefinition",
           "id": "asteria",
           "revision": 1,
-          "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+          "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
         }
       },
       "spec": {
@@ -2488,9 +2666,10 @@
             "experience": {
               "designContext": "public-portal",
               "designSystem": {
-                "type": "DesignSystem",
+                "kind": "DesignSystem",
                 "id": "operator-design-system",
-                "version": "1.0.0"
+                "revision": 1,
+                "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
               },
               "accessibilityProfile": "wcag-2-2-aa"
             },
@@ -2546,9 +2725,10 @@
             "experience": {
               "designContext": "back-office",
               "designSystem": {
-                "type": "DesignSystem",
+                "kind": "DesignSystem",
                 "id": "operator-design-system",
-                "version": "1.0.0"
+                "revision": 1,
+                "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
               }
             },
             "ownership": {
@@ -2604,9 +2784,10 @@
             "experience": {
               "designContext": "field",
               "designSystem": {
-                "type": "DesignSystem",
+                "kind": "DesignSystem",
                 "id": "operator-design-system",
-                "version": "1.0.0"
+                "revision": 1,
+                "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
               },
               "offline": true
             },
@@ -2820,7 +3001,7 @@
             "kind": "oidc-provider",
             "direction": "OUTBOUND",
             "purpose": "Authentication through the shared Enistere identity provider, realm asteria.",
-            "provider": "enistere-shared-keycloak"
+            "provider": "enistere-shared-oidc"
           },
           {
             "id": "smtp-relay",
@@ -2849,12 +3030,14 @@
           {
             "id": "staging",
             "kind": "STAGING",
-            "deploymentMode": "SELF_HOSTED"
+            "deploymentMode": "SELF_HOSTED",
+            "region": "eu-central"
           },
           {
             "id": "production",
             "kind": "PRODUCTION",
-            "deploymentMode": "SELF_HOSTED"
+            "deploymentMode": "SELF_HOSTED",
+            "region": "eu-west"
           }
         ]
       }
@@ -2888,12 +3071,12 @@
             "kind": "SystemDefinition",
             "id": "asteria",
             "revision": 2,
-            "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+            "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
           },
           "component": "authority-api"
         },
-        "closure": "sha256:1d876236955f90f89b1f5bb22ccb588e8e021565d220b75ef212c39d153fda05",
-        "plan": "sha256:002748b645e70e264e69c88617b2afcf589dc02b00e14df3abaf215ee3fc9f97",
+        "closure": "sha256:9d7763324af901876b426a5887ce3a65c3b2c4dc8fa4607f021d4eaada03db0b",
+        "plan": "sha256:68e536dea1545c0f6a7795ba08484226fc9961fde31cd4bd2b0646cf5c9d059f",
         "adapter": {
           "id": "nestjs",
           "version": "0.2.0"
@@ -3036,5 +3219,5 @@
     }
   ],
   "evidence": [],
-  "digest": "sha256:1b5bd9fdd47464563d890366ea1b6dc761d8e8453ef04e78451ab9b9f7b7f424"
+  "digest": "sha256:20846608967229c1fc1465dd137b1e4c0b946e58313cf47421f507432af5de95"
 }

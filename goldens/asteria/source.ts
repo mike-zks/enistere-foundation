@@ -29,6 +29,7 @@ import {
   type ContextWaiver,
   type ContractRef,
   type DecisionSet,
+  type DesignSystem,
   type Digest,
   type DomainContract,
   type EffectiveOrganizationContext,
@@ -44,6 +45,7 @@ export const ACTORS = Object.freeze({
   productOwner: { type: 'HUMAN', id: 'product-owner@asteria.example', role: 'product-owner' },
   architect: { type: 'HUMAN', id: 'architect@asteria.example', role: 'architect' },
   platformAdmin: { type: 'HUMAN', id: 'platform-admin@operator.example', role: 'platform-admin' },
+  designLead: { type: 'HUMAN', id: 'design-lead@operator.example', role: 'design-lead' },
   intakeAssistant: { type: 'AI_AGENT', id: 'foundation-intake-assistant', role: 'analyst-assistant' },
   compiler: { type: 'COMPILER', id: 'foundation-kernel-contracts' },
 } satisfies Record<string, Actor>);
@@ -321,6 +323,54 @@ export function organizationContext(): EffectiveOrganizationContext {
   };
 }
 
+// ── A9 Design System ──────────────────────────────────────────────────────
+/**
+ * The operator's design system (synthetic): W3C Design Tokens, WCAG 2.2 AA,
+ * one design context per audience. Appearance only — no domain semantics.
+ */
+export function designSystem(): DesignSystem {
+  const color = (value: string) => ({ $type: 'color' as const, $value: value });
+  const dimension = (value: string) => ({ $type: 'dimension' as const, $value: value });
+  return {
+    apiVersion: CURRENT_API_VERSION,
+    kind: 'DesignSystem',
+    metadata: {
+      id: 'operator-design-system',
+      revision: 1,
+      title: 'Operator design system',
+      status: 'ACCEPTED',
+      owner: { team: 'operator-design' },
+      provenance: { origin: 'HUMAN', actor: ACTORS.designLead },
+      acceptance: { decision: 'ACCEPTED', authority: 'DECIDE', actor: ACTORS.designLead, at: '2026-09-15T09:00:00Z' },
+    },
+    spec: {
+      tokens: {
+        color: {
+          brand: { primary: color('#0B3D5C'), accent: color('#1F7A8C') },
+          surface: { default: color('#FFFFFF'), subtle: color('#F2F5F7') },
+          text: { primary: color('#14212B'), secondary: color('#4A5A66'), inverse: color('#FFFFFF') },
+          status: { success: color('#1E7B4F'), warning: color('#8A5A00'), danger: color('#B3261E') },
+          action: { primary: color('{color.brand.primary}') },
+        },
+        space: { '100': dimension('8px'), '200': dimension('16px'), '300': dimension('24px') },
+        radius: { control: dimension('6px') },
+        font: {
+          family: { body: { $type: 'fontFamily', $value: ['Inter', 'Arial', 'sans-serif'] } },
+          weight: { regular: { $type: 'fontWeight', $value: 400 }, strong: { $type: 'fontWeight', $value: 600 } },
+          size: { body: dimension('16px') },
+        },
+        motion: { standard: { $type: 'duration', $value: '200ms' } },
+      },
+      accessibility: { standard: 'WCAG-2.2', level: 'AA' },
+      contexts: [
+        { id: 'public-portal', title: 'Public portal: welcoming, large touch targets.', overrides: { 'font.size.body': '18px' } },
+        { id: 'back-office', title: 'Back-office: dense work queues.', overrides: { 'space.200': '12px' } },
+        { id: 'field', title: 'Field: outdoor readability, high contrast.', overrides: { 'color.surface.default': '#FFFFFF', 'color.text.primary': '#000000' } },
+      ],
+    },
+  };
+}
+
 // ── A5 Domain Contract ────────────────────────────────────────────────────
 export function domainContract(baseline: RequirementBaseline): DomainContract {
   const field = (name: string, type: string, required = true, sensitive?: boolean) =>
@@ -503,7 +553,7 @@ function components(revision: 1 | 2): Component[] {
       consumes: [{ component: 'authority-api', interaction: 'SYNC_REQUEST', operations: [op('upload-attachment'), op('submit-request'), op('list-my-requests')] }],
       platformCapabilities: [{ id: 'authentication' }, { id: 'files' }],
       runtime: { preferences: ['nextjs'] },
-      experience: { designContext: 'public-portal', designSystem: { type: 'DesignSystem', id: 'operator-design-system', version: '1.0.0' }, accessibilityProfile: 'wcag-2-2-aa' },
+      experience: { designContext: 'public-portal', designSystem: pinnedRef(designSystem()), accessibilityProfile: 'wcag-2-2-aa' },
       ownership: { class: 'SHARED_CONTROLLED', team: 'asteria-web' },
       environments: ENVIRONMENTS,
     },
@@ -514,7 +564,7 @@ function components(revision: 1 | 2): Component[] {
       consumes: [{ component: 'authority-api', interaction: 'SYNC_REQUEST', operations: [op('list-requests'), op('triage-request'), op('assign-request')] }],
       platformCapabilities: [{ id: 'authentication' }, { id: 'authorization' }],
       runtime: { preferences: ['angular'] },
-      experience: { designContext: 'back-office', designSystem: { type: 'DesignSystem', id: 'operator-design-system', version: '1.0.0' } },
+      experience: { designContext: 'back-office', designSystem: pinnedRef(designSystem()) },
       ownership: { class: 'SHARED_CONTROLLED', team: 'asteria-web' },
       environments: ENVIRONMENTS,
     },
@@ -525,7 +575,7 @@ function components(revision: 1 | 2): Component[] {
       consumes: [{ component: 'authority-api', interaction: 'SYNC_REQUEST', operations: [op('list-assignments'), op('record-intervention'), op('upload-attachment')] }],
       platformCapabilities: [{ id: 'authentication' }, { id: 'files' }],
       runtime: { preferences: ['flutter'] },
-      experience: { designContext: 'field', designSystem: { type: 'DesignSystem', id: 'operator-design-system', version: '1.0.0' }, offline: true },
+      experience: { designContext: 'field', designSystem: pinnedRef(designSystem()), offline: true },
       ownership: { class: 'SHARED_CONTROLLED', team: 'asteria-mobile' },
       environments: ENVIRONMENTS,
     },
@@ -600,15 +650,15 @@ export function systemDefinition(
       },
       components: components(revision),
       integrations: [
-        { id: 'enistere-oidc', kind: 'oidc-provider', direction: 'OUTBOUND', purpose: 'Authentication through the shared Enistere identity provider, realm asteria.', provider: 'enistere-shared-keycloak' },
+        { id: 'enistere-oidc', kind: 'oidc-provider', direction: 'OUTBOUND', purpose: 'Authentication through the shared Enistere identity provider, realm asteria.', provider: 'enistere-shared-oidc' },
         { id: 'smtp-relay', kind: 'email-delivery', direction: 'OUTBOUND', purpose: 'Requester notifications.' },
         { id: 'malware-scanner', kind: 'malware-analysis', direction: 'OUTBOUND', purpose: 'Analysis of uploaded attachments.' },
       ],
       environments: [
         { id: 'local', kind: 'LOCAL', deploymentMode: 'LOCAL' },
         { id: 'ci', kind: 'CI', deploymentMode: 'LOCAL' },
-        { id: 'staging', kind: 'STAGING', deploymentMode: 'SELF_HOSTED' },
-        { id: 'production', kind: 'PRODUCTION', deploymentMode: 'SELF_HOSTED' },
+        { id: 'staging', kind: 'STAGING', deploymentMode: 'SELF_HOSTED', region: 'eu-central' },
+        { id: 'production', kind: 'PRODUCTION', deploymentMode: 'SELF_HOSTED', region: 'eu-west' },
       ],
     },
   };

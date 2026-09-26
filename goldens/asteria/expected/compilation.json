@@ -9,18 +9,22 @@
   "system": "asteria",
   "definition": {
     "ref": "SystemDefinition/asteria@2",
-    "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+    "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
   },
   "closure": {
     "system": "asteria",
     "definition": {
       "ref": "SystemDefinition/asteria@2",
-      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+      "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
     },
     "entries": [
       {
         "ref": "DecisionSet/asteria-decisions@1",
         "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+      },
+      {
+        "ref": "DesignSystem/operator-design-system@1",
+        "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
       },
       {
         "ref": "DomainContract/asteria-service-requests@1",
@@ -42,7 +46,7 @@
     "catalog": {
       "digest": "sha256:29bd60e689985c51188db61f6c7d030d198635087b23e027af5c8a6e63f8c503"
     },
-    "digest": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad"
+    "digest": "sha256:aab268bd76d474311925f6a8482eeb704037c7bbace4fa19ccba366642fd46b0"
   },
   "ir": {
     "system": "asteria",
@@ -51,39 +55,46 @@
       {
         "id": "local",
         "kind": "LOCAL",
-        "deploymentMode": "LOCAL"
+        "deploymentMode": "LOCAL",
+        "region": null
       },
       {
         "id": "ci",
         "kind": "CI",
-        "deploymentMode": "LOCAL"
+        "deploymentMode": "LOCAL",
+        "region": null
       },
       {
         "id": "staging",
         "kind": "STAGING",
-        "deploymentMode": "SELF_HOSTED"
+        "deploymentMode": "SELF_HOSTED",
+        "region": "eu-central"
       },
       {
         "id": "production",
         "kind": "PRODUCTION",
-        "deploymentMode": "SELF_HOSTED"
+        "deploymentMode": "SELF_HOSTED",
+        "region": "eu-west"
       }
     ],
     "integrations": [
       {
         "id": "enistere-oidc",
         "kind": "oidc-provider",
-        "direction": "OUTBOUND"
+        "direction": "OUTBOUND",
+        "provider": "enistere-shared-oidc"
       },
       {
         "id": "malware-scanner",
         "kind": "malware-analysis",
-        "direction": "OUTBOUND"
+        "direction": "OUTBOUND",
+        "provider": null
       },
       {
         "id": "smtp-relay",
         "kind": "email-delivery",
-        "direction": "OUTBOUND"
+        "direction": "OUTBOUND",
+        "provider": null
       }
     ],
     "components": [
@@ -1811,6 +1822,305 @@
         "digest": "sha256:266fc209c60e29a5331a887f701de615c740053407514702896f0302e02c7bc7"
       }
     ],
+    "designBindings": [
+      {
+        "component": "field-mobile",
+        "designSystem": {
+          "ref": "DesignSystem/operator-design-system@1",
+          "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
+        },
+        "context": "field",
+        "accessibility": {
+          "standard": "WCAG-2.2",
+          "level": "AA"
+        },
+        "tokens": {
+          "color.action.primary": {
+            "type": "color",
+            "value": "#0B3D5C"
+          },
+          "color.brand.accent": {
+            "type": "color",
+            "value": "#1F7A8C"
+          },
+          "color.brand.primary": {
+            "type": "color",
+            "value": "#0B3D5C"
+          },
+          "color.status.danger": {
+            "type": "color",
+            "value": "#B3261E"
+          },
+          "color.status.success": {
+            "type": "color",
+            "value": "#1E7B4F"
+          },
+          "color.status.warning": {
+            "type": "color",
+            "value": "#8A5A00"
+          },
+          "color.surface.default": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "color.surface.subtle": {
+            "type": "color",
+            "value": "#F2F5F7"
+          },
+          "color.text.inverse": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "color.text.primary": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "color.text.secondary": {
+            "type": "color",
+            "value": "#4A5A66"
+          },
+          "font.family.body": {
+            "type": "fontFamily",
+            "value": [
+              "Inter",
+              "Arial",
+              "sans-serif"
+            ]
+          },
+          "font.size.body": {
+            "type": "dimension",
+            "value": "16px"
+          },
+          "font.weight.regular": {
+            "type": "fontWeight",
+            "value": 400
+          },
+          "font.weight.strong": {
+            "type": "fontWeight",
+            "value": 600
+          },
+          "motion.standard": {
+            "type": "duration",
+            "value": "200ms"
+          },
+          "radius.control": {
+            "type": "dimension",
+            "value": "6px"
+          },
+          "space.100": {
+            "type": "dimension",
+            "value": "8px"
+          },
+          "space.200": {
+            "type": "dimension",
+            "value": "16px"
+          },
+          "space.300": {
+            "type": "dimension",
+            "value": "24px"
+          }
+        },
+        "digest": "sha256:53036f31c74732ac9a57394114ff01745751b1de410fc8d4a1e8c9e504454db5"
+      },
+      {
+        "component": "ops-web",
+        "designSystem": {
+          "ref": "DesignSystem/operator-design-system@1",
+          "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
+        },
+        "context": "back-office",
+        "accessibility": {
+          "standard": "WCAG-2.2",
+          "level": "AA"
+        },
+        "tokens": {
+          "color.action.primary": {
+            "type": "color",
+            "value": "#0B3D5C"
+          },
+          "color.brand.accent": {
+            "type": "color",
+            "value": "#1F7A8C"
+          },
+          "color.brand.primary": {
+            "type": "color",
+            "value": "#0B3D5C"
+          },
+          "color.status.danger": {
+            "type": "color",
+            "value": "#B3261E"
+          },
+          "color.status.success": {
+            "type": "color",
+            "value": "#1E7B4F"
+          },
+          "color.status.warning": {
+            "type": "color",
+            "value": "#8A5A00"
+          },
+          "color.surface.default": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "color.surface.subtle": {
+            "type": "color",
+            "value": "#F2F5F7"
+          },
+          "color.text.inverse": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "color.text.primary": {
+            "type": "color",
+            "value": "#14212B"
+          },
+          "color.text.secondary": {
+            "type": "color",
+            "value": "#4A5A66"
+          },
+          "font.family.body": {
+            "type": "fontFamily",
+            "value": [
+              "Inter",
+              "Arial",
+              "sans-serif"
+            ]
+          },
+          "font.size.body": {
+            "type": "dimension",
+            "value": "16px"
+          },
+          "font.weight.regular": {
+            "type": "fontWeight",
+            "value": 400
+          },
+          "font.weight.strong": {
+            "type": "fontWeight",
+            "value": 600
+          },
+          "motion.standard": {
+            "type": "duration",
+            "value": "200ms"
+          },
+          "radius.control": {
+            "type": "dimension",
+            "value": "6px"
+          },
+          "space.100": {
+            "type": "dimension",
+            "value": "8px"
+          },
+          "space.200": {
+            "type": "dimension",
+            "value": "12px"
+          },
+          "space.300": {
+            "type": "dimension",
+            "value": "24px"
+          }
+        },
+        "digest": "sha256:b037ef341637a32015fd891cb012e5946d84630157b4663809a834301f87dd7f"
+      },
+      {
+        "component": "requester-web",
+        "designSystem": {
+          "ref": "DesignSystem/operator-design-system@1",
+          "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
+        },
+        "context": "public-portal",
+        "accessibility": {
+          "standard": "WCAG-2.2",
+          "level": "AA"
+        },
+        "tokens": {
+          "color.action.primary": {
+            "type": "color",
+            "value": "#0B3D5C"
+          },
+          "color.brand.accent": {
+            "type": "color",
+            "value": "#1F7A8C"
+          },
+          "color.brand.primary": {
+            "type": "color",
+            "value": "#0B3D5C"
+          },
+          "color.status.danger": {
+            "type": "color",
+            "value": "#B3261E"
+          },
+          "color.status.success": {
+            "type": "color",
+            "value": "#1E7B4F"
+          },
+          "color.status.warning": {
+            "type": "color",
+            "value": "#8A5A00"
+          },
+          "color.surface.default": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "color.surface.subtle": {
+            "type": "color",
+            "value": "#F2F5F7"
+          },
+          "color.text.inverse": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "color.text.primary": {
+            "type": "color",
+            "value": "#14212B"
+          },
+          "color.text.secondary": {
+            "type": "color",
+            "value": "#4A5A66"
+          },
+          "font.family.body": {
+            "type": "fontFamily",
+            "value": [
+              "Inter",
+              "Arial",
+              "sans-serif"
+            ]
+          },
+          "font.size.body": {
+            "type": "dimension",
+            "value": "18px"
+          },
+          "font.weight.regular": {
+            "type": "fontWeight",
+            "value": 400
+          },
+          "font.weight.strong": {
+            "type": "fontWeight",
+            "value": 600
+          },
+          "motion.standard": {
+            "type": "duration",
+            "value": "200ms"
+          },
+          "radius.control": {
+            "type": "dimension",
+            "value": "6px"
+          },
+          "space.100": {
+            "type": "dimension",
+            "value": "8px"
+          },
+          "space.200": {
+            "type": "dimension",
+            "value": "16px"
+          },
+          "space.300": {
+            "type": "dimension",
+            "value": "24px"
+          }
+        },
+        "digest": "sha256:444d4e36837cc59accc0db0330e0b0ed14c4186461e0bbf3333955336bae240a"
+      }
+    ],
     "operationBindings": [
       {
         "item": "DomainContract/asteria-service-requests@1#assign-request",
@@ -1952,11 +2262,11 @@
         "code": "IR_FACET_NOT_INTERPRETED"
       }
     ],
-    "digest": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51"
+    "digest": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b"
   },
   "resolved": {
     "system": "asteria",
-    "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
+    "ir": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b",
     "catalog": "sha256:29bd60e689985c51188db61f6c7d030d198635087b23e027af5c8a6e63f8c503",
     "components": [
       {
@@ -2128,9 +2438,232 @@
         "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
       }
     ],
-    "digest": "sha256:2e9340c8f476fdd4e7d2598001090ee28cbc2ef47d5ee63fd9db3bdc27ec34bd"
+    "digest": "sha256:52040e28acecc2113126fbe41dcb9e491b6c3bb9f7cf4f8cb98dfb80230b6b9d"
+  },
+  "policy": {
+    "context": "EffectiveOrganizationContext/asteria-context@1",
+    "evaluations": [
+      {
+        "rule": "ai.decide.allowed",
+        "category": "AI",
+        "expected": false,
+        "subject": null,
+        "outcome": "NOT_EVALUATED",
+        "actual": null,
+        "waiver": null,
+        "reason": "the compiler does not interpret this rule"
+      },
+      {
+        "rule": "data.residency",
+        "category": "DATA",
+        "expected": [
+          "eu-west",
+          "eu-central"
+        ],
+        "subject": "ci",
+        "outcome": "NOT_APPLICABLE",
+        "actual": null,
+        "waiver": null,
+        "reason": "the environment declares no region"
+      },
+      {
+        "rule": "data.residency",
+        "category": "DATA",
+        "expected": [
+          "eu-west",
+          "eu-central"
+        ],
+        "subject": "local",
+        "outcome": "NOT_APPLICABLE",
+        "actual": null,
+        "waiver": null,
+        "reason": "the environment declares no region"
+      },
+      {
+        "rule": "data.residency",
+        "category": "DATA",
+        "expected": [
+          "eu-west",
+          "eu-central"
+        ],
+        "subject": "production",
+        "outcome": "SATISFIED",
+        "actual": "eu-west",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "data.residency",
+        "category": "DATA",
+        "expected": [
+          "eu-west",
+          "eu-central"
+        ],
+        "subject": "staging",
+        "outcome": "WAIVED",
+        "actual": "eu-central",
+        "waiver": {
+          "id": "W-001",
+          "expiresAt": "2027-03-31T23:59:59Z"
+        },
+        "reason": "Object storage replica in eu-central during the hosting migration window."
+      },
+      {
+        "rule": "deployment.image.reference",
+        "category": "DEPLOYMENT",
+        "expected": "digest",
+        "subject": null,
+        "outcome": "NOT_EVALUATED",
+        "actual": null,
+        "waiver": null,
+        "reason": "the compiler does not interpret this rule"
+      },
+      {
+        "rule": "evidence.retention.days",
+        "category": "EVIDENCE",
+        "expected": 730,
+        "subject": null,
+        "outcome": "NOT_EVALUATED",
+        "actual": null,
+        "waiver": null,
+        "reason": "the compiler does not interpret this rule"
+      },
+      {
+        "rule": "quality.accessibility.level",
+        "category": "QUALITY",
+        "expected": "WCAG-2.2-AA",
+        "subject": "field-mobile",
+        "outcome": "SATISFIED",
+        "actual": "WCAG-2.2-AA",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "quality.accessibility.level",
+        "category": "QUALITY",
+        "expected": "WCAG-2.2-AA",
+        "subject": "ops-web",
+        "outcome": "SATISFIED",
+        "actual": "WCAG-2.2-AA",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "quality.accessibility.level",
+        "category": "QUALITY",
+        "expected": "WCAG-2.2-AA",
+        "subject": "requester-web",
+        "outcome": "SATISFIED",
+        "actual": "WCAG-2.2-AA",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "runtime.api.allowed",
+        "category": "RUNTIME",
+        "expected": [
+          "nestjs",
+          "spring",
+          "fastapi"
+        ],
+        "subject": "authority-api",
+        "outcome": "SATISFIED",
+        "actual": "nestjs",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "runtime.mobile.allowed",
+        "category": "RUNTIME",
+        "expected": [
+          "react-native",
+          "flutter"
+        ],
+        "subject": "field-mobile",
+        "outcome": "SATISFIED",
+        "actual": "flutter",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "runtime.web.allowed",
+        "category": "RUNTIME",
+        "expected": [
+          "nextjs",
+          "angular"
+        ],
+        "subject": "ops-web",
+        "outcome": "SATISFIED",
+        "actual": "angular",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "runtime.web.allowed",
+        "category": "RUNTIME",
+        "expected": [
+          "nextjs",
+          "angular"
+        ],
+        "subject": "requester-web",
+        "outcome": "SATISFIED",
+        "actual": "nextjs",
+        "waiver": null,
+        "reason": null
+      },
+      {
+        "rule": "security.identity.provider",
+        "category": "SECURITY",
+        "expected": "enistere-shared-oidc",
+        "subject": "enistere-oidc",
+        "outcome": "SATISFIED",
+        "actual": "enistere-shared-oidc",
+        "waiver": null,
+        "reason": null
+      }
+    ],
+    "digest": "sha256:421a36d1ce9ddcee4c1aa72a29fc46fae41ef4995893d876f7aaeab8dd44e218"
   },
   "diagnostics": [
+    {
+      "code": "POLICY_NOT_EVALUATED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "rule 'ai.decide.allowed' is not evaluated by the compiler",
+      "remediation": "The compiler does not interpret this rule: prove it by another check or review it.",
+      "retryable": false,
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "details": {
+        "rule": "ai.decide.allowed"
+      }
+    },
+    {
+      "code": "POLICY_NOT_EVALUATED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "rule 'deployment.image.reference' is not evaluated by the compiler",
+      "remediation": "The compiler does not interpret this rule: prove it by another check or review it.",
+      "retryable": false,
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "details": {
+        "rule": "deployment.image.reference"
+      }
+    },
+    {
+      "code": "POLICY_NOT_EVALUATED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "rule 'evidence.retention.days' is not evaluated by the compiler",
+      "remediation": "The compiler does not interpret this rule: prove it by another check or review it.",
+      "retryable": false,
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "details": {
+        "rule": "evidence.retention.days"
+      }
+    },
     {
       "code": "IR_FACET_NOT_INTERPRETED",
       "class": "UNSUPPORTED",
@@ -3552,9 +4085,9 @@
   "plan": {
     "system": "asteria",
     "inputs": {
-      "closure": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad",
-      "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
-      "resolved": "sha256:2e9340c8f476fdd4e7d2598001090ee28cbc2ef47d5ee63fd9db3bdc27ec34bd"
+      "closure": "sha256:aab268bd76d474311925f6a8482eeb704037c7bbace4fa19ccba366642fd46b0",
+      "ir": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b",
+      "resolved": "sha256:52040e28acecc2113126fbe41dcb9e491b6c3bb9f7cf4f8cb98dfb80230b6b9d"
     },
     "steps": [
       {
@@ -3783,6 +4316,210 @@
         "digest": "sha256:b4c871aa87cdedf0daac31e33e0609a9bd337b87e49a0be3bbaf8fb38c267881"
       }
     ],
+    "designBindings": [
+      {
+        "component": "field-mobile",
+        "designSystem": "DesignSystem/operator-design-system@1",
+        "context": "field",
+        "digest": "sha256:53036f31c74732ac9a57394114ff01745751b1de410fc8d4a1e8c9e504454db5"
+      },
+      {
+        "component": "ops-web",
+        "designSystem": "DesignSystem/operator-design-system@1",
+        "context": "back-office",
+        "digest": "sha256:b037ef341637a32015fd891cb012e5946d84630157b4663809a834301f87dd7f"
+      },
+      {
+        "component": "requester-web",
+        "designSystem": "DesignSystem/operator-design-system@1",
+        "context": "public-portal",
+        "digest": "sha256:444d4e36837cc59accc0db0330e0b0ed14c4186461e0bbf3333955336bae240a"
+      }
+    ],
+    "policy": {
+      "context": "EffectiveOrganizationContext/asteria-context@1",
+      "evaluations": [
+        {
+          "rule": "ai.decide.allowed",
+          "category": "AI",
+          "expected": false,
+          "subject": null,
+          "outcome": "NOT_EVALUATED",
+          "actual": null,
+          "waiver": null,
+          "reason": "the compiler does not interpret this rule"
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "ci",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "the environment declares no region"
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "local",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "the environment declares no region"
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "production",
+          "outcome": "SATISFIED",
+          "actual": "eu-west",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "staging",
+          "outcome": "WAIVED",
+          "actual": "eu-central",
+          "waiver": {
+            "id": "W-001",
+            "expiresAt": "2027-03-31T23:59:59Z"
+          },
+          "reason": "Object storage replica in eu-central during the hosting migration window."
+        },
+        {
+          "rule": "deployment.image.reference",
+          "category": "DEPLOYMENT",
+          "expected": "digest",
+          "subject": null,
+          "outcome": "NOT_EVALUATED",
+          "actual": null,
+          "waiver": null,
+          "reason": "the compiler does not interpret this rule"
+        },
+        {
+          "rule": "evidence.retention.days",
+          "category": "EVIDENCE",
+          "expected": 730,
+          "subject": null,
+          "outcome": "NOT_EVALUATED",
+          "actual": null,
+          "waiver": null,
+          "reason": "the compiler does not interpret this rule"
+        },
+        {
+          "rule": "quality.accessibility.level",
+          "category": "QUALITY",
+          "expected": "WCAG-2.2-AA",
+          "subject": "field-mobile",
+          "outcome": "SATISFIED",
+          "actual": "WCAG-2.2-AA",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "quality.accessibility.level",
+          "category": "QUALITY",
+          "expected": "WCAG-2.2-AA",
+          "subject": "ops-web",
+          "outcome": "SATISFIED",
+          "actual": "WCAG-2.2-AA",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "quality.accessibility.level",
+          "category": "QUALITY",
+          "expected": "WCAG-2.2-AA",
+          "subject": "requester-web",
+          "outcome": "SATISFIED",
+          "actual": "WCAG-2.2-AA",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "runtime.api.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "nestjs",
+            "spring",
+            "fastapi"
+          ],
+          "subject": "authority-api",
+          "outcome": "SATISFIED",
+          "actual": "nestjs",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "runtime.mobile.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "react-native",
+            "flutter"
+          ],
+          "subject": "field-mobile",
+          "outcome": "SATISFIED",
+          "actual": "flutter",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "runtime.web.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "nextjs",
+            "angular"
+          ],
+          "subject": "ops-web",
+          "outcome": "SATISFIED",
+          "actual": "angular",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "runtime.web.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "nextjs",
+            "angular"
+          ],
+          "subject": "requester-web",
+          "outcome": "SATISFIED",
+          "actual": "nextjs",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "security.identity.provider",
+          "category": "SECURITY",
+          "expected": "enistere-shared-oidc",
+          "subject": "enistere-oidc",
+          "outcome": "SATISFIED",
+          "actual": "enistere-shared-oidc",
+          "waiver": null,
+          "reason": null
+        }
+      ],
+      "digest": "sha256:421a36d1ce9ddcee4c1aa72a29fc46fae41ef4995893d876f7aaeab8dd44e218"
+    },
     "ownerWork": [
       {
         "work": "COMPONENT",
@@ -3991,6 +4728,6 @@
         "requirement": "UX-001"
       }
     ],
-    "digest": "sha256:c886ef4c7504d25b6dcc19e7f1ddbf546b8cd694ffbd7921800efe3cdacbfeec"
+    "digest": "sha256:1d02023e323db766ccb0a752a61ee3f4ac0a56b2061c5603783956ba1792ed1b"
   }
 }

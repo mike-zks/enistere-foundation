@@ -17,7 +17,7 @@
  * ownership of every artifact and computes the digests.
  */
 
-import type { ApiContract, DomainIR, IRComponent } from '@enistere/foundation-kernel-compiler';
+import type { ApiContract, DesignBinding, DomainIR, IRComponent } from '@enistere/foundation-kernel-compiler';
 import { digestOf, fileDigest, isSafeArtifactPath, type Digest } from '@enistere/foundation-kernel-contracts';
 
 /** Ownership of a generated file (document 02 FR-OWN). */
@@ -48,6 +48,8 @@ export interface AdapterContext {
    * they are: it never projects the domain again.
    */
   apiContracts?: readonly ApiContract[];
+  /** Design bindings of the surfaces (E6, read-only; additive to protocol v0): resolved tokens by component. */
+  designBindings?: readonly DesignBinding[];
 }
 
 /** A command run without shell, in the component directory. */

@@ -21,7 +21,7 @@ test('the committed Asteria set is closed, pinned and valid with no warning', ()
   assert.deepEqual(validation.diagnostics, []);
   assert.equal(validation.valid, true);
   assert.equal(validation.system, 'asteria');
-  assert.equal(validation.entries.length, 17);
+  assert.equal(validation.entries.length, 18);
 });
 
 test('the set is closed under references: a missing revision is reported, never assumed', () => {
@@ -157,6 +157,9 @@ test('collectRefs finds every stable reference with its JSON Pointer', () => {
       '/metadata/provenance/derivedFrom/1',
       '/metadata/provenance/derivedFrom/2',
       '/metadata/supersedes',
+      '/spec/components/0/experience/designSystem',
+      '/spec/components/1/experience/designSystem',
+      '/spec/components/2/experience/designSystem',
       '/spec/inputs/decisionSet',
       '/spec/inputs/domainContracts/0',
       '/spec/inputs/organizationContext',

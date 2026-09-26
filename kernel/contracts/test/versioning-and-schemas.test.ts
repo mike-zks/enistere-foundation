@@ -27,13 +27,13 @@ test('one schema per contract kind, each with a stable $id, and nothing else in 
   }
 });
 
-test('the registry covers A1–A8 exactly once with Desired / Derived / Evidence planes', () => {
+test('the registry covers A1–A9 exactly once with Desired / Derived / Evidence planes', () => {
   const entries = Object.values(CONTRACT_REGISTRY);
-  assert.deepEqual(entries.map((entry) => entry.code).sort(), ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8']);
+  assert.deepEqual(entries.map((entry) => entry.code).sort(), ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']);
   assert.equal(CONTRACT_REGISTRY.EffectiveOrganizationContext.stateClass, 'DERIVED');
   assert.equal(CONTRACT_REGISTRY.EvidenceRecord.stateClass, 'RECORD');
   assert.equal(CONTRACT_REGISTRY.MaterializationRecord.stateClass, 'RECORD');
-  for (const kind of ['RequirementBaseline', 'DecisionSet', 'SystemDefinition', 'DomainContract', 'ChangeRequest'] as const) {
+  for (const kind of ['RequirementBaseline', 'DecisionSet', 'SystemDefinition', 'DomainContract', 'ChangeRequest', 'DesignSystem'] as const) {
     assert.equal(CONTRACT_REGISTRY[kind].stateClass, 'AUTHORITATIVE', kind);
   }
 });

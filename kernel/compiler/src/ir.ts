@@ -24,10 +24,12 @@ import {
   type Component,
   type ContractRef,
   type Digest,
+  type DesignSystem,
   type DomainContract,
   type SystemDefinition,
 } from '@enistere/foundation-kernel-contracts';
 
+import { buildDesignBindings, type DesignBinding } from './design.ts';
 import { buildDomainIR, type DomainIR } from './domain-ir.ts';
 
 export interface IRInteraction {
@@ -58,10 +60,12 @@ export interface IRComponent {
 export interface SystemIR {
   system: string;
   definition: string;
-  environments: { id: string; kind: string; deploymentMode: string }[];
-  integrations: { id: string; kind: string; direction: string }[];
+  environments: { id: string; kind: string; deploymentMode: string; region: string | null }[];
+  integrations: { id: string; kind: string; direction: string; provider: string | null }[];
   components: IRComponent[];
   domains: DomainIR[];
+  /** Surfaces bound to a pinned Design System (E6): appearance, independent from the domain. */
+  designBindings: DesignBinding[];
   operationBindings: { item: string; implementedBy: string[]; consumedBy: string[] }[];
   eventBindings: { item: string; publishedBy: string[]; subscribedBy: string[] }[];
   unsupported: { item: string; code: 'IR_OPERATION_UNIMPLEMENTED' | 'IR_EVENT_UNPUBLISHED' | 'IR_FACET_NOT_INTERPRETED' }[];
@@ -144,8 +148,8 @@ function bindings(components: readonly IRComponent[], domains: readonly DomainIR
  * `domainContracts` are the Domain Contracts of its closure; only the
  * revisions the definition pins are used.
  */
-export function buildSystemIR(definition: SystemDefinition, domainContracts: readonly DomainContract[] = []): SystemIR {
-  const environments = definition.spec.environments.map((environment) => ({ id: environment.id, kind: environment.kind, deploymentMode: environment.deploymentMode }));
+export function buildSystemIR(definition: SystemDefinition, domainContracts: readonly DomainContract[] = [], designSystems: readonly DesignSystem[] = []): SystemIR {
+  const environments = definition.spec.environments.map((environment) => ({ id: environment.id, kind: environment.kind, deploymentMode: environment.deploymentMode, region: environment.region ?? null }));
   const allEnvironments = environments.map((environment) => environment.id);
   const resolveItem = domainItemResolver(definition);
   const content = {
@@ -153,7 +157,7 @@ export function buildSystemIR(definition: SystemDefinition, domainContracts: rea
     definition: documentRef(definition),
     environments,
     integrations: definition.spec.integrations
-      .map((integration) => ({ id: integration.id, kind: integration.kind, direction: integration.direction }))
+      .map((integration) => ({ id: integration.id, kind: integration.kind, direction: integration.direction, provider: integration.provider ?? null }))
       .sort((a, b) => byText(a.id, b.id)),
     components: definition.spec.components
       .map((component) => normalizeComponent(component, allEnvironments, resolveItem))
@@ -164,6 +168,6 @@ export function buildSystemIR(definition: SystemDefinition, domainContracts: rea
     .filter((contract) => pinned.some((ref) => ref.id === contract.metadata.id && ref.revision === contract.metadata.revision))
     .map(buildDomainIR)
     .sort((a, b) => byText(a.contract.ref, b.contract.ref));
-  const withDomains = { ...content, domains, ...bindings(content.components, domains) };
+  const withDomains = { ...content, domains, designBindings: buildDesignBindings(definition, designSystems), ...bindings(content.components, domains) };
   return { ...withDomains, digest: digestOf(withDomains) };
 }
