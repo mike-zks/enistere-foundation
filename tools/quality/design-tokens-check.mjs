@@ -4,6 +4,10 @@
  * validates the Design Systems (A9) of the systems Foundation builds.
  *
  *   node tools/quality/design-tokens-check.mjs [file]
+ *
+ * Unlike the other checks of tools/quality, it needs the workspace dependencies (`npm ci`): it runs
+ * in the `kernel` CI job, not with `npm run tools:test`. Invalid tokens are covered by the kernel
+ * tests of `validateTokens`.
  */
 
 import { readFileSync } from 'node:fs';

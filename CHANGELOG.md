@@ -12,7 +12,7 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 - Contrat A9 `DesignSystem` (W3C Design Tokens) ; A4 : `designSystem` épinglé, `environments[].region`.
 - Design bindings (IR, plan, `AdapterContext.designBindings`) ; MATERIALIZE refuse un waiver expiré.
 - Golden régénéré (design system, régions, W-001) ; `docs/design/design-tokens.json` et
-  `npm run design:tokens` (job CI `kernel`). Codes `POLICY_*`, `DESIGN_*`. Tests : 142 (+ outillage 12).
+  `npm run design:tokens` (job CI `kernel`). Codes `POLICY_*`, `DESIGN_*`. Tests : 142.
 
 ### E5 — Domain Contract Projection — 2026-09-26
 

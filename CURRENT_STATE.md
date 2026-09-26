@@ -41,7 +41,7 @@ Aucun. Rappel : `adapters` doit figurer dans les checks requis de `protect-main`
 | `npm run foundation:test` | 142/142 PASS — compiler 39 (dont organisation/design 6), contracts 58 (dont A9 5), extensions 6, materializer 11, adapter 9, CLI 8, goldens 11 |
 | `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 22 fichiers, 0 diagnostic |
 | CLI `materialize` → `verify --toolchain` → `export` → `verify-bundle` | 2 (PARTIAL) → PASS → EXPORTED (7 contrats) → VALID |
-| `npm run tools:test` · `npm run design:tokens` · `npm run docs:links` · `npm audit --audit-level=high` · actionlint | 12/12 · OK · OK · 0 vulnérabilité · OK |
+| `npm run tools:test` · `npm run design:tokens` · `npm run docs:links` · `npm audit --audit-level=high` · actionlint | 10/10 · OK · OK · 0 vulnérabilité · OK |
 
 **NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture).
 
@@ -83,7 +83,7 @@ calculé (contrat ou résultat dérivé) et la granularité du diff.
 - **Fichiers touchés** : `kernel/contracts/{schemas/v1alpha1/{design-system,system-definition,common}.schema.json,src/**,test/**}` ;
   `kernel/compiler/src/{policy,design,ir,plan,facade,index}.ts`, `kernel/compiler/test/{organization-design,compiler}.test.ts` ;
   `kernel/extensions/src/adapter.ts` ; `engine/materializer/{src/materialize.ts,test/materializer.test.ts}` ;
-  `goldens/**` ; `docs/design/**` ; `tools/quality/design-tokens-check*.mjs` ; `package.json` ;
+  `goldens/**` ; `docs/design/**` ; `tools/quality/design-tokens-check.mjs` ; `package.json` ;
   `.github/workflows/ci.yml` ; documentation et gouvernance.
 - **Contrats impactés** : nouveau contrat A9 ; A4 (`designSystem` épinglé, `region`) ; `common.schema.json`.
 - **Migrations** : aucune (v1alpha1, aucune donnée hors du golden, ADR-094).
