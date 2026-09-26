@@ -4,6 +4,18 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E2 — Adapter Protocol v0 — 2026-09-25
+
+- `kernel/extensions` : schéma de manifest v0, conversion en catalogue, contrat `RuntimeAdapter`,
+  `planArtifacts`, règle d'ownership `decideWrite` ([ADR-096](docs/adr/ADR-096-adapter-protocol-v0.md)).
+- `engine/materializer` : hôte d'extensions, MATERIALIZE avec inventaire (conflits sans écriture), VERIFY
+  structurel et toolchain → EvidenceRecords.
+- `extensions/runtimes/nestjs` : premier adapter (NestJS 12, `/health`, Dockerfile non-root).
+- CLI : `materialize`, `verify`, `--extensions`. Golden : `expected/materialization.json` ; workspace
+  `goldens` ; test du sens des dépendances entre zones. CI : job `adapters` (BOOTABLE).
+- Registre de diagnostics : `MANIFEST_*`, `ADAPTER_*`, `MATERIALIZE_*`, `VERIFY_*` ; classes
+  `MATERIALIZATION_CONFLICT`, `WORKER_ENV_FAILURE`. Tests : 95.
+
 ### Document 03 v1.1 — 2026-09-25
 
 - Document 03 (Architecture technique) révisé en v1.1 par modifications suivies : le repository

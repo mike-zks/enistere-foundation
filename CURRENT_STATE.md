@@ -4,25 +4,28 @@
 
 | Champ | Valeur |
 |---|---|
-| Commit / branche | Base `83aa8e1` (`main`, fusion de la PR #254) ; travail sur `claude/e1-kernel-facade` |
+| Commit / branche | Base `c8a1628` (`main`, fusion de la PR #257) ; travail sur `claude/e2-adapter-protocol` |
 | Date | 2026-09-25 |
-| Mission | E1 — Kernel Façade (ADR-095), après E0, R0-C et R0-D |
-| Résultat | E1 **PASS** localement sur la gate redéfinie (voir *Tests*) ; CI de la PR à confirmer |
+| Mission | E2 — Adapter Protocol v0 et premier adapter NestJS (ADR-096) |
+| Résultat | E2 **PASS** localement sur la gate du document 06 (voir *Tests*) ; CI de la PR à confirmer |
 
 ## Completed
 
-- **Kernel contracts** `kernel/contracts` (E0) : sept contrats A1–A7, primitives partagées, ensemble
-  fermé ; registre unique de diagnostics étendu (`CATALOG_*`, `RESOLVE_*`, `FACADE_*` ; couches
-  `kernel.compiler`, `kernel.facade`).
-- **Kernel compiler** `kernel/compiler` (E1) : System Closure, System IR, catalogue d'extensions en
-  données, résolution (ResolvedSystem), ExecutionPlan agnostique (`MATERIALIZE`, `CONNECT_EXTERNAL`,
-  `BIND_CAPABILITY`, `ownerWork`, obligations de preuve) et façade `validate` / `resolve` / `plan`.
-- **CLI** `surfaces/cli` (`enistere-foundation`) : surface sans logique, codes 0 / 1 / 2 / 64.
-- **Golden Asteria** : 8 contrats, 9 EvidenceRecords ; compilé de bout en bout contre le catalogue
-  synthétique `sources/catalog.json` → `expected/compilation.json` : **PARTIAL**, 5 composants
-  matérialisés (dont l'Async Worker), `asteria-db` connecté (EXTERNAL), 2 éléments UNSUPPORTED listés
-  (`asteria-objects` sans adapter, capability `notifications` sans fournisseur), 16 obligations de preuve.
-- Missions antérieures : E0 (PASS), R0-C, R0-D — rapports ci-dessous.
+- **Kernel** : contrats A1–A7 (E0) ; compiler et façade (E1) ; `kernel/extensions` (E2) — manifest v0
+  validé par l'interpréteur de schémas du Kernel (`jsonSchemaDiagnostics`), conversion en catalogue E1,
+  contrat `RuntimeAdapter`, `planArtifacts`, règle d'ownership `decideWrite`.
+- **Engine** `engine/materializer` : hôte d'extensions (manifests, `TRUSTED_IN_PROCESS`), MATERIALIZE
+  avec inventaire et conflits sans écriture, VERIFY structurel et toolchain → EvidenceRecords A7.
+- **Extensions** `extensions/runtimes/nestjs` : premier adapter, écrit de zéro (NestJS 12 ESM,
+  `/health`, Dockerfile non-root, point d'extension owner-seeded).
+- **CLI** : `materialize`, `verify`, `--extensions`.
+- **Golden Asteria** : workspace `goldens` ; `expected/materialization.json` : l'Authority API est
+  réalisée par `nestjs@0.1.0` (10 fichiers) ; 9 éléments UNSUPPORTED listés, dont les capabilities
+  authentication, authorization et files de l'API (aucune perdue).
+- **CI** : job `adapters` (matérialisation réelle, install, build, `/health`, audit, EvidenceRecords en
+  artefact). Test du sens des dépendances entre zones (imports et `package.json`).
+- Documents 03 et 06 révisés en v1.1 (modifications suivies à accepter) ; missions antérieures E0, R0-C,
+  R0-D, E1 — rapports ci-dessous.
 
 ## In progress
 
@@ -30,46 +33,72 @@ Aucun.
 
 ## Blocked
 
-Aucun. Le tag `laboratory-final` est abandonné : le commit `f2590a8` reste atteignable comme ancêtre de
-`main` (ADR-094).
+Aucun. Action attendue : ajouter `adapters` aux checks requis de `protect-main`.
 
-## Tests (exécutés le 2026-09-25 sur `claude/e1-kernel-facade`)
+## Tests (exécutés le 2026-09-25 sur `claude/e2-adapter-protocol`)
 
 | Commande | Résultat |
 |---|---|
-| `npm ci` | OK |
-| `npm run foundation:typecheck` (3 workspaces + golden) | OK (0 erreur) |
-| `npm run foundation:test` | 74/74 PASS — contracts 56, compiler 13, CLI 5 |
-| `npm run golden:asteria:update` (deux exécutions) puis `git status --porcelain goldens/` | Aucun écart ; 19 fichiers, 0 diagnostic |
-| CLI `plan` sur le golden avec catalogue | Code 2 (PARTIAL), sortie octet pour octet égale à `expected/compilation.json` |
-| CLI `plan` sans catalogue · ensemble altéré · usage invalide | Code 2 (tout UNSUPPORTED) · code 1 (INVALID) · code 64 |
-| `npm run tools:test` | 10/10 PASS |
-| `npm run docs:links` | OK |
-| `npm audit --audit-level=high` | 0 vulnérabilité |
+| `npm ci` (lockfile mis à jour) | OK |
+| `npm run foundation:typecheck` (7 workspaces) | OK (0 erreur) |
+| `npm run foundation:test` | 95/95 PASS — contracts 48, compiler 13, extensions 6, materializer 8, adapter NestJS 5, CLI 7, goldens 8 |
+| `npm run golden:asteria:update` (deux exécutions) | Aucun écart ; 20 fichiers, 0 diagnostic |
+| Simulation locale du job `adapters` | `materialize` code 2 (PARTIAL attendu) ; `verify --toolchain` : structure, install, build, boot (`/health` = 200), audit → 5 PASS, 5 EvidenceRecords valides |
+| Deuxième `materialize` · fichier compiler-owned modifié | 0 écriture · code 3 (CONFLICT), rien d'écrasé |
+| `npm run tools:test` · `npm run docs:links` · `npm audit --audit-level=high` | OK · OK · 0 vulnérabilité |
 | actionlint 1.7.7 sur `ci.yml` | OK |
 
-**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture) ; gitleaks sur tout l'historique (fait par
-le job `secret-scan`).
+**NOT RUN** : CI GitHub de la PR (s'exécutera à l'ouverture) ; gitleaks sur tout l'historique (job
+`secret-scan`) ; construction de l'image Docker générée (aucun démon Docker dans la session).
 
 ## Known gaps
 
-- Aucun adapter réel ni matérialisation : le plan ne produit aucun fichier (E2).
-- Le contexte d'organisation effectif (A3) n'est pas appliqué à la résolution (runtimes autorisés,
-  politiques) : E6. Pas de compatibilité de versions entre extensions : E2.
-- Pas de Domain IR (E3) ; les items de domaine sont seulement épinglés dans l'IR.
-- Pas de record d'exécution persistant (closure, plan) ni d'Evidence de compilation : E4.
-- Aucun Control Plane, Workbench, Worker, Registry ni AI Gateway.
-- Documents 03 et 06 révisés en v1.1 (modifications suivies à accepter) ; divergences D-2 à D-5.
+- Pas de lockfile dans le projet généré (versions directes exactes, transitives résolues à
+  l'installation) ; image Docker non construite en CI.
+- Pas de signature ni provenance des extensions (TA-06) ; pas d'isolation process/conteneur (Workers).
+- Un seul runtime (NestJS, `api-service`) ; Async Worker, Web, Mobile et infrastructure UNSUPPORTED.
+- Pas de Domain IR (E3), de projection du domaine (E5), de capabilities (adapters de capability).
+- Pas de record d'exécution persistant ni d'Evidence Graph (E4) ; contexte d'organisation non appliqué (E6).
+- Aucun Control Plane, Workbench, Worker, Registry ni AI Gateway ; divergences D-2 à D-5.
 
 ## Decisions
 
-ADR-091, ADR-092, ADR-093, ADR-094, **ADR-095** (E1 : chaîne native, catalogue en données, gate
-redéfinie) — voir [`DECISIONS.md`](DECISIONS.md).
+ADR-091 à ADR-095, **ADR-096** (Adapter Protocol v0) — voir [`DECISIONS.md`](DECISIONS.md).
 
 ## Next single action
 
-**E2 — Adapter Protocol v0 et premier adapter** ([`BACKLOG.md`](BACKLOG.md)) ; choisir d'abord le runtime
-du premier adapter.
+**E3 — Domain IR** ([`BACKLOG.md`](BACKLOG.md)).
+
+---
+
+## Rapport de mission E2 — Adapter Protocol v0 (document 05 §11, Annexe A §16)
+
+- **Mission** : E2 — Adapter Protocol v0 et premier adapter.
+- **Date** : 2026-09-25.
+- **Branch / HEAD** : `claude/e2-adapter-protocol`, base `c8a1628`.
+- **Objectif** : prouver le protocole d'adapter du document 03 §6.10–6.11 avec un premier runtime écrit
+  de zéro, jusqu'à un service qui démarre.
+- **Scope** : `kernel/extensions`, `engine/materializer`, `extensions/runtimes/nestjs`, CLI, golden, CI.
+- **Out of scope** : Domain IR (E3), capabilities, second adapter (E8), Workers, signatures.
+- **État initial** : E1 mergée ; résolution contre un catalogue synthétique ; aucun adapter.
+- **Changements réalisés** : voir *Completed*.
+- **Fichiers touchés** : `kernel/extensions/**`, `engine/materializer/**`, `extensions/runtimes/nestjs/**`
+  (nouveaux) ; `kernel/contracts/src/{primitives/diagnostics.ts,schema-validation.ts,index.ts}` ;
+  `surfaces/cli/**` ; `goldens/**` (workspace, harness, test déplacé) ; `package.json`,
+  `package-lock.json` ; `.github/workflows/**` ; documentation et gouvernance.
+- **Contrats impactés** : aucun schéma A1–A7 modifié ; nouveau schéma `adapter-manifest.v0`.
+- **Migrations** : aucune.
+- **Tests exécutés / résultats** : voir *Tests*.
+- **Preuves** : `goldens/asteria/expected/materialization.json` ; EvidenceRecords du job `adapters` ;
+  tests des workspaces.
+- **Risques résiduels** : supply chain des extensions (pas de signature) ; reproductibilité transitive
+  (pas de lockfile) — voir *Known gaps*.
+- **Décisions** : ADR-096.
+- **Documentation** : README, CONTEXT, ROADMAP, BACKLOG, CURRENT_STATE, IMPLEMENTATION_MATRIX, DECISIONS,
+  CHANGELOG, registre ADR, runbook local, READMEs des packages, du golden et des workflows.
+- **Statut** : PASS (gate du document 06 : discovery/resolve/plan/materialize/verify par manifest ; aucune
+  capability perdue ; aucun framework dans le Kernel ni l'Engine) — localement.
+- **Prochaine action unique** : E3 — Domain IR.
 
 ---
 

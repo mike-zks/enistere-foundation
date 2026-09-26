@@ -15,9 +15,10 @@ export const DIAGNOSTIC_LAYER = 'kernel.contracts';
 
 /**
  * Layers allowed to emit diagnostics: the contract layer (default), the
- * compiler (closure, IR, catalog, resolution, plan) and the Kernel Façade.
+ * compiler (closure, IR, catalog, resolution, plan), the Kernel Façade, the
+ * extension protocol and the Engine materializer.
  */
-export const DIAGNOSTIC_LAYERS = ['kernel.contracts', 'kernel.compiler', 'kernel.facade'] as const;
+export const DIAGNOSTIC_LAYERS = ['kernel.contracts', 'kernel.compiler', 'kernel.facade', 'kernel.extensions', 'engine.materializer'] as const;
 export type DiagnosticLayer = (typeof DIAGNOSTIC_LAYERS)[number];
 
 /** Failure classes of document 03 §6.18 used by the contract layer. */
@@ -29,6 +30,9 @@ export const FAILURE_CLASSES = [
   'MIGRATION_REQUIRED',
   'VERIFICATION_FAILED',
   'EVIDENCE_INCONCLUSIVE',
+  'EXTENSION_FAILURE',
+  'MATERIALIZATION_CONFLICT',
+  'WORKER_ENV_FAILURE',
 ] as const;
 export type FailureClass = (typeof FAILURE_CLASSES)[number];
 
@@ -135,6 +139,17 @@ export const DIAGNOSTIC_CODES = Object.freeze({
   RESOLVE_NO_ADAPTER: spec('UNSUPPORTED', 'warning', 'Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.'),
   RESOLVE_PREFERENCE_FALLBACK: spec('UNSUPPORTED', 'warning', 'A preferred runtime has no adapter: a later preference was selected. Review the choice or add the missing adapter.'),
   RESOLVE_NO_CAPABILITY_PROVIDER: spec('UNSUPPORTED', 'warning', 'Add a provider of this platform capability for the selected runtime; the capability is not bound.'),
+  // E2 Adapter Protocol v0: manifests, adapters, materialization, verification.
+  MANIFEST_INVALID: spec('INVALID_INPUT', 'error', 'Fix the adapter manifest so that it satisfies the published adapter-manifest schema.'),
+  MANIFEST_DUPLICATE_ID: spec('INVALID_INPUT', 'error', 'Give every extension a unique id.'),
+  ADAPTER_UNSUPPORTED_EXECUTION_MODE: spec('UNSUPPORTED', 'warning', 'Only trusted in-process adapters run in v0; isolated, container and remote modes come with the Workers.'),
+  ADAPTER_LOAD_FAILED: spec('EXTENSION_FAILURE', 'error', 'The adapter module could not be loaded or does not implement the protocol: fix the extension.'),
+  ADAPTER_CONTRACT_VIOLATION: spec('EXTENSION_FAILURE', 'error', 'The adapter broke the protocol (identity, artifact path or content): fix the extension.'),
+  ADAPTER_INTENT_REJECTED: spec('UNSUPPORTED', 'warning', 'The adapter cannot realize this component as declared; the component is not materialized.'),
+  MATERIALIZE_ADAPTER_MISSING: spec('UNSUPPORTED', 'warning', 'The plan names an adapter that is not loaded; the component is not materialized.'),
+  MATERIALIZE_CONFLICT: spec('MATERIALIZATION_CONFLICT', 'error', 'A compiler-owned file was changed outside the compiler: restore it or move the change into an owner-managed file; nothing was overwritten.'),
+  VERIFY_INVENTORY_MISMATCH: spec('VERIFICATION_FAILED', 'error', 'The workspace no longer matches its materialization inventory: re-materialize or review the change.'),
+  VERIFY_TOOLCHAIN_UNAVAILABLE: spec('WORKER_ENV_FAILURE', 'error', 'Install the tools the adapter manifest requires, then verify again.'),
   // E1 Kernel Façade.
   FACADE_NO_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Provide an accepted System Definition in the contract set (or name an existing one).'),
   FACADE_AMBIGUOUS_SYSTEM_DEFINITION: spec('INVALID_INPUT', 'error', 'Name the System Definition to compile: several are in force.'),

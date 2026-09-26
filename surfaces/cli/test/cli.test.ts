@@ -60,5 +60,39 @@ test('usage errors exit 64 without running the façade', () => {
   assert.equal(cli('plan').status, 64);
   assert.equal(cli('plan', ...SET, '--catalog').status, 64);
   assert.equal(cli('plan', `${GOLDEN}does-not-exist`).status, 64);
-  assert.deepEqual(parseArguments(['plan', 'a', '--definition', 'x', 'b']), { command: 'plan', paths: ['a', 'b'], definition: 'x' });
+  assert.deepEqual(parseArguments(['plan', 'a', '--definition', 'x', 'b']), { command: 'plan', paths: ['a', 'b'], definition: 'x', toolchain: false });
+});
+
+const EXTENSIONS = fileURLToPath(new URL('../../../extensions/', import.meta.url));
+
+test('materialize then verify: PARTIAL (2), idempotent, structural PASS (0), conflicts exit 3', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'enistere-cli-ws-'));
+  try {
+    const first = cli('materialize', ...SET, '--extensions', EXTENSIONS, '--out', directory);
+    assert.equal(first.status, 2, first.stderr);
+    const result = JSON.parse(first.stdout);
+    assert.equal(result.status, 'PARTIAL');
+    assert.deepEqual(result.records.map((record: { component: string; status: string }) => [record.component, record.status]), [['authority-api', 'APPLIED']]);
+    assert.ok(result.unsupported.some((item: { capability: string | null }) => item.capability === 'authentication'), 'capabilities are listed, never dropped');
+
+    const again = JSON.parse(cli('materialize', ...SET, '--extensions', EXTENSIONS, '--out', directory).stdout);
+    assert.ok(again.records[0].files.every((file: { decision: string }) => ['UNCHANGED', 'KEEP_OWNER'].includes(file.decision)));
+
+    const verified = cli('verify', directory, '--extensions', EXTENSIONS);
+    assert.equal(verified.status, 0, verified.stdout);
+    assert.deepEqual(JSON.parse(verified.stdout).evidence.map((item: { obligation: string; result: string }) => [item.obligation, item.result]), [['structure', 'PASS']]);
+
+    writeFileSync(join(directory, 'authority-api/src/main.ts'), '// edited by hand\n');
+    assert.equal(cli('materialize', ...SET, '--extensions', EXTENSIONS, '--out', directory).status, 3);
+    assert.equal(cli('verify', directory, '--extensions', EXTENSIONS).status, 1);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('materialize and verify refuse incomplete invocations (exit 64)', () => {
+  assert.equal(cli('materialize', ...SET, '--extensions', EXTENSIONS).status, 64);
+  assert.equal(cli('materialize', ...SET, '--out', '/tmp/x').status, 64);
+  assert.equal(cli('verify', '/tmp/a', '/tmp/b', '--extensions', EXTENSIONS).status, 64);
+  assert.equal(cli('plan', ...SET, '--catalog', CATALOG, '--extensions', EXTENSIONS).status, 64);
 });

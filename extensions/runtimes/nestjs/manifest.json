@@ -1,0 +1,62 @@
+{
+  "$comment": "First runtime adapter of Enistere Foundation (mission E2, ADR-096), written from scratch on Adapter Protocol v0.",
+  "protocol": "foundation.enistere.com/adapter-protocol/v0",
+  "id": "nestjs",
+  "extensionType": "RUNTIME_ADAPTER",
+  "version": "0.1.0",
+  "maintainer": "Enistere Foundation",
+  "supports": {
+    "componentKinds": [
+      "api-service"
+    ],
+    "runtime": "nestjs"
+  },
+  "capabilities": [],
+  "execution": {
+    "mode": "TRUSTED_IN_PROCESS"
+  },
+  "permissions": {
+    "filesystem": "WORKSPACE_WRITE",
+    "network": "TOOLCHAIN_ONLY",
+    "secrets": "NONE"
+  },
+  "tools": [
+    {
+      "name": "node",
+      "version": ">=22"
+    },
+    {
+      "name": "npm",
+      "version": ">=10"
+    }
+  ],
+  "determinism": "DETERMINISTIC",
+  "verification": [
+    {
+      "id": "structure",
+      "level": "STRUCTURAL",
+      "statement": "The component directory matches its materialization inventory: every compiler-owned file is present and unchanged."
+    },
+    {
+      "id": "install",
+      "level": "TOOLCHAIN",
+      "statement": "The project installs its pinned dependencies with npm."
+    },
+    {
+      "id": "build",
+      "level": "TOOLCHAIN",
+      "statement": "The project compiles with TypeScript without error."
+    },
+    {
+      "id": "boot",
+      "level": "TOOLCHAIN",
+      "statement": "The service starts and answers GET /health with HTTP 200."
+    },
+    {
+      "id": "audit",
+      "level": "TOOLCHAIN",
+      "statement": "The installed dependencies have no high or critical vulnerability."
+    }
+  ],
+  "entry": "./src/adapter.ts"
+}

@@ -1,6 +1,20 @@
 {
   "name": "@enistere/foundation-goldens",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Golden systems of Enistere Foundation (not a workspace, not published)."
+  "description": "Golden systems of Enistere Foundation: byte-identical proofs built by the Kernel, the Engine and the checkers (not published).",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@enistere/foundation-engine-materializer": "0.1.0",
+    "@enistere/foundation-kernel-compiler": "0.1.0",
+    "@enistere/foundation-kernel-contracts": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
 }

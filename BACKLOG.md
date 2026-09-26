@@ -4,28 +4,25 @@
 
 ## Mission active
 
-**Aucune.** E0 (PASS), R0-C (ADR-093), R0-D (ADR-094) et E1 — Kernel Façade (ADR-095) sont terminées ;
+**Aucune.** E0 (PASS), R0-C, R0-D, E1 (ADR-095) et E2 — Adapter Protocol v0 (ADR-096) sont terminées ;
 rapports dans [`CURRENT_STATE.md`](CURRENT_STATE.md).
 
 ## Prochaine mission unique
 
-### E2 — Adapter Protocol v0 et premier adapter (horizon R0)
+### E3 — Domain IR et enrichissement de l'IR (horizon R0)
 
-- **Objectif** : un protocole d'adapter versionné (manifest + phases DESCRIBE → VALIDATE INTENT → RESOLVE
-  → PLAN → MATERIALIZE → VERIFY, document 03 §6.11) et **un** premier adapter écrit de zéro sur ce
-  protocole, sans rien hériter de l'itération supprimée (ADR-094).
-- **In scope** : schéma de manifest ; chargement des manifests → descripteurs du catalogue d'E1
-  (`validateCatalog` reste l'unique validation) ; phase MATERIALIZE produisant des artefacts dans un
-  espace de travail isolé, bornée par l'ownership du plan ; VERIFY produisant des EvidenceRecords ;
-  golden Asteria : au moins le composant `authority-api` matérialisé et vérifié.
-- **Out of scope** : second adapter et substitution (E8), Domain IR (E3), Control Plane, Workbench.
-- **Critères de PASS (document 06)** : discovery/resolve/plan/materialize/verify par manifest ; aucune
-  capability perdue ; aucun `if framework` dans le Kernel.
-- **À trancher avant de lancer** : le runtime du premier adapter (le golden Asteria prévoit `nestjs`
-  pour l'Authority API et l'Async Worker).
+- **Objectif** : dériver du Domain Contract (A5) une représentation interne normalisée et déterministe
+  (types, opérations, événements, invariants, scénarios d'acceptance) et la relier à l'IR système :
+  opérations implémentées et consommées, événements publiés et souscrits, par composant.
+- **In scope** : `buildDomainIR` dans `kernel/compiler` (digest, indépendance à l'ordre) ; IR système
+  référençant le Domain IR ; UNSUPPORTED explicite pour ce que le Kernel ne sait pas encore représenter ;
+  Domain IR transmis aux adapters dans leur contexte, sans génération de code métier (E5) ; golden Asteria.
+- **Out of scope** : projection du domaine vers un runtime (E5), capabilities, Control Plane.
+- **Critères de PASS (document 06)** : IR déterministe ; unsupported explicite.
 
 ## En attente de validation humaine
 
+- Ajouter `adapters` aux checks requis du ruleset `protect-main` (ADR-096).
 - ARB-08, ARB-09 : propositions dans
   [`docs/governance/ARBITRATIONS.md`](docs/governance/ARBITRATIONS.md).
 - Documents 03 et 06 v1.1 : relire et accepter les modifications suivies (auteur « Claude ») dans Word.

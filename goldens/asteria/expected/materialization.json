@@ -1,0 +1,364 @@
+{
+  "extensions": [
+    {
+      "id": "nestjs",
+      "version": "0.1.0",
+      "source": "runtimes/nestjs/manifest.json"
+    }
+  ],
+  "catalog": "sha256:a2e361fa732098972227eb32e8cd719d29a7a2181597520557d6d5e4dd940b5d",
+  "status": "PARTIAL",
+  "plan": {
+    "system": "asteria",
+    "inputs": {
+      "closure": "sha256:ec5b3ba19dfc195981cfe662c1a9e4c115c5207d36516f5db292e185c90f30be",
+      "ir": "sha256:41cba1f99d797781c8359e9bcd4baccabd34715060fb648f25950ea1fa7078c0",
+      "resolved": "sha256:20e1d5dfce0e7dc24f12ef2153cd418e0c32ee331b9f62fdde96c5fe10828f59"
+    },
+    "steps": [
+      {
+        "action": "MATERIALIZE",
+        "component": "authority-api",
+        "adapter": {
+          "id": "nestjs",
+          "version": "0.1.0"
+        },
+        "runtime": "nestjs",
+        "ownership": "SHARED_CONTROLLED",
+        "environments": [
+          "local",
+          "ci",
+          "staging",
+          "production"
+        ]
+      }
+    ],
+    "unsupported": [
+      {
+        "component": "asteria-db",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "asteria-objects",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "async-worker",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "authority-api",
+        "capability": "authentication",
+        "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      },
+      {
+        "component": "authority-api",
+        "capability": "authorization",
+        "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      },
+      {
+        "component": "authority-api",
+        "capability": "files",
+        "code": "RESOLVE_NO_CAPABILITY_PROVIDER"
+      },
+      {
+        "component": "field-mobile",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "ops-web",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      },
+      {
+        "component": "requester-web",
+        "capability": null,
+        "code": "RESOLVE_NO_ADAPTER"
+      }
+    ],
+    "ownerWork": [
+      {
+        "component": "asteria-db",
+        "ownership": "EXTERNAL",
+        "team": "enistere-platform"
+      },
+      {
+        "component": "asteria-objects",
+        "ownership": "EXTERNAL",
+        "team": "enistere-platform"
+      },
+      {
+        "component": "async-worker",
+        "ownership": "OWNER_MANAGED",
+        "team": "asteria-backend"
+      },
+      {
+        "component": "authority-api",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-backend"
+      },
+      {
+        "component": "field-mobile",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-mobile"
+      },
+      {
+        "component": "ops-web",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-web"
+      },
+      {
+        "component": "requester-web",
+        "ownership": "SHARED_CONTROLLED",
+        "team": "asteria-web"
+      }
+    ],
+    "proofObligations": [
+      {
+        "component": "authority-api",
+        "requirement": "CON-001"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-001"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-002"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-003"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "FR-004"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "SEC-001"
+      },
+      {
+        "component": "authority-api",
+        "requirement": "SEC-002"
+      }
+    ],
+    "digest": "sha256:61548549338845613f688c631ec0e457f9a664bdb2f841de2d9d9c9f7c02b445"
+  },
+  "artifactPlans": [
+    {
+      "component": "authority-api",
+      "adapter": {
+        "id": "nestjs",
+        "version": "0.1.0"
+      },
+      "ownership": "SHARED_CONTROLLED",
+      "artifacts": [
+        {
+          "path": ".dockerignore",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:d5099bc1ff3c3f5a6b5e2fa815878a0d86c1a235882f0a18787338418c44c1c3"
+        },
+        {
+          "path": ".gitignore",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:e8bc935ce727f1809c792f4c5d26c5fc75ba2b7df7fc9390c56c8892f6a6007f"
+        },
+        {
+          "path": "Dockerfile",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:6d1a022a7d4552f540d82588dcd04b269c4fab7105d68727cf12bb75024eb83b"
+        },
+        {
+          "path": "README.md",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:1f5478d0aa170dc28ecc7fe51ccf5cee8ed6b9337ef6be41b4b3dfd6f8a1b770"
+        },
+        {
+          "path": "package.json",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:988afc6e07ec3c4873547aff707ea5de2d85044668168240841a19d2ad8396a4"
+        },
+        {
+          "path": "src/app.module.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:deda77c40c010e2e15485004337f5e866691fe1b00668cb19266039ac1de3309"
+        },
+        {
+          "path": "src/extension/extension.module.ts",
+          "ownership": "OWNER_SEEDED",
+          "digest": "sha256:ab5018a79e1eaaa899235eab8811e72d25e94d892a3484040c97c457f478bc2f"
+        },
+        {
+          "path": "src/health/health.controller.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:014806919a7e6beae488b1569498d356d07454e290bb1fd5e2abd3cdd7f1beba"
+        },
+        {
+          "path": "src/main.ts",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:f6550cf0ef913c72726d586ad792230dd080215c2e8fcf8d84db535a894b41b2"
+        },
+        {
+          "path": "tsconfig.json",
+          "ownership": "COMPILER_OWNED",
+          "digest": "sha256:1b9db6e14c176dbcdd9e0fdf85ef44bf896474539e84fdcbceb8117722f3ac38"
+        }
+      ],
+      "digest": "sha256:92c6cd958217fd73ee1e9cefcfecf14f04d1be2de61288efcdd4cb861e10603c"
+    }
+  ],
+  "diagnostics": [
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'asteria-db' (kind datastore) has no adapter for 'postgresql'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "asteria-db",
+        "kind": "datastore",
+        "preferences": [
+          "postgresql"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'asteria-objects' (kind object-store) has no adapter for 's3-compatible'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "asteria-objects",
+        "kind": "object-store",
+        "preferences": [
+          "s3-compatible"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'async-worker' (kind async-worker) has no adapter for 'nestjs'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "async-worker",
+        "kind": "async-worker",
+        "preferences": [
+          "nestjs"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'field-mobile' (kind mobile-application) has no adapter for 'flutter'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "field-mobile",
+        "kind": "mobile-application",
+        "preferences": [
+          "flutter"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'ops-web' (kind web-application) has no adapter for 'angular'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "ops-web",
+        "kind": "web-application",
+        "preferences": [
+          "angular"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_ADAPTER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "component 'requester-web' (kind web-application) has no adapter for 'nextjs'",
+      "remediation": "Add a runtime adapter for this component kind and one of its preferred runtimes, or change the preferences; the component is not planned.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "requester-web",
+        "kind": "web-application",
+        "preferences": [
+          "nextjs"
+        ]
+      }
+    },
+    {
+      "code": "RESOLVE_NO_CAPABILITY_PROVIDER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "capability 'authentication' of component 'authority-api' has no provider for runtime 'nestjs'",
+      "remediation": "Add a provider of this platform capability for the selected runtime; the capability is not bound.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "authority-api",
+        "capability": "authentication",
+        "runtime": "nestjs"
+      }
+    },
+    {
+      "code": "RESOLVE_NO_CAPABILITY_PROVIDER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "capability 'authorization' of component 'authority-api' has no provider for runtime 'nestjs'",
+      "remediation": "Add a provider of this platform capability for the selected runtime; the capability is not bound.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "authority-api",
+        "capability": "authorization",
+        "runtime": "nestjs"
+      }
+    },
+    {
+      "code": "RESOLVE_NO_CAPABILITY_PROVIDER",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "capability 'files' of component 'authority-api' has no provider for runtime 'nestjs'",
+      "remediation": "Add a provider of this platform capability for the selected runtime; the capability is not bound.",
+      "retryable": false,
+      "ref": "SystemDefinition/asteria@2",
+      "details": {
+        "component": "authority-api",
+        "capability": "files",
+        "runtime": "nestjs"
+      }
+    }
+  ]
+}

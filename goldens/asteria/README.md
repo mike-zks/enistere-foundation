@@ -35,6 +35,11 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
    planifiés (dont l'Async Worker), la base de données connectée comme composant EXTERNAL, et deux
    éléments **UNSUPPORTED** listés (object store sans adapter, capability `notifications` sans
    fournisseur). Aucun adapter réel n'existe avant E2 : rien n'est matérialisé.
+7. Matérialisation (E2) : compilé contre les **extensions réelles** (`extensions/`), le système ne
+   planifie que l'Authority API, réalisée par l'adapter `nestjs@0.1.0` (10 fichiers, dont un point
+   d'extension owner-seeded) ; tout le reste — dont les capabilities authentication, authorization et
+   files — est listé UNSUPPORTED. Le job CI `adapters` matérialise réellement ce plan, puis l'installe, le
+   compile, le démarre (`/health` = 200) et l'audite.
 
 ## Fichiers
 
@@ -46,9 +51,11 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
 | `update.ts` | Régénération (`npm run golden:asteria:update`) ; refuse un ensemble invalide |
 | `contracts/*.json`, `evidence/*.json` | **Générés** — 8 contrats et 9 EvidenceRecords |
 | `expected/compilation.json` | **Généré** — résultat de `plan` : closure, IR, ResolvedSystem, ExecutionPlan et digests (identique à la sortie de la CLI) |
+| `expected/materialization.json` | **Généré** — plan contre les extensions réelles et plans d'artefacts des adapters (chemins, ownership, digests), sans écriture de fichier |
+| `test/golden-asteria.test.ts` | Égalité octet pour octet, cinq surfaces, traçabilité, Day-2, sens des dépendances entre zones |
 | `expected/report.json` | **Généré** — digests, surfaces, traçabilité, changements, preuves, compilation, diagnostics |
 
-Les tests du Kernel reconstruisent le golden et exigent une égalité **octet pour octet** avec les fichiers
+Les tests du workspace `goldens` reconstruisent le golden et exigent une égalité **octet pour octet** avec les fichiers
 commités ; l'ensemble doit être valide sans erreur ni avertissement.
 
 ## Ce que le golden n'est pas
