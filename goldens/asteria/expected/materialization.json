@@ -11,9 +11,9 @@
   "plan": {
     "system": "asteria",
     "inputs": {
-      "closure": "sha256:1d876236955f90f89b1f5bb22ccb588e8e021565d220b75ef212c39d153fda05",
-      "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
-      "resolved": "sha256:a962e101e477a694c6af993b9b5ad2cf088620460ef1ccd5e03b04349b4d138d"
+      "closure": "sha256:9d7763324af901876b426a5887ce3a65c3b2c4dc8fa4607f021d4eaada03db0b",
+      "ir": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b",
+      "resolved": "sha256:bdbe3d6ad4e0616213ffb5a7bdc92c6c5d2bf6d944f858258cd8d146ef520a53"
     },
     "steps": [
       {
@@ -111,6 +111,210 @@
         "digest": "sha256:b4c871aa87cdedf0daac31e33e0609a9bd337b87e49a0be3bbaf8fb38c267881"
       }
     ],
+    "designBindings": [
+      {
+        "component": "field-mobile",
+        "designSystem": "DesignSystem/operator-design-system@1",
+        "context": "field",
+        "digest": "sha256:53036f31c74732ac9a57394114ff01745751b1de410fc8d4a1e8c9e504454db5"
+      },
+      {
+        "component": "ops-web",
+        "designSystem": "DesignSystem/operator-design-system@1",
+        "context": "back-office",
+        "digest": "sha256:b037ef341637a32015fd891cb012e5946d84630157b4663809a834301f87dd7f"
+      },
+      {
+        "component": "requester-web",
+        "designSystem": "DesignSystem/operator-design-system@1",
+        "context": "public-portal",
+        "digest": "sha256:444d4e36837cc59accc0db0330e0b0ed14c4186461e0bbf3333955336bae240a"
+      }
+    ],
+    "policy": {
+      "context": "EffectiveOrganizationContext/asteria-context@1",
+      "evaluations": [
+        {
+          "rule": "ai.decide.allowed",
+          "category": "AI",
+          "expected": false,
+          "subject": null,
+          "outcome": "NOT_EVALUATED",
+          "actual": null,
+          "waiver": null,
+          "reason": "the compiler does not interpret this rule"
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "ci",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "the environment declares no region"
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "local",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "the environment declares no region"
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "production",
+          "outcome": "SATISFIED",
+          "actual": "eu-west",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "data.residency",
+          "category": "DATA",
+          "expected": [
+            "eu-west",
+            "eu-central"
+          ],
+          "subject": "staging",
+          "outcome": "WAIVED",
+          "actual": "eu-central",
+          "waiver": {
+            "id": "W-001",
+            "expiresAt": "2027-03-31T23:59:59Z"
+          },
+          "reason": "Object storage replica in eu-central during the hosting migration window."
+        },
+        {
+          "rule": "deployment.image.reference",
+          "category": "DEPLOYMENT",
+          "expected": "digest",
+          "subject": null,
+          "outcome": "NOT_EVALUATED",
+          "actual": null,
+          "waiver": null,
+          "reason": "the compiler does not interpret this rule"
+        },
+        {
+          "rule": "evidence.retention.days",
+          "category": "EVIDENCE",
+          "expected": 730,
+          "subject": null,
+          "outcome": "NOT_EVALUATED",
+          "actual": null,
+          "waiver": null,
+          "reason": "the compiler does not interpret this rule"
+        },
+        {
+          "rule": "quality.accessibility.level",
+          "category": "QUALITY",
+          "expected": "WCAG-2.2-AA",
+          "subject": "field-mobile",
+          "outcome": "SATISFIED",
+          "actual": "WCAG-2.2-AA",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "quality.accessibility.level",
+          "category": "QUALITY",
+          "expected": "WCAG-2.2-AA",
+          "subject": "ops-web",
+          "outcome": "SATISFIED",
+          "actual": "WCAG-2.2-AA",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "quality.accessibility.level",
+          "category": "QUALITY",
+          "expected": "WCAG-2.2-AA",
+          "subject": "requester-web",
+          "outcome": "SATISFIED",
+          "actual": "WCAG-2.2-AA",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "runtime.api.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "nestjs",
+            "spring",
+            "fastapi"
+          ],
+          "subject": "authority-api",
+          "outcome": "SATISFIED",
+          "actual": "nestjs",
+          "waiver": null,
+          "reason": null
+        },
+        {
+          "rule": "runtime.mobile.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "react-native",
+            "flutter"
+          ],
+          "subject": "field-mobile",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "no runtime is resolved for this component"
+        },
+        {
+          "rule": "runtime.web.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "nextjs",
+            "angular"
+          ],
+          "subject": "ops-web",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "no runtime is resolved for this component"
+        },
+        {
+          "rule": "runtime.web.allowed",
+          "category": "RUNTIME",
+          "expected": [
+            "nextjs",
+            "angular"
+          ],
+          "subject": "requester-web",
+          "outcome": "NOT_APPLICABLE",
+          "actual": null,
+          "waiver": null,
+          "reason": "no runtime is resolved for this component"
+        },
+        {
+          "rule": "security.identity.provider",
+          "category": "SECURITY",
+          "expected": "enistere-shared-oidc",
+          "subject": "enistere-oidc",
+          "outcome": "SATISFIED",
+          "actual": "enistere-shared-oidc",
+          "waiver": null,
+          "reason": null
+        }
+      ],
+      "digest": "sha256:cc2c9bb0dff202edb3a73b62af7d1ab3acd9022ce26272f9fc2e7b02844579d8"
+    },
     "ownerWork": [
       {
         "work": "COMPONENT",
@@ -283,7 +487,7 @@
         "requirement": "SEC-002"
       }
     ],
-    "digest": "sha256:002748b645e70e264e69c88617b2afcf589dc02b00e14df3abaf215ee3fc9f97"
+    "digest": "sha256:68e536dea1545c0f6a7795ba08484226fc9961fde31cd4bd2b0646cf5c9d059f"
   },
   "artifactPlans": [
     {
@@ -404,6 +608,45 @@
     }
   ],
   "diagnostics": [
+    {
+      "code": "POLICY_NOT_EVALUATED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "rule 'ai.decide.allowed' is not evaluated by the compiler",
+      "remediation": "The compiler does not interpret this rule: prove it by another check or review it.",
+      "retryable": false,
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "details": {
+        "rule": "ai.decide.allowed"
+      }
+    },
+    {
+      "code": "POLICY_NOT_EVALUATED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "rule 'deployment.image.reference' is not evaluated by the compiler",
+      "remediation": "The compiler does not interpret this rule: prove it by another check or review it.",
+      "retryable": false,
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "details": {
+        "rule": "deployment.image.reference"
+      }
+    },
+    {
+      "code": "POLICY_NOT_EVALUATED",
+      "class": "UNSUPPORTED",
+      "severity": "warning",
+      "layer": "kernel.compiler",
+      "message": "rule 'evidence.retention.days' is not evaluated by the compiler",
+      "remediation": "The compiler does not interpret this rule: prove it by another check or review it.",
+      "retryable": false,
+      "ref": "EffectiveOrganizationContext/asteria-context@1",
+      "details": {
+        "rule": "evidence.retention.days"
+      }
+    },
     {
       "code": "IR_FACET_NOT_INTERPRETED",
       "class": "UNSUPPORTED",

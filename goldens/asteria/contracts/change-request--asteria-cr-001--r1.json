@@ -35,13 +35,13 @@
       "kind": "SystemDefinition",
       "id": "asteria",
       "revision": 1,
-      "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+      "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
     },
     "proposed": {
       "kind": "SystemDefinition",
       "id": "asteria",
       "revision": 2,
-      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+      "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
     },
     "trigger": "DECISION_CHANGE",
     "summary": "Attachment analysis becomes an asynchronous worker job triggered by AttachmentUploaded; the API keeps INV-004.",
@@ -140,19 +140,19 @@
           "kind": "EvidenceRecord",
           "id": "asteria-sd1-closure",
           "revision": 1,
-          "digest": "sha256:051c363e2896b382f7f7b674202b4c89af6b9f6373f43effbe356b2ad287b2e9"
+          "digest": "sha256:e71b6fc13a6819bf5a045ca69f3c90e2d70b8cab115e14585e7cbeea9ab3c74c"
         },
         {
           "kind": "EvidenceRecord",
           "id": "asteria-sd1-requirement-allocation",
           "revision": 1,
-          "digest": "sha256:2074b437155e5c9d016238a5e6a3784b2c7bbf7775da0aebacfc7608248b9a55"
+          "digest": "sha256:91d99c7827458d2a985182a53d668f0fbd8ec656a41da728d3c25e501fd3c086"
         },
         {
           "kind": "EvidenceRecord",
           "id": "asteria-sd1-worker-extensibility",
           "revision": 1,
-          "digest": "sha256:6019125d8521f483f126fb3b1e6af1c2a89868e4374b749333660e7e0494f674"
+          "digest": "sha256:0c475aa5f2167b5a839095e915add47a39891410eced363ea84c40c3fd5c87d9"
         }
       ],
       "ownerWork": [

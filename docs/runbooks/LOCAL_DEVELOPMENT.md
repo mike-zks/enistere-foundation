@@ -55,6 +55,7 @@ node surfaces/cli/src/cli.ts verify-bundle /tmp/proof-chain.json   # 0 = VALID, 
 npm run tools:test               # tests de tools/quality
 npm run secrets:allowlist        # exceptions gitleaks justifiées et non expirées
 npm run docs:links               # aucun lien interne mort (docs/archive exclu)
+npm run design:tokens            # tokens de l'interface Foundation (document 04) valides
 npm audit --audit-level=high     # dépendances
 ```
 

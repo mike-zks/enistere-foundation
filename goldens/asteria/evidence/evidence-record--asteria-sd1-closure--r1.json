@@ -25,7 +25,7 @@
         "kind": "SystemDefinition",
         "id": "asteria",
         "revision": 1,
-        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+        "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
       }
     },
     "obligation": {
@@ -35,7 +35,7 @@
         "kind": "SystemDefinition",
         "id": "asteria",
         "revision": 1,
-        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+        "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
       }
     },
     "checker": {
@@ -55,7 +55,7 @@
       }
     },
     "result": "PASS",
-    "summary": "5 contracts checked; 0 errors; 0 warnings.",
+    "summary": "6 contracts checked; 0 errors; 0 warnings.",
     "observedAt": "2026-09-17T12:00:00Z",
     "expiresAt": "2026-12-16T12:00:00Z",
     "inputs": [
@@ -64,6 +64,12 @@
         "id": "asteria-decisions",
         "revision": 1,
         "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127"
+      },
+      {
+        "kind": "DesignSystem",
+        "id": "operator-design-system",
+        "revision": 1,
+        "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
       },
       {
         "kind": "DomainContract",
@@ -87,7 +93,7 @@
         "kind": "SystemDefinition",
         "id": "asteria",
         "revision": 1,
-        "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac"
+        "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c"
       }
     ],
     "artifacts": []

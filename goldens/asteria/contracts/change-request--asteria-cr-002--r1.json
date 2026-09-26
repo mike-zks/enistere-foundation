@@ -22,7 +22,7 @@
       "kind": "SystemDefinition",
       "id": "asteria",
       "revision": 2,
-      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+      "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
     },
     "trigger": "REQUIREMENT_CHANGE",
     "summary": "Field devices exchange assignments directly without the Authority API when no network is available.",

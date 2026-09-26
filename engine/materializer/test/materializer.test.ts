@@ -160,6 +160,15 @@ test('handlers written by the team survive a re-materialization of the shared co
   assert.ok(existsSync(join(root, 'authority-api/contract/service-requests.openapi.json')));
 });
 
+test('a plan relying on an expired waiver is not applied: nothing is written (E6)', async () => {
+  const host = await loadExtensions(`${FIXTURES}ok`);
+  const root = workspace();
+  const refused = materialize(planWith(host), host, root, { executedAt: '2027-04-01T00:00:00Z' });
+  assert.deepEqual(refused.records, []);
+  assert.deepEqual(refused.diagnostics.map((item) => item.code), ['MATERIALIZE_WAIVER_EXPIRED']);
+  assert.deepEqual(readdirSync(root), [], 'no component directory is created');
+});
+
 test('the Engine names no framework, runtime or cloud (TA-04)', () => {
   const forbidden = /nestjs|spring|fastapi|nextjs|angular|react-native|flutter|postgres|kubernetes/i;
   for (const file of readdirSync(SOURCES)) assert.doesNotMatch(readFileSync(`${SOURCES}${file}`, 'utf8'), forbidden, file);

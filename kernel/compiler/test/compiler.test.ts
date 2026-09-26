@@ -39,7 +39,13 @@ test('the closure holds exactly the normative inputs reachable from the definiti
   assert.equal(closure.definition.ref, 'SystemDefinition/asteria@2');
   assert.deepEqual(
     closure.entries.map((entry) => entry.ref),
-    ['DecisionSet/asteria-decisions@1', 'DomainContract/asteria-service-requests@1', 'EffectiveOrganizationContext/asteria-context@1', 'RequirementBaseline/asteria-requirements@1'],
+    [
+      'DecisionSet/asteria-decisions@1',
+      'DesignSystem/operator-design-system@1',
+      'DomainContract/asteria-service-requests@1',
+      'EffectiveOrganizationContext/asteria-context@1',
+      'RequirementBaseline/asteria-requirements@1',
+    ],
     'no superseded revision, Change Request or EvidenceRecord',
   );
   assert.match(closure.digest, /^sha256:[0-9a-f]{64}$/);

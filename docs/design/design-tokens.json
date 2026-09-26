@@ -1,0 +1,318 @@
+{
+  "$description": "Design tokens of the Enistere Foundation interface itself (document 04 — Système de design UX UI, ENI-FOUNDATION-UX-012), W3C Design Tokens format. A token of document 04 that is also the parent of other tokens (brand.primary) is written 'default' inside its group. Not the tokens of the systems Foundation builds: those are governed by their own Design System contracts (A9).",
+  "color": {
+    "brand": {
+      "primary": {
+        "default": {
+          "$type": "color",
+          "$value": "#11102A",
+          "$description": "Navigation, actions principales, repères forts"
+        },
+        "hover": {
+          "$type": "color",
+          "$value": "#323148",
+          "$description": "Survol et interaction active"
+        },
+        "subtle": {
+          "$type": "color",
+          "$value": "#E2E2E5",
+          "$description": "Sélection légère et fonds contextuels"
+        }
+      },
+      "accent": {
+        "$type": "color",
+        "$value": "#7C5CFC",
+        "$description": "Accent éditorial et progression"
+      },
+      "support": {
+        "$type": "color",
+        "$value": "#19C3D1",
+        "$description": "Focus, données secondaires et illustration"
+      }
+    },
+    "surface": {
+      "canvas": {
+        "$type": "color",
+        "$value": "#F3F1FF",
+        "$description": "Fond général"
+      },
+      "default": {
+        "$type": "color",
+        "$value": "#FFFFFF",
+        "$description": "Surface de contenu"
+      },
+      "raised": {
+        "$type": "color",
+        "$value": "#FAF9FF",
+        "$description": "Surface élevée"
+      }
+    },
+    "text": {
+      "primary": {
+        "$type": "color",
+        "$value": "#15171A",
+        "$description": "Texte principal"
+      },
+      "secondary": {
+        "$type": "color",
+        "$value": "#5B6472",
+        "$description": "Texte secondaire"
+      }
+    },
+    "border": {
+      "default": {
+        "$type": "color",
+        "$value": "#D9DDE3",
+        "$description": "Séparateurs et contours"
+      }
+    },
+    "status": {
+      "success": {
+        "$type": "color",
+        "$value": "#1F7A55",
+        "$description": "État confirmé"
+      },
+      "info": {
+        "$type": "color",
+        "$value": "#246BCE",
+        "$description": "Information et traitement en cours"
+      },
+      "warning": {
+        "$type": "color",
+        "$value": "#B86100",
+        "$description": "Attention ou action requise"
+      },
+      "danger": {
+        "$type": "color",
+        "$value": "#B53232",
+        "$description": "Erreur, blocage ou risque critique"
+      }
+    },
+    "focus": {
+      "ring": {
+        "$type": "color",
+        "$value": "{color.brand.support}",
+        "$description": "Focus clavier"
+      }
+    }
+  },
+  "space": {
+    "050": {
+      "$type": "dimension",
+      "$value": "4px"
+    },
+    "100": {
+      "$type": "dimension",
+      "$value": "8px"
+    },
+    "150": {
+      "$type": "dimension",
+      "$value": "12px"
+    },
+    "200": {
+      "$type": "dimension",
+      "$value": "16px"
+    },
+    "300": {
+      "$type": "dimension",
+      "$value": "24px"
+    },
+    "400": {
+      "$type": "dimension",
+      "$value": "32px"
+    },
+    "600": {
+      "$type": "dimension",
+      "$value": "48px"
+    },
+    "800": {
+      "$type": "dimension",
+      "$value": "64px"
+    }
+  },
+  "font": {
+    "family": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": [
+          "Montserrat",
+          "sans-serif"
+        ]
+      },
+      "body": {
+        "$type": "fontFamily",
+        "$value": [
+          "Roboto",
+          "sans-serif"
+        ]
+      },
+      "mono": {
+        "$type": "fontFamily",
+        "$value": [
+          "Consolas",
+          "monospace"
+        ]
+      }
+    },
+    "weight": {
+      "regular": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "semibold": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "bold": {
+        "$type": "fontWeight",
+        "$value": 700
+      }
+    }
+  },
+  "typography": {
+    "display-xl": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "46px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.semibold}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "52px"
+      }
+    },
+    "page-title": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "34px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.semibold}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "42px"
+      }
+    },
+    "section-title": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.display}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "26px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.semibold}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "34px"
+      }
+    },
+    "component-title": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "16px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.bold}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "24px"
+      }
+    },
+    "body": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "16px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.regular}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "24px"
+      }
+    },
+    "secondary": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "14px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.regular}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "20px"
+      }
+    },
+    "label-compact": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.body}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "12px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.bold}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "16px"
+      }
+    },
+    "technical": {
+      "family": {
+        "$type": "fontFamily",
+        "$value": "{font.family.mono}"
+      },
+      "size": {
+        "$type": "dimension",
+        "$value": "13px"
+      },
+      "weight": {
+        "$type": "fontWeight",
+        "$value": "{font.weight.regular}"
+      },
+      "line-height": {
+        "$type": "dimension",
+        "$value": "20px"
+      }
+    }
+  }
+}

@@ -16,7 +16,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve, sep } from 'node:path';
 
-import type { IRComponent, PlanResult } from '@enistere/foundation-kernel-compiler';
+import { expiredWaivers, type IRComponent, type PlanResult } from '@enistere/foundation-kernel-compiler';
 import {
   CURRENT_API_VERSION,
   diagnostic,
@@ -53,7 +53,7 @@ export function planMaterialization(result: PlanResult, host: ExtensionHost): { 
   const found: Diagnostic[] = [];
   const components: PlannedComponent[] = [];
   if (!result.plan || !result.ir || !result.definition) return { components, diagnostics: [] };
-  const context = { system: result.ir.system, definition: result.definition.ref, domains: result.ir.domains, apiContracts: result.apiContracts };
+  const context = { system: result.ir.system, definition: result.definition.ref, domains: result.ir.domains, apiContracts: result.apiContracts, designBindings: result.ir.designBindings };
   for (const step of result.plan.steps) {
     if (step.action !== 'MATERIALIZE') continue;
     const ref = result.definition.ref;
@@ -156,6 +156,22 @@ export interface MaterializeOptions {
 
 /** Applies the plan in `workspace` and returns one A8 record per component. */
 export function materialize(result: PlanResult, host: ExtensionHost, workspace: string, options: MaterializeOptions): { records: MaterializationRecord[]; diagnostics: Diagnostic[] } {
+  const expired = expiredWaivers(result.policy, options.executedAt);
+  if (expired.length > 0) {
+    // Nothing is written: the plan relies on a waiver that no longer holds.
+    return {
+      records: [],
+      diagnostics: sortDiagnostics(
+        expired.map((evaluation) =>
+          diagnostic('MATERIALIZE_WAIVER_EXPIRED', `waiver '${evaluation.waiver?.id}' of rule '${evaluation.rule}' expired at ${evaluation.waiver?.expiresAt}`, {
+            ...LAYER,
+            ref: result.definition?.ref,
+            details: { rule: evaluation.rule, subject: evaluation.subject, waiver: evaluation.waiver?.id ?? null },
+          }),
+        ),
+      ),
+    };
+  }
   const { components, diagnostics } = planMaterialization(result, host);
   const found = [...diagnostics];
   const records: MaterializationRecord[] = [];

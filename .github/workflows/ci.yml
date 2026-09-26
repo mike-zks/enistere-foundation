@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Kernel (contrats A1–A8, compiler, proof chain), CLI et golden Asteria.
+  # Kernel (contrats A1–A9, compiler, proof chain), CLI et golden Asteria.
   kernel:
     name: kernel
     runs-on: ubuntu-latest
@@ -33,8 +33,10 @@ jobs:
       - run: npm ci
       - name: typecheck (workspaces kernel/* et surfaces/*, golden Asteria)
         run: npm run foundation:typecheck
-      - name: tests (A1–A8, compiler, CLI, golden Asteria octet pour octet)
+      - name: tests (A1–A9, compiler, CLI, golden Asteria octet pour octet)
         run: npm run foundation:test
+      - name: design tokens de l'interface Foundation (document 04, validateur A9)
+        run: npm run design:tokens
       - name: golden Asteria régénéré à l'identique (anti-dérive)
         run: |
           npm run golden:asteria:update

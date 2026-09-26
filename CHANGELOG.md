@@ -4,6 +4,16 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### E6 — Organization Context & Design bindings — 2026-09-26
+
+- `evaluatePolicies` : catalogue fermé de règles d'A3 ; SATISFIED, WAIVED, VIOLATED (bloque),
+  NOT_APPLICABLE, NOT_EVALUATED ; rapport `policy` dans le résultat et le plan
+  ([ADR-100](docs/adr/ADR-100-organization-policies-and-design-system.md)).
+- Contrat A9 `DesignSystem` (W3C Design Tokens) ; A4 : `designSystem` épinglé, `environments[].region`.
+- Design bindings (IR, plan, `AdapterContext.designBindings`) ; MATERIALIZE refuse un waiver expiré.
+- Golden régénéré (design system, régions, W-001) ; `docs/design/design-tokens.json` et
+  `npm run design:tokens` (job CI `kernel`). Codes `POLICY_*`, `DESIGN_*`. Tests : 142.
+
 ### E5 — Domain Contract Projection — 2026-09-26
 
 - `projectApiContracts` : contrat OpenAPI 3.1 par domaine et fournisseur, dérivé du Domain IR
