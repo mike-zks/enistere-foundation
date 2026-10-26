@@ -1,5 +1,11 @@
 # Enistere Foundation
 
+## Gouvernance et environnement Enistere
+
+[Raccordement au socle commun](docs/governance/ENISTERE_ALIGNMENT.md) : version adoptée, profil,
+CI/CD, portabilité et écarts encore ouverts. Ce raccordement documentaire ne vaut pas admission
+en production et conserve le périmètre/les prochaines missions produit.
+
 Enistere Foundation est une **Software System Engineering Platform** dotée d'un **Governed System
 Compiler** et d'un **Evidence-Driven System Evolution Engine** : elle transforme une intention
 d'ingénierie en systèmes logiciels natifs, gouvernés et vérifiables, puis maintient leur cohérence dans

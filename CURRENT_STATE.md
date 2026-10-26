@@ -1,5 +1,17 @@
 # CURRENT STATE
 
+## Raccordement documentaire du 26 octobre 2026
+
+- Base de préparation : `d3335fc82f841f4e879ef437f3db4cd1a0e26c9f` ; branche locale de raccordement pour les dépôts avec HEAD.
+- Livré localement : addendum, ADR-101, références de reprise/readiness et marquage des copies
+  historiques. Orientation demandée par le propriétaire ; revue de l'implémentation à effectuer.
+- Aucun code/workflow, lockfile, maître, état de capacité ou gate produit modifié ; aucun push,
+  serveur, achat, migration distante ou déploiement. La copie n'est pas la bascule du dossier actif.
+- Contrôles documentaires et empreintes : voir le compte rendu de vérification dans l'addendum.
+  Suites applicatives complètes : **NOT RUN**, dépendances non installées dans la copie et aucun
+  changement exécutable. Les preuves historiques ci-dessous restent datées et ne sont pas réutilisées.
+- Prochaine mission produit conservée : **E7 — Day-2 Change Intelligence**.
+
 > État réel du dépôt (document 05 §2E) — jamais une intention. Mis à jour obligatoirement en fin de mission.
 
 | Champ | Valeur |

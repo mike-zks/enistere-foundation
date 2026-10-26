@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-26 — Raccordement documentaire Enistere
+
+Référence de gouvernance versionnée, profil de livraison, autorité des copies historiques et
+prérequis de CI/release explicités ; code, workflows, maîtres et progression produit inchangés.
+Voir [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md).
+
 Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased

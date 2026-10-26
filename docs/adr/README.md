@@ -46,3 +46,7 @@ numérotation continue à partir d'ADR-098.
 ## Conséquences
 ## Validation humaine requise (le cas échéant)
 ```
+
+## Raccordement Enistere
+
+[ADR-101](ADR-101-enistere-governance-alignment.md) — orientation demandée par le propriétaire, implémentation documentaire locale à relire ; aucune homologation applicative.

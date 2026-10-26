@@ -1,5 +1,8 @@
 # BACKLOG — Enistere Foundation
 
+Raccordement documentaire du 26 octobre 2026 : [addendum](docs/governance/ENISTERE_ALIGNMENT.md) préparé localement.
+Les missions produit et gates de ce backlog restent inchangés ; le chantier plateforme est suivi dans governance.
+
 > Mission active et prochaine action unique (document 05 §2C, §11). Mis à jour à chaque fin de mission.
 
 ## Mission active

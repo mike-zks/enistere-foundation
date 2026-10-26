@@ -1,5 +1,12 @@
 # CONTEXT — Enistere Foundation
 
+## Raccordement Enistere — 2026-10-26
+
+La référence de plateforme actuelle est [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md).
+Les copies `docs/Server Prod/` sont historiques ; le dossier maître garde ses invariants produit.
+Cette copie est préparée pour revue, sans transfert distant ni changement de serveur.
+La prochaine mission produit ci-dessous est conservée.
+
 > Reflet vivant du projet (document 05 §2E). Ne recopie pas les documents sources : il y renvoie.
 > Dernière mise à jour : 2026-09-26, fin de la mission E6 (politiques d'organisation évaluées et contrat A9 DesignSystem, ADR-100).
 
@@ -21,8 +28,8 @@ Engineering Governance*, pas le starter ni la ligne de code.
    [05 Prompt de reprise](docs/05%20—%20Prompt%20de%20démarrage%20du%20développement%20—%20ENISTERE%20FOUNDATION.md) ·
    [06 Versions et feuille de route](docs/06%20—%20Versions%20et%20feuille%20de%20route%20—%20ENISTERE%20FOUNDATION.docx) ·
    [07 Carte produit et capacités](docs/07%20—%20Carte%20produit%20et%20capacités%20—%20ENISTERE%20FOUNDATION.docx).
-2. Production Enistere, pour toute contrainte de plateforme partagée :
-   [`docs/Server Prod/`](docs/Server%20Prod/README.md) (architecture, politique, procédure).
+2. Gouvernance de plateforme versionnée :
+   [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md), pour les contraintes communes de contribution, sécurité et livraison ; copies Server Prod historiques.
 3. ADR validés : [`docs/adr/`](docs/adr/README.md), résumés dans [`DECISIONS.md`](DECISIONS.md).
 4. Code réel du dépôt — autorité sur l'**état d'implémentation**, jamais sur la cible.
 
@@ -62,11 +69,10 @@ production, a été supprimée : une seule implémentation par concept, dans le 
 
 ## Production Enistere
 
-Toute mise en production suit [`docs/Server Prod/`](docs/Server%20Prod/POLITIQUE.md) et
-[`PRODUCTION_READINESS.md`](docs/governance/PRODUCTION_READINESS.md) : Traefik seule entrée (22/80/443),
-réseaux `enistere_*`, images par digest, secrets hors dépôt, Keycloak commun (un realm par projet),
-sauvegarde Restic/B2 restaurée avant d'être déclarée opérationnelle. Aucun service Foundation n'est
-déployé à ce jour.
+Toute future mise en production suit [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md)
+et [PRODUCTION_READINESS](docs/governance/PRODUCTION_READINESS.md). Le Kernel/CLI actuel n'est pas
+un service déployable ; OIDC reste une configuration d'un éventuel futur service. Les règles
+communes de livraison, de réseaux privés, de secrets et de reprise restent des gates avant ouverture.
 
 ## Décisions validées
 

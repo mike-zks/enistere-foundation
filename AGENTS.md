@@ -1,5 +1,18 @@
 # Instructions permanentes des agents
 
+## Référence commune de plateforme — instruction du propriétaire du 26 octobre 2026
+
+Lire [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md) à la reprise : gouvernance
+commune épinglée et profil du projet. Pour l'exploitation/CI/CD, cette référence remplace
+les copies historiques `docs/Server Prod/` ; elle ne remplace pas les invariants du dossier.
+Tout conflit produit/plateforme est tracé et soumis à résolution explicite. La direction
+a demandé ce raccordement ; aucune migration ou mise en production n'est autorisée par ce fichier.
+
+Une mission strictement documentaire vérifie les liens/structures, l'intégrité des maîtres
+et son diff, et indique les suites applicatives non rejouées. Cette règle de proportionnalité
+réserve les minimums applicatifs ci-dessous aux changements exécutables et aux impacts
+applicatifs ; elle ne dispense pas une release sensible de ses tests indépendants et gates.
+
 S'applique à tout agent IA (Codex, Claude Code ou équivalent) et à tout développeur qui reprend le dépôt
 sans continuité de conversation (document 05 §2C–2E). Ce fichier relève de la gouvernance : toute
 modification exige une validation humaine.
@@ -19,7 +32,7 @@ signaler à nouveau le blocage.
 
 ## Règles
 
-- Respecter l'ordre d'autorité : documents 01–07 (`docs/`), production Enistere (`docs/Server Prod/`),
+- Respecter l'ordre d'autorité : documents 01–07 (`docs/`), plateforme Enistere versionnée (`docs/governance/ENISTERE_ALIGNMENT.md`),
   ADR, code ([ADR-091](docs/adr/ADR-091-foundation-dossier-authority-and-laboratory-status.md)).
 - Respecter l'architecture du document 03 et les principes constitutionnels du document 05 §3.
 - Ne jamais inventer le résultat d'un test non exécuté : le marquer **NOT RUN** avec sa raison.
@@ -33,7 +46,7 @@ signaler à nouveau le blocage.
   restaurer du code de l'itération précédente (commit `f2590a8`) sans ADR.
 - Garder les secrets hors du dépôt, des manifestes, des images, des journaux et des Evidence.
 - Toute contrainte de réseau, secrets, données partagées, observabilité ou déploiement suit
-  `docs/Server Prod/` et [`PRODUCTION_READINESS.md`](docs/governance/PRODUCTION_READINESS.md).
+  [`ENISTERE_ALIGNMENT.md`](docs/governance/ENISTERE_ALIGNMENT.md) et [`PRODUCTION_READINESS.md`](docs/governance/PRODUCTION_READINESS.md).
 
 ## Fin de mission — obligatoire
 

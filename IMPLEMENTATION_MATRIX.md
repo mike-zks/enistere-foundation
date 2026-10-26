@@ -1,5 +1,8 @@
 # IMPLEMENTATION MATRIX
 
+Raccordement documentaire du 26 octobre 2026 : [addendum](docs/governance/ENISTERE_ALIGNMENT.md).
+Aucune ligne de capacité ni statut d’implémentation/test/admission n’est promu par ce raccordement.
+
 > Couverture **prouvée** (document 05 §2E). Un contrat ou une capacité n'est VERIFIED que si une preuve
 > adaptée existe (test automatisé, golden, conformance, audit) — jamais sur déclaration. Mise à jour :
 > 2026-09-26, fin de E6 (ADR-100 : politiques d'organisation évaluées et contrat A9 DesignSystem). Niveaux : SPECIFIED · IMPLEMENTED · EXECUTABLE · CONTRACT-COMPATIBLE ·
