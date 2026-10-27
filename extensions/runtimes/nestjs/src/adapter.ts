@@ -21,7 +21,7 @@ import type { AdapterContext, Artifact, RuntimeAdapter, ToolchainCheck } from '@
 
 import { camel, CONTRACT_CHECK, contractArtifacts, contractFile, operationsOf, pascal } from './contract.ts';
 
-export const ADAPTER = Object.freeze({ id: 'nestjs', version: '0.2.0' });
+export const ADAPTER = Object.freeze({ id: 'nestjs', version: '0.2.1' });
 
 /** Exact versions: a materialization is reproducible. */
 export const DEPENDENCIES = Object.freeze({
@@ -31,6 +31,16 @@ export const DEPENDENCIES = Object.freeze({
   ajv: '8.20.0',
   'reflect-metadata': '0.2.2',
   rxjs: '7.8.2',
+});
+/**
+ * Exact versions forced on transitive dependencies (npm `overrides`), each for a
+ * documented advisory that no direct dependency version fixes yet: every
+ * `@nestjs/platform-express` release pins `multer` below 2.5.0 (high severity
+ * DoS advisory, fixed in 2.5.0). Remove an entry once the direct dependency
+ * carries the fix.
+ */
+export const OVERRIDES = Object.freeze({
+  multer: '2.5.0',
 });
 export const DEV_DEPENDENCIES = Object.freeze({
   '@types/node': '24.13.6',
@@ -52,6 +62,7 @@ function packageJson(component: IRComponent, context: AdapterContext): string {
     scripts: { build: 'tsc -p tsconfig.json', start: 'node dist/main.js', 'contract:check': 'node scripts/contract-check.mjs' },
     dependencies: { ...DEPENDENCIES },
     devDependencies: { ...DEV_DEPENDENCIES },
+    overrides: { ...OVERRIDES },
   });
 }
 

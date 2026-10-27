@@ -10,6 +10,12 @@ Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
 
+### Adapter NestJS 0.2.1 — 2026-10-27
+
+- Le projet généré force `multer` 2.5.0 (`overrides` npm, version exacte) : toutes les versions de
+  `@nestjs/platform-express`, y compris la dernière (12.2.0), épinglent `multer` 2.4.0, visé par un avis
+  de sévérité haute (déni de service) ; le check TOOLCHAIN `audit` du job `adapters` échouait.
+
 ### E6 — Organization Context & Design bindings — 2026-09-26
 
 - `evaluatePolicies` : catalogue fermé de règles d'A3 ; SATISFIED, WAIVED, VIOLATED (bloque),

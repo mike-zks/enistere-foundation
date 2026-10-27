@@ -59,6 +59,9 @@ Aucun. Rappel : `adapters` doit figurer dans les checks requis de `protect-main`
 
 ## Known gaps
 
+- Projet généré : `multer` forcé à 2.5.0 par `overrides` npm (adapter `nestjs@0.2.1`, 2026-10-27) tant
+  que `@nestjs/platform-express` épingle une version vulnérable ; à retirer dès qu'une version corrigée
+  existe. Racine du dépôt : `fast-uri` (sévérité modérée, sous le seuil `high` du job `audit`) non traité.
 - Règles NOT_EVALUATED : `deployment.image.reference`, `ai.decide.allowed` (appliquée par l'autorité des
   contrats, pas par la compilation), `evidence.retention.days` ; famille de runtime déduite du préfixe du
   kind.

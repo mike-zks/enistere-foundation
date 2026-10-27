@@ -2,18 +2,18 @@
   "extensions": [
     {
       "id": "nestjs",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "source": "runtimes/nestjs/manifest.json"
     }
   ],
-  "catalog": "sha256:5b28d0b4adc0f4119276fc8dec6c38ca1e4d067579809fa17424f18dc5c7d5d4",
+  "catalog": "sha256:7403bf9004c1b958bfd8c5afe5cf45eaf4b7a137a7d7f84d1285b329a509da46",
   "status": "PARTIAL",
   "plan": {
     "system": "asteria",
     "inputs": {
-      "closure": "sha256:9d7763324af901876b426a5887ce3a65c3b2c4dc8fa4607f021d4eaada03db0b",
+      "closure": "sha256:fd5286412aa75ca4770627b1f14a9fda638b8649e066984745c5347f8aa697cc",
       "ir": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b",
-      "resolved": "sha256:bdbe3d6ad4e0616213ffb5a7bdc92c6c5d2bf6d944f858258cd8d146ef520a53"
+      "resolved": "sha256:64022f47ef9e3a56e5ec72494b5fd746aa08513a27e6f089f704f741e79a8c3d"
     },
     "steps": [
       {
@@ -21,7 +21,7 @@
         "component": "authority-api",
         "adapter": {
           "id": "nestjs",
-          "version": "0.2.0"
+          "version": "0.2.1"
         },
         "runtime": "nestjs",
         "ownership": "SHARED_CONTROLLED",
@@ -487,14 +487,14 @@
         "requirement": "SEC-002"
       }
     ],
-    "digest": "sha256:68e536dea1545c0f6a7795ba08484226fc9961fde31cd4bd2b0646cf5c9d059f"
+    "digest": "sha256:b93739c0a215080f596fcfc30c1995e0fe0d16798c4bbdea0a0fa185fa871855"
   },
   "artifactPlans": [
     {
       "component": "authority-api",
       "adapter": {
         "id": "nestjs",
-        "version": "0.2.0"
+        "version": "0.2.1"
       },
       "ownership": "SHARED_CONTROLLED",
       "artifacts": [
@@ -516,7 +516,7 @@
         {
           "path": "README.md",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:dbe5a561807efdb03496891a5ec11079c66f54208d4dd5c39e9816cc8caab23f"
+          "digest": "sha256:44a37f81d54b2ee1ddfe0ea6448a9ddd490e4469051cb82dd5078722afd09357"
         },
         {
           "path": "contract/service-requests.openapi.json",
@@ -526,7 +526,7 @@
         {
           "path": "package.json",
           "ownership": "COMPILER_OWNED",
-          "digest": "sha256:e1b6f6fd5daf1abcc6c39562d03a7891c44f69b6648ff3e7ba657be63d9f303b"
+          "digest": "sha256:529e7dd63dd4905588a54ba531e4ec5979598b4154116a75c0bc53d0d25c2d58"
         },
         {
           "path": "scripts/contract-check.mjs",
@@ -604,7 +604,7 @@
           "digest": "sha256:1b9db6e14c176dbcdd9e0fdf85ef44bf896474539e84fdcbceb8117722f3ac38"
         }
       ],
-      "digest": "sha256:d88edbe5b2f6959ddc66d3d86255d08d654264223032bca4bb12afc436e4152e"
+      "digest": "sha256:a8f22668eb764acac4916933ce19e82358d952fe48507fa853cb52ad1ebf8b71"
     }
   ],
   "diagnostics": [

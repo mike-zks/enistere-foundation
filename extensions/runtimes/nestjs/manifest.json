@@ -3,7 +3,7 @@
   "protocol": "foundation.enistere.com/adapter-protocol/v0",
   "id": "nestjs",
   "extensionType": "RUNTIME_ADAPTER",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "maintainer": "Enistere Foundation",
   "supports": {
     "componentKinds": [
