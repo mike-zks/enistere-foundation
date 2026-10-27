@@ -1,5 +1,5 @@
 /**
- * TypeScript view of the eight first-class contracts (A1–A7 from E0, A8 from E4). The JSON Schemas under
+ * TypeScript view of the nine first-class contracts (A1–A7 from E0, A8 from E4, A9 from E6). The JSON Schemas under
  * `schemas/v1alpha1/` are the language-neutral source of the shape; these types
  * are the reference implementation's reading of it and are only trusted after
  * `validateContract` has accepted a document.
@@ -224,7 +224,7 @@ export interface Component {
   platformCapabilities?: { id: string; version?: string }[];
   integrations?: string[];
   runtime?: { preferences?: string[]; constraints?: string[] };
-  experience?: { designContext: string; designSystem?: ExternalRef; accessibilityProfile?: string; offline?: boolean };
+  experience?: { designContext: string; designSystem?: ContractRef; accessibilityProfile?: string; offline?: boolean };
   ownership: { class: 'COMPILER_OWNED' | 'OWNER_MANAGED' | 'SHARED_CONTROLLED' | 'EXTERNAL'; team: string };
   environments?: string[];
 }
@@ -240,7 +240,7 @@ export interface SystemDefinitionSpec {
   };
   components: Component[];
   integrations: { id: string; kind: string; direction: string; purpose: string; provider?: string }[];
-  environments: { id: string; kind: string; deploymentMode: string }[];
+  environments: { id: string; kind: string; deploymentMode: string; region?: string }[];
 }
 export type SystemDefinition = ContractDocument<'SystemDefinition', SystemDefinitionSpec, DecidedStatus>;
 
@@ -341,6 +341,24 @@ export interface MaterializationRecordSpec {
 }
 export type MaterializationRecord = ContractDocument<'MaterializationRecord', MaterializationRecordSpec, 'VALID' | 'SUPERSEDED'>;
 
+// ── A9 Design System ──────────────────────────────────────────────────────
+export type DesignTokenType = 'color' | 'dimension' | 'fontFamily' | 'fontWeight' | 'number' | 'duration';
+export type DesignTokenValue = string | number | string[];
+export interface DesignToken {
+  $value: DesignTokenValue;
+  $type: DesignTokenType;
+  $description?: string;
+}
+export interface DesignTokenGroup {
+  [name: string]: DesignToken | DesignTokenGroup | string | undefined;
+}
+export interface DesignSystemSpec {
+  tokens: DesignTokenGroup;
+  accessibility: { standard: 'WCAG-2.2'; level: 'A' | 'AA' | 'AAA' };
+  contexts: { id: string; title: string; overrides?: Record<string, DesignTokenValue> }[];
+}
+export type DesignSystem = ContractDocument<'DesignSystem', DesignSystemSpec, DecidedStatus>;
+
 export type AnyContract =
   | RequirementBaseline
   | DecisionSet
@@ -349,4 +367,5 @@ export type AnyContract =
   | DomainContract
   | ChangeRequest
   | EvidenceRecord
-  | MaterializationRecord;
+  | MaterializationRecord
+  | DesignSystem;

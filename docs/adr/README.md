@@ -24,6 +24,7 @@ Ajout libre ; suppression ou réécriture d'un ADR accepté = validation humaine
 | [ADR-097](ADR-097-domain-ir.md) | Domain IR et liaison à l'IR système | Accepté |
 | [ADR-098](ADR-098-materialization-record-and-proof-chain.md) | A8 MaterializationRecord et proof chain v1 | Accepté |
 | [ADR-099](ADR-099-domain-contract-projection.md) | Projection du Domain Contract en contrat OpenAPI partagé | Accepté |
+| [ADR-100](ADR-100-organization-policies-and-design-system.md) | Évaluation des politiques d'organisation et contrat A9 DesignSystem | Accepté |
 
 Les ADR 001–090 de l'itération précédente (sauf ADR-073) sont archivés dans
 [`archive/laboratory/adr/`](../archive/laboratory/adr/) : histoire, sans autorité (ADR-094). La
@@ -45,3 +46,7 @@ numérotation continue à partir d'ADR-098.
 ## Conséquences
 ## Validation humaine requise (le cas échéant)
 ```
+
+## Raccordement Enistere
+
+[ADR-101](ADR-101-enistere-governance-alignment.md) — orientation demandée par le propriétaire, implémentation documentaire locale à relire ; aucune homologation applicative.

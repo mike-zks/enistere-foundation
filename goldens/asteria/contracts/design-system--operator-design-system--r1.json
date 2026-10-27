@@ -1,0 +1,173 @@
+{
+  "apiVersion": "foundation.enistere.com/v1alpha1",
+  "kind": "DesignSystem",
+  "metadata": {
+    "id": "operator-design-system",
+    "revision": 1,
+    "title": "Operator design system",
+    "status": "ACCEPTED",
+    "owner": {
+      "team": "operator-design"
+    },
+    "provenance": {
+      "origin": "HUMAN",
+      "actor": {
+        "type": "HUMAN",
+        "id": "design-lead@operator.example",
+        "role": "design-lead"
+      }
+    },
+    "acceptance": {
+      "decision": "ACCEPTED",
+      "authority": "DECIDE",
+      "actor": {
+        "type": "HUMAN",
+        "id": "design-lead@operator.example",
+        "role": "design-lead"
+      },
+      "at": "2026-09-15T09:00:00Z"
+    }
+  },
+  "spec": {
+    "tokens": {
+      "color": {
+        "brand": {
+          "primary": {
+            "$type": "color",
+            "$value": "#0B3D5C"
+          },
+          "accent": {
+            "$type": "color",
+            "$value": "#1F7A8C"
+          }
+        },
+        "surface": {
+          "default": {
+            "$type": "color",
+            "$value": "#FFFFFF"
+          },
+          "subtle": {
+            "$type": "color",
+            "$value": "#F2F5F7"
+          }
+        },
+        "text": {
+          "primary": {
+            "$type": "color",
+            "$value": "#14212B"
+          },
+          "secondary": {
+            "$type": "color",
+            "$value": "#4A5A66"
+          },
+          "inverse": {
+            "$type": "color",
+            "$value": "#FFFFFF"
+          }
+        },
+        "status": {
+          "success": {
+            "$type": "color",
+            "$value": "#1E7B4F"
+          },
+          "warning": {
+            "$type": "color",
+            "$value": "#8A5A00"
+          },
+          "danger": {
+            "$type": "color",
+            "$value": "#B3261E"
+          }
+        },
+        "action": {
+          "primary": {
+            "$type": "color",
+            "$value": "{color.brand.primary}"
+          }
+        }
+      },
+      "space": {
+        "100": {
+          "$type": "dimension",
+          "$value": "8px"
+        },
+        "200": {
+          "$type": "dimension",
+          "$value": "16px"
+        },
+        "300": {
+          "$type": "dimension",
+          "$value": "24px"
+        }
+      },
+      "radius": {
+        "control": {
+          "$type": "dimension",
+          "$value": "6px"
+        }
+      },
+      "font": {
+        "family": {
+          "body": {
+            "$type": "fontFamily",
+            "$value": [
+              "Inter",
+              "Arial",
+              "sans-serif"
+            ]
+          }
+        },
+        "weight": {
+          "regular": {
+            "$type": "fontWeight",
+            "$value": 400
+          },
+          "strong": {
+            "$type": "fontWeight",
+            "$value": 600
+          }
+        },
+        "size": {
+          "body": {
+            "$type": "dimension",
+            "$value": "16px"
+          }
+        }
+      },
+      "motion": {
+        "standard": {
+          "$type": "duration",
+          "$value": "200ms"
+        }
+      }
+    },
+    "accessibility": {
+      "standard": "WCAG-2.2",
+      "level": "AA"
+    },
+    "contexts": [
+      {
+        "id": "public-portal",
+        "title": "Public portal: welcoming, large touch targets.",
+        "overrides": {
+          "font.size.body": "18px"
+        }
+      },
+      {
+        "id": "back-office",
+        "title": "Back-office: dense work queues.",
+        "overrides": {
+          "space.200": "12px"
+        }
+      },
+      {
+        "id": "field",
+        "title": "Field: outdoor readability, high contrast.",
+        "overrides": {
+          "color.surface.default": "#FFFFFF",
+          "color.text.primary": "#000000"
+        }
+      }
+    ]
+  }
+}

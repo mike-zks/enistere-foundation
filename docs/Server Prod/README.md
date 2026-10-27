@@ -1,5 +1,12 @@
 # Enistere Production
 
+## Statut historique — 26 octobre 2026
+
+Ces copies documentent l'ancien socle ; leur contenu est conservé comme historique, sans preuve
+de l'état présent d'un serveur ni autorité sur les normes communes actuelles. Pour contribution,
+sécurité, CI/CD et exploitation, lire [ENISTERE_ALIGNMENT](../governance/ENISTERE_ALIGNMENT.md).
+Toute contradiction avec un invariant produit reste à résoudre explicitement avant admission.
+
 Ce dossier est la référence courte de l'écosystème de production partagé Enistere. Il est indépendant des dépôts applicatifs et peut être fourni à une équipe ou à une IA pour concevoir, vérifier et préparer le déploiement d'un projet.
 
 ## Documents

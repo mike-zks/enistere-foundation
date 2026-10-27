@@ -146,6 +146,16 @@ function crossValidate(document: AnyContract, index: ContractIndex): Diagnostic[
         requireReliable(document, domain, path, found);
         if (domain) domains.set(domain.metadata.id, domain as DomainContract);
       });
+      (document as SystemDefinition).spec.components.forEach((component, position) => {
+        const experience = component.experience;
+        if (!experience?.designSystem) return;
+        const path = `/spec/components/${position}/experience`;
+        const design = expectKind(experience.designSystem, 'DesignSystem', `${path}/designSystem`, owner, index, found);
+        requireReliable(document, design, `${path}/designSystem`, found);
+        if (design && design.kind === 'DesignSystem' && !design.spec.contexts.some((context) => context.id === experience.designContext)) {
+          found.push(diagnostic('SYSTEM_UNKNOWN_DESIGN_CONTEXT', `design context '${experience.designContext}' is not declared by ${documentRef(design)}`, { ref: owner, path: `${path}/designContext` }));
+        }
+      });
       found.push(
         ...crossValidateSystemDefinition(document as SystemDefinition, owner, {
           baseline: baseline as RequirementBaseline | undefined,
@@ -233,7 +243,8 @@ export function validateContractSet(inputs: readonly unknown[], options: Validat
 
   const documents = entries.map((entry) => entry.document);
   const index = indexContracts(documents);
-  const systems = [...new Set(documents.map((document) => (document.spec as { system: string }).system))].sort();
+  // A Design System (A9) belongs to an organization, not to one system: it carries no `system`.
+  const systems = [...new Set(documents.map((document) => (document.spec as { system?: string }).system).filter((value): value is string => typeof value === 'string'))].sort();
   const system = systems.length === 1 ? (systems[0] as string) : null;
   if (systems.length > 1) {
     for (const document of documents) {

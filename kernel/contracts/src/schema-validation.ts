@@ -25,6 +25,7 @@ export const SCHEMA_FILES: Readonly<Record<ContractKind, string>> = Object.freez
   ChangeRequest: 'change-request.schema.json',
   EvidenceRecord: 'evidence-record.schema.json',
   MaterializationRecord: 'materialization-record.schema.json',
+  DesignSystem: 'design-system.schema.json',
 });
 
 export const COMMON_SCHEMA_FILE = 'common.schema.json';

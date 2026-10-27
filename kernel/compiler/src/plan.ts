@@ -20,6 +20,7 @@ import { digestOf, type Digest } from '@enistere/foundation-kernel-contracts';
 
 import type { ApiContract } from './api-contract.ts';
 import type { SystemClosure } from './closure.ts';
+import type { PolicyReport } from './policy.ts';
 import type { SystemIR } from './ir.ts';
 import type { ExtensionRef, ResolvedSystem, UnsupportedItem } from './resolve.ts';
 
@@ -36,6 +37,10 @@ export interface ExecutionPlan {
   unsupportedIntent: SystemIR['unsupported'];
   /** Shared API contracts (E5): one per (domain, provider), cited by digest. */
   sharedContracts: { id: string; domain: string; provider: string; consumers: string[]; digest: Digest }[];
+  /** Surfaces bound to a design system (E6), by digest: appearance, independent from the domain. */
+  designBindings: { component: string; designSystem: string; context: string; digest: Digest }[];
+  /** Organization policies applied (E6): outcomes by rule and subject. */
+  policy: PolicyReport | null;
   /** What the owning teams keep: owner-managed components, projected operations to implement, invariants to enforce. */
   ownerWork: OwnerWork[];
   /** Requirements allocated to planned components: what Evidence must later prove. */
@@ -67,7 +72,7 @@ function ownerWork(ir: SystemIR, contracts: readonly ApiContract[]): OwnerWork[]
   return work;
 }
 
-export function planSystem(closure: SystemClosure, ir: SystemIR, resolved: ResolvedSystem, contracts: readonly ApiContract[] = []): ExecutionPlan {
+export function planSystem(closure: SystemClosure, ir: SystemIR, resolved: ResolvedSystem, contracts: readonly ApiContract[] = [], policy: PolicyReport | null = null): ExecutionPlan {
   const byId = new Map(ir.components.map((component) => [component.id, component]));
   const steps: PlanStep[] = [];
   const proofObligations: ExecutionPlan['proofObligations'] = [];
@@ -98,6 +103,8 @@ export function planSystem(closure: SystemClosure, ir: SystemIR, resolved: Resol
     unsupported: resolved.unsupported.map((item) => ({ ...item })),
     unsupportedIntent: ir.unsupported.map((item) => ({ ...item })),
     sharedContracts: contracts.map((contract) => ({ id: contract.id, domain: contract.domain.ref, provider: contract.provider, consumers: [...contract.consumers], digest: contract.digest })),
+    designBindings: ir.designBindings.map((binding) => ({ component: binding.component, designSystem: binding.designSystem.ref, context: binding.context, digest: binding.digest })),
+    policy,
     ownerWork: ownerWork(ir, contracts),
     proofObligations,
   };

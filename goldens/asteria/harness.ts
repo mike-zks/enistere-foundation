@@ -39,6 +39,7 @@ import {
 } from '../../kernel/contracts/src/index.ts';
 import {
   decisionSet,
+  designSystem,
   domainContract,
   organizationContext,
   peerSyncChangeRequest,
@@ -167,6 +168,7 @@ const KEBAB: Readonly<Record<string, string>> = Object.freeze({
   EffectiveOrganizationContext: 'effective-organization-context',
   SystemDefinition: 'system-definition',
   DomainContract: 'domain-contract',
+  DesignSystem: 'design-system',
   ChangeRequest: 'change-request',
   EvidenceRecord: 'evidence-record',
   MaterializationRecord: 'materialization-record',
@@ -290,23 +292,24 @@ export function buildAsteriaGolden(): AsteriaGolden {
   const decisions = decisionSet(baseline);
   const context = organizationContext();
   const domain = domainContract(baseline);
+  const design = designSystem();
   const inputs = { baseline, decisions, context, domain };
 
   // Revision 1 as accepted on 2026-09-17, checked the same day.
   const sd1Accepted = systemDefinition(1, 'ACCEPTED', inputs);
-  const sd1Evidence = check(sd1Accepted, [baseline, decisions, context, domain, sd1Accepted], CLOCK.sd1Check);
+  const sd1Evidence = check(sd1Accepted, [baseline, decisions, context, domain, design, sd1Accepted], CLOCK.sd1Check);
 
   // Day-2: change request asteria-cr-001 produces revision 2 and invalidates the SD1 evidence.
   const sd1 = systemDefinition(1, 'SUPERSEDED', inputs);
   const sd2 = systemDefinition(2, 'ACCEPTED', inputs, sd1);
   const cr1 = scanningChangeRequest(sd1, sd2, baseline, decisions, sd1Evidence.map((record) => pinnedRef(record)));
   const invalidated = sd1Evidence.map((record) => invalidate(record, pinnedRef(cr1), 'System definition revision 2 changes the checked components (asteria-cr-001).'));
-  const sd2Evidence = check(sd2, [baseline, decisions, context, domain, sd1, cr1, sd2, ...sd1Evidence, ...invalidated], CLOCK.sd2Check);
+  const sd2Evidence = check(sd2, [baseline, decisions, context, domain, design, sd1, cr1, sd2, ...sd1Evidence, ...invalidated], CLOCK.sd2Check);
 
   // An AI proposal classified UNSUPPORTED: recorded, never accepted by fallback.
   const cr2 = peerSyncChangeRequest(sd2, baseline);
 
-  const documents = [baseline, decisions, context, domain, sd1, sd2, cr1, cr2, ...sd1Evidence, ...invalidated, ...sd2Evidence];
+  const documents = [baseline, decisions, context, domain, design, sd1, sd2, cr1, cr2, ...sd1Evidence, ...invalidated, ...sd2Evidence];
   const validation = validateContractSet(documents);
   const files: Record<string, string> = {};
   for (const document of documents) files[fileName(document)] = json(document);

@@ -1,8 +1,30 @@
 # Changelog
 
+## 2026-10-26 — Raccordement documentaire Enistere
+
+Référence de gouvernance versionnée, profil de livraison, autorité des copies historiques et
+prérequis de CI/release explicités ; code, workflows, maîtres et progression produit inchangés.
+Voir [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md).
+
 Les changements détaillés sont disponibles dans Git et les GitHub Releases.
 
 ## Unreleased
+
+### Adapter NestJS 0.2.1 — 2026-10-27
+
+- Le projet généré force `multer` 2.5.0 (`overrides` npm, version exacte) : toutes les versions de
+  `@nestjs/platform-express`, y compris la dernière (12.2.0), épinglent `multer` 2.4.0, visé par un avis
+  de sévérité haute (déni de service) ; le check TOOLCHAIN `audit` du job `adapters` échouait.
+
+### E6 — Organization Context & Design bindings — 2026-09-26
+
+- `evaluatePolicies` : catalogue fermé de règles d'A3 ; SATISFIED, WAIVED, VIOLATED (bloque),
+  NOT_APPLICABLE, NOT_EVALUATED ; rapport `policy` dans le résultat et le plan
+  ([ADR-100](docs/adr/ADR-100-organization-policies-and-design-system.md)).
+- Contrat A9 `DesignSystem` (W3C Design Tokens) ; A4 : `designSystem` épinglé, `environments[].region`.
+- Design bindings (IR, plan, `AdapterContext.designBindings`) ; MATERIALIZE refuse un waiver expiré.
+- Golden régénéré (design system, régions, W-001) ; `docs/design/design-tokens.json` et
+  `npm run design:tokens` (job CI `kernel`). Codes `POLICY_*`, `DESIGN_*`. Tests : 142.
 
 ### E5 — Domain Contract Projection — 2026-09-26
 

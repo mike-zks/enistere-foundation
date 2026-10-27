@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.foundation.enistere.com/v1alpha1/design-system.schema.json",
+  "title": "A9 — Design System",
+  "description": "Governed, versioned design system of an organization: design tokens in the W3C Design Tokens format (groups and typed tokens, aliases), the accessibility conformance it guarantees and the design contexts surfaces bind to (FR-DES). It describes appearance only: it never carries domain semantics.",
+  "allOf": [{ "$ref": "common.schema.json#/$defs/envelope" }],
+  "properties": {
+    "kind": { "const": "DesignSystem" },
+    "metadata": {
+      "properties": { "status": { "enum": ["DRAFT", "PROPOSED", "ACCEPTED", "REJECTED", "SUPERSEDED"] } }
+    },
+    "spec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tokens", "accessibility", "contexts"],
+      "properties": {
+        "tokens": { "$ref": "#/$defs/group" },
+        "accessibility": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["standard", "level"],
+          "properties": {
+            "standard": { "const": "WCAG-2.2" },
+            "level": { "enum": ["A", "AA", "AAA"] }
+          }
+        },
+        "contexts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title"],
+            "properties": {
+              "id": { "$ref": "common.schema.json#/$defs/id" },
+              "title": { "$ref": "common.schema.json#/$defs/text" },
+              "overrides": {
+                "description": "Token path ('group.token') → value of the token's type, or an alias.",
+                "type": "object",
+                "propertyNames": { "$ref": "#/$defs/tokenPath" },
+                "additionalProperties": { "$ref": "#/$defs/value" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "name": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*$", "maxLength": 60 },
+    "tokenPath": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*(?:\\.[a-z0-9][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*)*$", "maxLength": 240 },
+    "value": {
+      "anyOf": [
+        { "type": "string", "minLength": 1, "maxLength": 240 },
+        { "type": "number" },
+        { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1, "maxLength": 120 } }
+      ]
+    },
+    "token": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$value", "$type"],
+      "properties": {
+        "$value": { "$ref": "#/$defs/value" },
+        "$type": { "enum": ["color", "dimension", "fontFamily", "fontWeight", "number", "duration"] },
+        "$description": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    },
+    "group": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": { "$description": { "$ref": "common.schema.json#/$defs/text" } },
+      "patternProperties": {
+        "^[a-z0-9][a-zA-Z0-9]*(?:-[a-zA-Z0-9]+)*$": { "anyOf": [{ "$ref": "#/$defs/token" }, { "$ref": "#/$defs/group" }] }
+      },
+      "additionalProperties": false
+    }
+  }
+}

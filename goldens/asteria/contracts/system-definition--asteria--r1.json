@@ -124,9 +124,10 @@
         "experience": {
           "designContext": "public-portal",
           "designSystem": {
-            "type": "DesignSystem",
+            "kind": "DesignSystem",
             "id": "operator-design-system",
-            "version": "1.0.0"
+            "revision": 1,
+            "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
           },
           "accessibilityProfile": "wcag-2-2-aa"
         },
@@ -182,9 +183,10 @@
         "experience": {
           "designContext": "back-office",
           "designSystem": {
-            "type": "DesignSystem",
+            "kind": "DesignSystem",
             "id": "operator-design-system",
-            "version": "1.0.0"
+            "revision": 1,
+            "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
           }
         },
         "ownership": {
@@ -240,9 +242,10 @@
         "experience": {
           "designContext": "field",
           "designSystem": {
-            "type": "DesignSystem",
+            "kind": "DesignSystem",
             "id": "operator-design-system",
-            "version": "1.0.0"
+            "revision": 1,
+            "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493"
           },
           "offline": true
         },
@@ -447,7 +450,7 @@
         "kind": "oidc-provider",
         "direction": "OUTBOUND",
         "purpose": "Authentication through the shared Enistere identity provider, realm asteria.",
-        "provider": "enistere-shared-keycloak"
+        "provider": "enistere-shared-oidc"
       },
       {
         "id": "smtp-relay",
@@ -476,12 +479,14 @@
       {
         "id": "staging",
         "kind": "STAGING",
-        "deploymentMode": "SELF_HOSTED"
+        "deploymentMode": "SELF_HOSTED",
+        "region": "eu-central"
       },
       {
         "id": "production",
         "kind": "PRODUCTION",
-        "deploymentMode": "SELF_HOSTED"
+        "deploymentMode": "SELF_HOSTED",
+        "region": "eu-west"
       }
     ]
   }

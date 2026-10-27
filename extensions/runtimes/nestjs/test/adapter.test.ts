@@ -7,7 +7,7 @@ import { createKernelFacade, type IRComponent } from '@enistere/foundation-kerne
 import { digestOf } from '@enistere/foundation-kernel-contracts';
 import { planArtifacts, validateManifest } from '@enistere/foundation-kernel-extensions';
 
-import adapter, { ADAPTER, DEPENDENCIES, DEV_DEPENDENCIES } from '../src/adapter.ts';
+import adapter, { ADAPTER, DEPENDENCIES, DEV_DEPENDENCIES, OVERRIDES } from '../src/adapter.ts';
 
 const manifest: unknown = JSON.parse(readFileSync(new URL('../manifest.json', import.meta.url), 'utf8'));
 const context = { system: 'asteria', definition: 'SystemDefinition/asteria@2' };
@@ -113,11 +113,12 @@ test('a component that provides no contract keeps the E2 project shape', () => {
 });
 
 test('dependencies are pinned to exact versions; the image does not run as root; no secret is generated', () => {
-  for (const version of Object.values({ ...DEPENDENCIES, ...DEV_DEPENDENCIES })) assert.match(version, /^\d+\.\d+\.\d+$/);
+  for (const version of Object.values({ ...DEPENDENCIES, ...DEV_DEPENDENCIES, ...OVERRIDES })) assert.match(version, /^\d+\.\d+\.\d+$/);
   const { contents } = planArtifacts(adapter.describe(), component(), adapter.plan(component(), context));
   const packageJson = JSON.parse(contents.get('package.json') as string) as { type: string; dependencies: Record<string, string> };
   assert.equal(packageJson.type, 'module');
   assert.deepEqual(packageJson.dependencies, { ...DEPENDENCIES });
+  assert.deepEqual((packageJson as { overrides?: Record<string, string> }).overrides, { ...OVERRIDES }, 'transitive fixes are pinned too');
   assert.match(contents.get('Dockerfile') as string, /^USER node$/m);
   for (const [path, content] of contents) assert.doesNotMatch(content, /password\s*[:=]|secret\s*[:=]|api[_-]?key\s*[:=]|BEGIN [A-Z ]*PRIVATE KEY/i, path);
 });

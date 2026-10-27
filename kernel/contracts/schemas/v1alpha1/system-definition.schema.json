@@ -102,7 +102,7 @@
                 "required": ["designContext"],
                 "properties": {
                   "designContext": { "$ref": "common.schema.json#/$defs/id" },
-                  "designSystem": { "$ref": "common.schema.json#/$defs/externalRef" },
+                  "designSystem": { "$ref": "common.schema.json#/$defs/pinnedContractRef" },
                   "accessibilityProfile": { "$ref": "common.schema.json#/$defs/id" },
                   "offline": { "type": "boolean" }
                 }
@@ -145,7 +145,8 @@
             "properties": {
               "id": { "$ref": "common.schema.json#/$defs/itemId" },
               "kind": { "enum": ["LOCAL", "CI", "STAGING", "PRODUCTION"] },
-              "deploymentMode": { "enum": ["LOCAL", "SAAS", "DEDICATED", "SELF_HOSTED", "AIR_GAPPED"] }
+              "deploymentMode": { "enum": ["LOCAL", "SAAS", "DEDICATED", "SELF_HOSTED", "AIR_GAPPED"] },
+              "region": { "description": "Hosting region, checked against the data residency policy.", "$ref": "common.schema.json#/$defs/id" }
             }
           }
         }

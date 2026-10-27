@@ -32,3 +32,4 @@ export { DERIVATION, deriveEffectiveRules, type DerivationResult } from './contr
 export { DOMAIN_PRIMITIVES, elementType } from './contracts/domain-contract.ts';
 export { applyChanges, verifyChangeBase, verifyChangeConsistency } from './contracts/change-request.ts';
 export { evidenceStaleness, type Staleness } from './contracts/evidence-record.ts';
+export { flattenTokens, resolveDesignTokens, validateTokens, type ResolvedToken } from './contracts/design-system.ts';

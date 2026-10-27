@@ -1,6 +1,6 @@
 {
   "name": "@enistere/foundation-adapter-nestjs",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "description": "Enistere Foundation \u2014 NestJS runtime adapter (Adapter Protocol v0): materializes an api-service component as a native NestJS project realizing its shared API contracts.",
   "license": "UNLICENSED",

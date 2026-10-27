@@ -1,5 +1,5 @@
 /**
- * The contract registry: one entry per contract kind (A1–A7 from E0, A8 from E4).
+ * The contract registry: one entry per contract kind (A1–A7 from E0, A8 from E4, A9 from E6).
  *
  * Each entry states the Desired/Resolved/Observed class of the contract, its
  * schema, its intra-document semantic rules and the items a stable reference may
@@ -9,6 +9,7 @@
 import type { StateClass } from './authority.ts';
 import { changeRequestItems, validateChangeRequest } from './contracts/change-request.ts';
 import { decisionSetItems, validateDecisionSet } from './contracts/decision-set.ts';
+import { designSystemItems, validateDesignSystem } from './contracts/design-system.ts';
 import { domainContractItems, validateDomainContract } from './contracts/domain-contract.ts';
 import { effectiveContextItems, validateEffectiveOrganizationContext } from './contracts/effective-organization-context.ts';
 import { evidenceRecordItems, validateEvidenceRecord } from './contracts/evidence-record.ts';
@@ -22,7 +23,7 @@ import type { AnyContract } from './types.ts';
 
 export interface KindDefinition {
   readonly kind: ContractKind;
-  readonly code: 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'A7' | 'A8';
+  readonly code: 'A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | 'A7' | 'A8' | 'A9';
   readonly stateClass: StateClass;
   /** Desired (authoritative intent), Derived (recomputable) or Record (append-only proof). */
   readonly plane: 'DESIRED' | 'DERIVED' | 'EVIDENCE';
@@ -133,5 +134,15 @@ export const CONTRACT_REGISTRY: Readonly<Record<ContractKind, KindDefinition>> =
     reliable: ['VALID', 'SUPERSEDED'],
     validate: validateMaterializationRecord,
     items: materializationRecordItems,
+  }),
+  DesignSystem: define({
+    kind: 'DesignSystem',
+    code: 'A9',
+    stateClass: 'AUTHORITATIVE',
+    plane: 'DESIRED',
+    inForce: DECIDED_IN_FORCE,
+    reliable: DECIDED_RELIABLE,
+    validate: validateDesignSystem,
+    items: designSystemItems,
   }),
 });

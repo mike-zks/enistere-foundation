@@ -76,7 +76,7 @@ test('every diagnostic code maps to a failure class of document 03 and has a rem
   for (const [code, spec] of Object.entries(DIAGNOSTIC_CODES)) {
     assert.ok((FAILURE_CLASSES as readonly string[]).includes(spec.class), code);
     assert.ok(spec.remediation.length > 10, code);
-    assert.match(code, /^(CONTRACT|AUTHORITY|REF|REQUIREMENT|DECISION|CONTEXT|SYSTEM|DOMAIN|CHANGE|EVIDENCE|MATERIALIZATION|CATALOG|RESOLVE|FACADE|MANIFEST|ADAPTER|MATERIALIZE|VERIFY|IR|PROOF)_[A-Z_]+$/);
+    assert.match(code, /^(CONTRACT|AUTHORITY|REF|REQUIREMENT|DECISION|CONTEXT|SYSTEM|DOMAIN|CHANGE|EVIDENCE|MATERIALIZATION|CATALOG|RESOLVE|FACADE|MANIFEST|ADAPTER|MATERIALIZE|VERIFY|IR|PROOF|DESIGN|POLICY)_[A-Z_]+$/);
   }
   assert.throws(() => diagnostic('NOT_A_CODE' as never, 'x'));
 });

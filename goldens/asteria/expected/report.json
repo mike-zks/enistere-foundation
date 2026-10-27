@@ -18,7 +18,7 @@
       "code": "A6",
       "plane": "DESIRED",
       "status": "APPLIED",
-      "digest": "sha256:96cb84e570627926fa80ace646281a76e031137fa096c8c233e060e17ce9edce",
+      "digest": "sha256:20d47149a0a38b1167468de794f8750f836a95c6eda20621331adb1557a97fd7",
       "file": "contracts/change-request--asteria-cr-001--r1.json"
     },
     {
@@ -26,7 +26,7 @@
       "code": "A6",
       "plane": "DESIRED",
       "status": "PROPOSED",
-      "digest": "sha256:0dfa46c5778988c2dc2aefa5d97dc72a01dddfc22a70ca59bbce3bc2f77c6d09",
+      "digest": "sha256:da39f02f00660706969f1668217f519bb8cb1815bca3ab358d227de3836c17fc",
       "file": "contracts/change-request--asteria-cr-002--r1.json"
     },
     {
@@ -36,6 +36,14 @@
       "status": "ACCEPTED",
       "digest": "sha256:1c21e797b7ec6573e999012b8890ede77a005dcb56e57b5e815cd7c9a889d127",
       "file": "contracts/decision-set--asteria-decisions--r1.json"
+    },
+    {
+      "ref": "DesignSystem/operator-design-system@1",
+      "code": "A9",
+      "plane": "DESIRED",
+      "status": "ACCEPTED",
+      "digest": "sha256:d593c0b3b28136f0744ee5f2a18d0290115a9a6b4c053a2a72521743bb03d493",
+      "file": "contracts/design-system--operator-design-system--r1.json"
     },
     {
       "ref": "DomainContract/asteria-service-requests@1",
@@ -58,7 +66,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:051c363e2896b382f7f7b674202b4c89af6b9f6373f43effbe356b2ad287b2e9",
+      "digest": "sha256:e71b6fc13a6819bf5a045ca69f3c90e2d70b8cab115e14585e7cbeea9ab3c74c",
       "file": "evidence/evidence-record--asteria-sd1-closure--r1.json"
     },
     {
@@ -66,7 +74,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "INVALIDATED",
-      "digest": "sha256:2da09ea7876fdd77d46c7e91720b29fe246d324960fe49e7f41e4f3f8de875d8",
+      "digest": "sha256:a1d99a9a052cc46a21c985e2fd4e70a201776eefd8bc9b9ec00518a349d87e6f",
       "file": "evidence/evidence-record--asteria-sd1-closure--r2.json"
     },
     {
@@ -74,7 +82,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:2074b437155e5c9d016238a5e6a3784b2c7bbf7775da0aebacfc7608248b9a55",
+      "digest": "sha256:91d99c7827458d2a985182a53d668f0fbd8ec656a41da728d3c25e501fd3c086",
       "file": "evidence/evidence-record--asteria-sd1-requirement-allocation--r1.json"
     },
     {
@@ -82,7 +90,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "INVALIDATED",
-      "digest": "sha256:36b2cd1b1aba5ef61412c245740af0c4940d8fdafbd287bb37daabedaf012cc0",
+      "digest": "sha256:c2da7b1ac2851dde75a95ec7e1e45589c01b3512e12165d7cf5ce76475a0c235",
       "file": "evidence/evidence-record--asteria-sd1-requirement-allocation--r2.json"
     },
     {
@@ -90,7 +98,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:6019125d8521f483f126fb3b1e6af1c2a89868e4374b749333660e7e0494f674",
+      "digest": "sha256:0c475aa5f2167b5a839095e915add47a39891410eced363ea84c40c3fd5c87d9",
       "file": "evidence/evidence-record--asteria-sd1-worker-extensibility--r1.json"
     },
     {
@@ -98,7 +106,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "INVALIDATED",
-      "digest": "sha256:cc2533f17e5963cdc81c1cd9d52d40abc1bd3ac358b4cb9ccf0b93692a81b6e2",
+      "digest": "sha256:70181a817d975868082e96b9c97ab0fbf4654164c67738d668286fadef641ee6",
       "file": "evidence/evidence-record--asteria-sd1-worker-extensibility--r2.json"
     },
     {
@@ -106,7 +114,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:9392d3fc2740172a22cda4a0727c42106d4a4b89e91b2d0347b7bd58e1c83921",
+      "digest": "sha256:09f68adc45999ed5235dda892bd20f9bda7a2b3aefe01a78f82c9025ad23576a",
       "file": "evidence/evidence-record--asteria-sd2-closure--r1.json"
     },
     {
@@ -114,7 +122,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:f33f41911019296fdf36e7b838dabde12f5ba81693defc37b24c9eb4bbafd159",
+      "digest": "sha256:04b70556002ad57af7882afdead12cc1aa09929e6ec320dfd9087bda2acc2f64",
       "file": "evidence/evidence-record--asteria-sd2-requirement-allocation--r1.json"
     },
     {
@@ -122,7 +130,7 @@
       "code": "A7",
       "plane": "EVIDENCE",
       "status": "VALID",
-      "digest": "sha256:77c9958320e083b99909c1bf023e97293a396bbcd667cad7cead479669a6aad7",
+      "digest": "sha256:5463cc2c4a201f5293d6cfb7858c7c24f35eb0df198df88e4efaa8337c75be31",
       "file": "evidence/evidence-record--asteria-sd2-worker-extensibility--r1.json"
     },
     {
@@ -138,7 +146,7 @@
       "code": "A4",
       "plane": "DESIRED",
       "status": "SUPERSEDED",
-      "digest": "sha256:9e1c01dd6491c31a2cff8eeb7b07a769e82783b2a2ca066ac07e508e1f5099ac",
+      "digest": "sha256:d2a4a31b7b187a1f11715f39be3fc3c17bc9490e5b8b2e436919a395f7cad19c",
       "file": "contracts/system-definition--asteria--r1.json"
     },
     {
@@ -146,7 +154,7 @@
       "code": "A4",
       "plane": "DESIRED",
       "status": "ACCEPTED",
-      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5",
+      "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf",
       "file": "contracts/system-definition--asteria--r2.json"
     }
   ],
@@ -427,12 +435,12 @@
     "status": "PARTIAL",
     "definition": {
       "ref": "SystemDefinition/asteria@2",
-      "digest": "sha256:093d55eb26688f2dc6688e54e94dec93163f04224e9c11e9f996cbeab6400ee5"
+      "digest": "sha256:0863e695bb0b92f927d8d4d586784da45af3cb177988a65a90b59cbd22b248cf"
     },
-    "closure": "sha256:7504b8a4dbaeaf48f4e613f0362968243f9b8f64633b284cf81b5fe2698f8bad",
-    "ir": "sha256:3412ff5774fbdfe3e1fd63175c8b9bb6cbfdc1164235b7eb8895fc667e5bfd51",
-    "resolved": "sha256:2e9340c8f476fdd4e7d2598001090ee28cbc2ef47d5ee63fd9db3bdc27ec34bd",
-    "plan": "sha256:c886ef4c7504d25b6dcc19e7f1ddbf546b8cd694ffbd7921800efe3cdacbfeec",
+    "closure": "sha256:aab268bd76d474311925f6a8482eeb704037c7bbace4fa19ccba366642fd46b0",
+    "ir": "sha256:35f65193ca8925b20ca09eadd5d3486eb937c5d0a7203f96ef6a69a5632b034b",
+    "resolved": "sha256:52040e28acecc2113126fbe41dcb9e491b6c3bb9f7cf4f8cb98dfb80230b6b9d",
+    "plan": "sha256:1d02023e323db766ccb0a752a61ee3f4ac0a56b2061c5603783956ba1792ed1b",
     "unsupported": [
       {
         "component": "asteria-objects",

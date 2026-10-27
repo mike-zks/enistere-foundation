@@ -53,6 +53,10 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
     (`requester-web`, `ops-web`, `field-mobile`, `async-worker`) citent le même digest, identique avec le
     catalogue synthétique et les extensions réelles. L'adapter `nestjs@0.2.0` l'embarque, valide les entrées
     et laisse 10 handlers owner-seeded (501) ; le job CI `adapters` exécute le check `contract`.
+11. Organisation et design (E6) : A9 `operator-design-system@1` (synthétique, WCAG 2.2 AA, contextes
+    `public-portal`, `back-office`, `field`) est épinglé par les trois surfaces ; le Kernel évalue les règles
+    d'A3 : runtimes, fournisseur d'identité verrouillé et accessibilité SATISFIED ; résidence : production
+    `eu-west` SATISFIED, staging `eu-central` **WAIVED** par W-001 ; trois règles NOT_EVALUATED, listées.
 
 ## Fichiers
 
@@ -62,7 +66,7 @@ golden **rapporte** (UNSUPPORTED) au lieu de l'approximer.
 | `harness.ts` | Checker, compilation par la Kernel Façade, construction du golden |
 | `sources/brief.md`, `sources/catalog.json` | Entrées écrites à la main : brief client synthétique, catalogue d'extensions synthétique |
 | `update.ts` | Régénération (`npm run golden:asteria:update`) ; refuse un ensemble invalide |
-| `contracts/*.json`, `evidence/*.json` | **Générés** — 8 contrats et 9 EvidenceRecords |
+| `contracts/*.json`, `evidence/*.json` | **Générés** — 9 contrats et 9 EvidenceRecords |
 | `expected/compilation.json` | **Généré** — résultat de `plan` : closure, IR, ResolvedSystem, ExecutionPlan et digests (identique à la sortie de la CLI) |
 | `expected/materialization.json` | **Généré** — plan contre les extensions réelles et plans d'artefacts des adapters (chemins, ownership, digests), sans écriture de fichier |
 | `expected/proof-chain.json` | **Généré** — proof chain v1 de la première matérialisation (A8 en mémoire, sans EvidenceRecord toolchain), vérifiée par le test |

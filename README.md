@@ -1,5 +1,11 @@
 # Enistere Foundation
 
+## Gouvernance et environnement Enistere
+
+[Raccordement au socle commun](docs/governance/ENISTERE_ALIGNMENT.md) : version adoptée, profil,
+CI/CD, portabilité et écarts encore ouverts. Ce raccordement documentaire ne vaut pas admission
+en production et conserve le périmètre/les prochaines missions produit.
+
 Enistere Foundation est une **Software System Engineering Platform** dotée d'un **Governed System
 Compiler** et d'un **Evidence-Driven System Evolution Engine** : elle transforme une intention
 d'ingénierie en systèmes logiciels natifs, gouvernés et vérifiables, puis maintient leur cohérence dans
@@ -13,7 +19,7 @@ Point d'entrée : [`CONTEXT.md`](CONTEXT.md) — vision, sources de vérité, mi
 
 | Dossier | Rôle |
 |---|---|
-| `kernel/contracts/` | Foundation Kernel — contrats A1–A8 et primitives partagées (E0 ; A8 depuis E4) |
+| `kernel/contracts/` | Foundation Kernel — contrats A1–A9 et primitives partagées (E0 ; A8 depuis E4 ; A9 depuis E6) |
 | `kernel/compiler/` | Kernel Façade — validate → System Closure → System IR → résolution → plan (mission E1) |
 | `kernel/extensions/` | Adapter Protocol v0 : manifest, contrat d'adapter, règle d'ownership (mission E2) |
 | `engine/materializer/` | Hôte d'extensions, MATERIALIZE, VERIFY → EvidenceRecords (mission E2) |
@@ -30,7 +36,7 @@ Prérequis : Node.js ≥ 22.18 (CI : Node 24), npm.
 ```sh
 npm ci
 npm run foundation:typecheck   # Kernel, CLI, golden
-npm run foundation:test        # contrats A1–A8, compiler, CLI, golden Asteria
+npm run foundation:test        # contrats A1–A9, compiler, CLI, golden Asteria
 npm run golden:asteria:update  # régénère le golden (diff attendu vide)
 ```
 

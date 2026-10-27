@@ -1,13 +1,21 @@
 # Production readiness — admission dans l'écosystème Enistere
 
-Source : document 05 §2B et [`docs/Server Prod/`](../Server%20Prod/POLITIQUE.md) (politique et procédure,
-qui prévalent en cas de conflit). **Validation humaine requise avant le premier déploiement de
+## Référence actuelle et portée des preuves
+
+[ENISTERE_ALIGNMENT](ENISTERE_ALIGNMENT.md) fixe le raccordement versionné au socle commun.
+Les preuves et statuts historiques ci-dessous conservent leur date : ils n’ont pas été rejoués
+par cette mission documentaire. Aucune admission globale n’est déclarée. Une release sensible
+requiert une qualification indépendante, des artefacts immuables et une autorisation humaine
+explicite ; la présence de credentials ou un tag ne suffisent pas.
+
+Source actuelle de plateforme : [ENISTERE_ALIGNMENT](ENISTERE_ALIGNMENT.md) ; le document 05 §2B
+et les copies Server Prod gardent leurs éventuelles divergences historiques à réviser. **Validation humaine requise avant le premier déploiement de
 production** (document 05 §2F).
 
 ## État
 
-Aucun service Enistere Foundation n'est déployable ni déployé à la date du 2026-09-25 : le Kernel E0 est
-une bibliothèque, sans processus long. Cette checklist s'appliquera dès qu'un processus Foundation
+Aucun service Enistere Foundation n'est déployable ni déployé à la date du 2026-09-25 : le Kernel et la CLI actuels restent
+des artefacts de bibliothèque/CLI, sans processus long. Cette checklist s'appliquera dès qu'un processus Foundation
 (API du Control Plane, Workbench, worker, registry) visera l'hôte partagé. Les artefacts de staging de
 l'itération précédente (supprimés, ADR-094) ne valent pas admission.
 
@@ -17,7 +25,7 @@ l'itération précédente (supprimés, ADR-094) ne valent pas admission.
 - [ ] Noms DNS et caractère public ou administratif (proposition §2G : `api.foundation.enistere.com`,
       `foundation.enistere.com`, `registry.foundation.enistere.com`, `staging.foundation.enistere.com` —
       à confirmer par ADR ; couverture de certificat edge multi-niveaux à vérifier).
-- [ ] Dépendances PostgreSQL, Redis, R2, B2, OIDC (realm Keycloak `foundation` sur `auth.enistere.com`).
+- [ ] Dépendances PostgreSQL, Redis, S3, sauvegardes et OIDC configurables selon le futur service ; aucun realm Keycloak imposé au Kernel.
 - [ ] Objectifs de disponibilité, sauvegarde, rétention, restauration (RPO/RTO).
 - [ ] Besoins et limites CPU, mémoire, stockage.
 - [ ] Données personnelles ou sensibles traitées.
@@ -38,7 +46,7 @@ l'itération précédente (supprimés, ADR-094) ne valent pas admission.
 | PR-09 | Métriques, journaux structurés sans secret et alertes visibles (Prometheus, Grafana, Loki, Uptime Kuma) | Captures / requêtes |
 | PR-10 | Rollback exercé, statut CI en échec conservé en cas d'échec | Journal d'exercice |
 | PR-11 | Runbook et inventaire de production à jour | [`../runbooks/`](../runbooks/README.md) |
-| PR-12 | Validation et publication de production dans deux workflows distincts ; déploiement depuis un tag protégé ; le VPS ne compile jamais | Workflows |
+| PR-12 | Validation indépendante, build unique et promotion du même digest ; déploiement humain/protégé et verrou commun ; le VPS ne compile jamais | Workflows |
 
 Une exception temporaire n'est valide que si elle est écrite, datée, attribuée à un propriétaire et
 assortie d'une échéance.

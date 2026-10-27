@@ -1,7 +1,14 @@
 # CONTEXT — Enistere Foundation
 
+## Raccordement Enistere — 2026-10-26
+
+La référence de plateforme actuelle est [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md).
+Les copies `docs/Server Prod/` sont historiques ; le dossier maître garde ses invariants produit.
+Cette copie est préparée pour revue, sans transfert distant ni changement de serveur.
+La prochaine mission produit ci-dessous est conservée.
+
 > Reflet vivant du projet (document 05 §2E). Ne recopie pas les documents sources : il y renvoie.
-> Dernière mise à jour : 2026-09-26, fin de la mission E5 (projection du Domain Contract en contrat OpenAPI partagé, ADR-099).
+> Dernière mise à jour : 2026-09-26, fin de la mission E6 (politiques d'organisation évaluées et contrat A9 DesignSystem, ADR-100).
 
 ## Vision
 
@@ -21,8 +28,8 @@ Engineering Governance*, pas le starter ni la ligne de code.
    [05 Prompt de reprise](docs/05%20—%20Prompt%20de%20démarrage%20du%20développement%20—%20ENISTERE%20FOUNDATION.md) ·
    [06 Versions et feuille de route](docs/06%20—%20Versions%20et%20feuille%20de%20route%20—%20ENISTERE%20FOUNDATION.docx) ·
    [07 Carte produit et capacités](docs/07%20—%20Carte%20produit%20et%20capacités%20—%20ENISTERE%20FOUNDATION.docx).
-2. Production Enistere, pour toute contrainte de plateforme partagée :
-   [`docs/Server Prod/`](docs/Server%20Prod/README.md) (architecture, politique, procédure).
+2. Gouvernance de plateforme versionnée :
+   [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md), pour les contraintes communes de contribution, sécurité et livraison ; copies Server Prod historiques.
 3. ADR validés : [`docs/adr/`](docs/adr/README.md), résumés dans [`DECISIONS.md`](DECISIONS.md).
 4. Code réel du dépôt — autorité sur l'**état d'implémentation**, jamais sur la cible.
 
@@ -48,7 +55,7 @@ transversal. Dans le dépôt :
 
 | Zone cible | Présent aujourd'hui |
 |---|---|
-| Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0) et A8 MaterializationRecord (E4) ; [`kernel/compiler/`](kernel/compiler/README.md) — proof chain v1 (E4), contrat OpenAPI partagé (E5) ; [`kernel/compiler/`](kernel/compiler/README.md) — Kernel Façade et chaîne closure → IR (avec Domain IR, E3) → résolution → plan (E1) ; [`kernel/extensions/`](kernel/extensions/README.md) — Adapter Protocol v0 (E2) |
+| Foundation Kernel | [`kernel/contracts/`](kernel/contracts/README.md) — contrats A1–A7 (E0), A8 MaterializationRecord (E4) et A9 DesignSystem (E6) ; [`kernel/compiler/`](kernel/compiler/README.md) — proof chain v1 (E4), contrat OpenAPI partagé (E5), politiques d'organisation et design bindings (E6) ; [`kernel/compiler/`](kernel/compiler/README.md) — Kernel Façade et chaîne closure → IR (avec Domain IR, E3) → résolution → plan (E1) ; [`kernel/extensions/`](kernel/extensions/README.md) — Adapter Protocol v0 (E2) |
 | Engine | [`engine/materializer/`](engine/materializer/README.md) — hôte d'extensions, MATERIALIZE, VERIFY (E2) |
 | Extensions | [`extensions/runtimes/nestjs/`](extensions/runtimes/nestjs/README.md) — premier Runtime Adapter (E2) |
 | Surfaces | [`surfaces/cli/`](surfaces/cli/README.md) — CLI headless `enistere-foundation` (E1, E2) |
@@ -62,25 +69,24 @@ production, a été supprimée : une seule implémentation par concept, dans le 
 
 ## Production Enistere
 
-Toute mise en production suit [`docs/Server Prod/`](docs/Server%20Prod/POLITIQUE.md) et
-[`PRODUCTION_READINESS.md`](docs/governance/PRODUCTION_READINESS.md) : Traefik seule entrée (22/80/443),
-réseaux `enistere_*`, images par digest, secrets hors dépôt, Keycloak commun (un realm par projet),
-sauvegarde Restic/B2 restaurée avant d'être déclarée opérationnelle. Aucun service Foundation n'est
-déployé à ce jour.
+Toute future mise en production suit [ENISTERE_ALIGNMENT](docs/governance/ENISTERE_ALIGNMENT.md)
+et [PRODUCTION_READINESS](docs/governance/PRODUCTION_READINESS.md). Le Kernel/CLI actuel n'est pas
+un service déployable ; OIDC reste une configuration d'un éventuel futur service. Les règles
+communes de livraison, de réseaux privés, de secrets et de reprise restent des gates avant ouverture.
 
 ## Décisions validées
 
 Voir [`DECISIONS.md`](DECISIONS.md). Décisions de la reprise : ADR-091 (autorité du dossier), ADR-092 (E0
 Contract Foundation), ADR-093 (R0-C), ADR-094 (suppression de l'itération précédente, qui prévaut sur les passages
-du dossier supposant une couche de compatibilité) ADR-095 (E1, chaîne de compilation native), ADR-096 (E2, Adapter Protocol v0) ADR-097 (E3, Domain IR) ADR-098 (E4, A8 et proof chain) et ADR-099 (E5, contrat OpenAPI partagé).
+du dossier supposant une couche de compatibilité) ADR-095 (E1, chaîne de compilation native), ADR-096 (E2, Adapter Protocol v0) ADR-097 (E3, Domain IR) ADR-098 (E4, A8 et proof chain) ADR-099 (E5, contrat OpenAPI partagé) et ADR-100 (E6, politiques et A9).
 
 ## Mission
 
 - **Missions terminées** : E0 — Contract Foundation (PASS, P1–P10 validés), R0-C — Repository
-  Realignment (ADR-093), R0-D — repartir propre (ADR-094) et E1 — Kernel Façade (ADR-095) E2 — Adapter Protocol v0 (ADR-096) E3 — Domain IR (ADR-097) E4 — Ownership & Evidence (ADR-098) et E5 — Domain Contract Projection (ADR-099). Résultats :
+  Realignment (ADR-093), R0-D — repartir propre (ADR-094) et E1 — Kernel Façade (ADR-095) E2 — Adapter Protocol v0 (ADR-096) E3 — Domain IR (ADR-097) E4 — Ownership & Evidence (ADR-098) E5 — Domain Contract Projection (ADR-099) et E6 — Organization Context & Design bindings (ADR-100). Résultats :
   [`CURRENT_STATE.md`](CURRENT_STATE.md).
 - **Périmètre retenu** : greenfield, modèle de contrats ; brownfield et lifecycle complet hors périmètre.
-- **Prochaine mission unique** : **E6 — Organization Context & Design bindings** (horizon V1, [`BACKLOG.md`](BACKLOG.md)).
+- **Prochaine mission unique** : **E7 — Day-2 Change Intelligence** (horizon V1, [`BACKLOG.md`](BACKLOG.md)).
 
 ## Divergences documentaires ouvertes
 
@@ -92,7 +98,7 @@ Arbitrages associés et propositions : [`ARBITRATIONS.md`](docs/governance/ARBIT
 | D-2 | Doc 05 §2B : VPS Ubuntu 24.04 ; `Server Prod/ARCHITECTURE.md` : Ubuntu 26.04.1 LTS. | La documentation de production décrit l'état réel de l'hôte ; corriger doc 05 à la prochaine révision. | Gouvernance |
 | D-3 | Doc 05 §2B mentionne une instance RabbitMQ partagée ; absente de `Server Prod/ARCHITECTURE.md`. | Ne pas supposer RabbitMQ disponible ; ADR requis avant usage (Workers, E4+). | Technique + plateforme |
 | D-4 | Doc 03 : object store S3/MinIO ; production : Cloudflare R2. | Compatible (abstraction S3) ; R2 en production Enistere, MinIO en self-hosted. | Aucun (compatible) |
-| D-5 | Doc 04 cite `design-tokens.json` et un dossier `mockups`, absents du dépôt. | À fournir avant tout travail Workbench/design ; non bloquant pour E0–E3. | Design UX UI |
+| D-5 | Doc 04 cite `design-tokens.json` et un dossier `mockups`, absents du dépôt. | Partiellement levée (E6, ADR-100) : `docs/design/design-tokens.json` versé depuis le document 04 et validé ; les mockups restent à fournir avant tout travail Workbench. | Design UX UI |
 | D-6 | Convention §2G (`enistere-foundation`, `@enistere/foundation-*`) vs dépôt `enistere-os-foundation` et packages existants. | Dépôt renommé par le responsable ; packages à la migration ; domaines par ADR au 1er déploiement. | Tranché (ADR-093, ARB-04) — renommage GitHub à effectuer |
 | D-7 | Doc 03 : Control Plane NestJS + Temporal ; `MANDAT.md` (archivé) : pipeline factory unique. | Résolu par ADR-091. | Clos |
 | D-8 | Doc 06 §6.8 : seule suite de E0 = E1 ; demande de nettoyage complet après E0. | Mission R0-C insérée, limitée aux niveaux 1–2. | Clos (ADR-093) |

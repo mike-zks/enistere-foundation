@@ -29,7 +29,9 @@ import {
   type ContractIndex,
   type Diagnostic,
   type Digest,
+  type DesignSystem,
   type DomainContract,
+  type EffectiveOrganizationContext,
   type SystemDefinition,
 } from '@enistere/foundation-kernel-contracts';
 
@@ -38,6 +40,7 @@ import { EMPTY_CATALOG, validateCatalog } from './catalog.ts';
 import { buildClosure, COMPILER, type ClosureEntry, type SystemClosure } from './closure.ts';
 import { buildSystemIR, type SystemIR } from './ir.ts';
 import { planSystem, type ExecutionPlan } from './plan.ts';
+import { evaluatePolicies, type PolicyReport } from './policy.ts';
 import { resolveSystem, type ResolvedSystem } from './resolve.ts';
 
 export const FACADE_VERSION = '0.1.0';
@@ -68,6 +71,8 @@ export interface ResolveResult {
   closure: SystemClosure | null;
   ir: SystemIR | null;
   resolved: ResolvedSystem | null;
+  /** The organization policies applied to this compilation (E6); present even when a violation blocks it. */
+  policy: PolicyReport | null;
   diagnostics: Diagnostic[];
 }
 
@@ -137,6 +142,7 @@ export function createKernelFacade(): KernelFacade {
       closure: null,
       ir: null,
       resolved: null,
+      policy: null,
       diagnostics: sortDiagnostics([...validation.diagnostics, ...catalog.diagnostics]),
     };
     if (!validation.valid || !catalog.catalog || !catalog.digest) return { result: base, plan: null, contracts: [] };
@@ -149,14 +155,20 @@ export function createKernelFacade(): KernelFacade {
     }
     const definition = selected;
     const { closure, documents: inputs } = buildClosure(definition, index, catalog.digest as Digest);
-    const ir = buildSystemIR(definition, inputs.filter((document): document is DomainContract => document.kind === 'DomainContract'));
+    const ir = buildSystemIR(
+      definition,
+      inputs.filter((document): document is DomainContract => document.kind === 'DomainContract'),
+      inputs.filter((document): document is DesignSystem => document.kind === 'DesignSystem'),
+    );
     const intent = ir.unsupported.map((item) =>
       diagnostic(item.code, `${item.item} is not realized: ${IR_REASONS[item.code]}`, { layer: 'kernel.compiler', ref: ir.definition, details: { item: item.item } }),
     );
     const { resolved, diagnostics } = resolveSystem(ir, catalog.catalog, catalog.digest);
+    const context = inputs.find((document): document is EffectiveOrganizationContext => document.kind === 'EffectiveOrganizationContext');
+    const policy = context ? evaluatePolicies(context, ir, resolved) : null;
     const apiContracts = projectApiContracts(ir);
-    const plan = planSystem(closure, ir, resolved, apiContracts);
-    const all = sortDiagnostics([...base.diagnostics, ...intent, ...diagnostics]);
+    const plan = planSystem(closure, ir, resolved, apiContracts, policy?.report ?? null);
+    const all = sortDiagnostics([...base.diagnostics, ...intent, ...diagnostics, ...(policy?.diagnostics ?? [])]);
     const result: ResolveResult = {
       ...base,
       status: hasErrors(all) ? 'INVALID' : resolved.unsupported.length > 0 || ir.unsupported.length > 0 ? 'PARTIAL' : 'RESOLVED',
@@ -164,6 +176,7 @@ export function createKernelFacade(): KernelFacade {
       closure,
       ir,
       resolved,
+      policy: policy?.report ?? null,
       diagnostics: all,
     };
     const valid = result.status !== 'INVALID';

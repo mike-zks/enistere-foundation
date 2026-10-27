@@ -47,6 +47,25 @@ test('the domain is projected once, as one API contract shared by its provider a
   assert.deepEqual(materialization.plan.sharedContracts, compilation.plan.sharedContracts, 'the contract does not depend on the extensions available');
 });
 
+test('organization policies apply to the compilation: W-001 waives staging, nothing is silently ignored (E6)', () => {
+  const compilation = JSON.parse(readGoldenFile('expected/compilation.json')) as {
+    policy: { evaluations: { rule: string; subject: string | null; outcome: string; waiver: { id: string } | null }[] };
+    ir: { designBindings: { component: string; context: string; designSystem: { ref: string } }[] };
+  };
+  const outcomes = new Set(compilation.policy.evaluations.map((item) => item.outcome));
+  assert.ok(!outcomes.has('VIOLATED'));
+  assert.deepEqual(compilation.policy.evaluations.filter((item) => item.outcome === 'WAIVED').map((item) => [item.rule, item.subject, item.waiver?.id]), [['data.residency', 'staging', 'W-001']]);
+  assert.deepEqual(compilation.policy.evaluations.filter((item) => item.outcome === 'NOT_EVALUATED').map((item) => item.rule), ['ai.decide.allowed', 'deployment.image.reference', 'evidence.retention.days']);
+  assert.deepEqual(
+    compilation.ir.designBindings.map((binding) => [binding.component, binding.context, binding.designSystem.ref]),
+    [
+      ['field-mobile', 'field', 'DesignSystem/operator-design-system@1'],
+      ['ops-web', 'back-office', 'DesignSystem/operator-design-system@1'],
+      ['requester-web', 'public-portal', 'DesignSystem/operator-design-system@1'],
+    ],
+  );
+});
+
 test('the build is deterministic', () => {
   assert.deepEqual(buildAsteriaGolden().files, buildAsteriaGolden().files);
 });
